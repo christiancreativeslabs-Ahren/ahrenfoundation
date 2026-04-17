@@ -123,9 +123,6 @@ export default function AboutPage() {
       >
         <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={600} color="cyan" />
         <div className="max-w-5xl mx-auto px-6 relative z-10">
-          <FadeUp className="text-center mb-16">
-            <SectionLabel>In Our Own Words</SectionLabel>
-          </FadeUp>
           <StaggerParent className="space-y-5">
             {[
               "We don't just code. We create for a Kingdom.",

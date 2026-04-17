@@ -9,9 +9,6 @@ import { EXPERTISE_OPTIONS } from "@/lib/data";
 const inputCls =
   "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-white text-sm placeholder-[#8892b0] focus:border-[#00c9ff] focus:bg-[rgba(0,201,255,0.04)] transition-all duration-200 outline-none";
 
-const selectCls =
-  "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-[#8892b0] text-sm focus:border-[#00c9ff] transition-all duration-200 outline-none appearance-none cursor-pointer";
-
 const textareaCls =
   "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-white text-sm placeholder-[#8892b0] focus:border-[#00c9ff] focus:bg-[rgba(0,201,255,0.04)] transition-all duration-200 outline-none resize-none";
 
@@ -24,7 +21,15 @@ function FormLabel({ label, required }: { label: string; required?: boolean }) {
   );
 }
 
-function FieldGroup({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function FieldGroup({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mb-5">
       <FormLabel label={label} required={required} />
@@ -36,29 +41,54 @@ function FieldGroup({ label, required, children }: { label: string; required?: b
 function CheckboxOption({ label, name }: { label: string; name: string }) {
   return (
     <label className="flex items-center gap-2.5 cursor-pointer group">
-      <input
-        type="checkbox"
-        name={name}
-        className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer"
-      />
-      <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">
-        {label}
-      </span>
+      <input type="checkbox" name={name} className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer" />
+      <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">{label}</span>
     </label>
+  );
+}
+
+function OtherOption({ name, placeholder = "Please specify your area..." }: { name: string; placeholder?: string }) {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div className="sm:col-span-2 mt-2 space-y-2">
+      <label className="flex items-center gap-2.5 cursor-pointer group">
+        <input
+          type="checkbox"
+          name={name}
+          checked={checked}
+          onChange={(e) => setChecked(e.target.checked)}
+          className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer"
+        />
+        <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">
+          Other
+        </span>
+      </label>
+      <AnimatePresence>
+        {checked && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            style={{ overflow: "hidden" }}
+          >
+            <input
+              className={inputCls}
+              placeholder={placeholder}
+              autoFocus
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
 function RadioOption({ label, name }: { label: string; name: string }) {
   return (
     <label className="flex items-center gap-2.5 cursor-pointer group">
-      <input
-        type="radio"
-        name={name}
-        className="w-4 h-4 accent-[#00c9ff] cursor-pointer"
-      />
-      <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">
-        {label}
-      </span>
+      <input type="radio" name={name} className="w-4 h-4 accent-[#00c9ff] cursor-pointer" />
+      <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">{label}</span>
     </label>
   );
 }
@@ -84,10 +114,7 @@ function SuccessScreen({ type, onBack }: { type: "youth" | "mentor"; onBack: () 
       >
         <CheckCircle2 size={36} className="text-[#080d2e]" />
       </motion.div>
-      <h2
-        className="text-white text-3xl font-bold mb-4"
-        style={{ fontFamily: "var(--font-display)" }}
-      >
+      <h2 className="text-white text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>
         {type === "mentor" ? "Application Submitted!" : "Welcome to Ahren Foundation!"}
       </h2>
       <p className="text-[#8892b0] text-base leading-relaxed max-w-lg mx-auto mb-4">
@@ -97,7 +124,7 @@ function SuccessScreen({ type, onBack }: { type: "youth" | "mentor"; onBack: () 
       </p>
       <p className="grad-text text-sm font-bold mb-10">— Ahren Foundation Team</p>
       <motion.button
-        whileHover={{ scale: 1.04 }}
+        whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={onBack}
         className="text-[#8892b0] text-sm font-semibold px-6 py-3 rounded-full transition-colors hover:text-white"
@@ -109,6 +136,7 @@ function SuccessScreen({ type, onBack }: { type: "youth" | "mentor"; onBack: () 
   );
 }
 
+// ─── YOUTH FORM ───────────────────────────────────────────────────────────────
 function YouthForm({ onSubmit }: { onSubmit: () => void }) {
   return (
     <div>
@@ -132,7 +160,9 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
             <input className={inputCls} placeholder="+234..." />
           </FieldGroup>
           <FieldGroup label="Age Range" required>
-            <select className={selectCls}>
+            <select
+              className="w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-[#8892b0] text-sm focus:border-[#00c9ff] transition-all duration-200 outline-none appearance-none cursor-pointer"
+            >
               <option value="">Select age range</option>
               {["16-18", "19-22", "23-26", "27-30", "31-35"].map((a) => (
                 <option key={a} value={a}>{a}</option>
@@ -148,23 +178,17 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
       {/* Skills */}
       <div className="mb-8">
         <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">
-          Skills & Interests
+          Skills &amp; Interests
         </div>
         <FieldGroup label="Current Skills / Area(s) of Interest" required>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-5 rounded-xl"
+            style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+          >
             {EXPERTISE_OPTIONS.map((opt) => (
               <CheckboxOption key={opt} label={opt} name={`skill-${opt}`} />
             ))}
-            <div className="sm:col-span-2 mt-2">
-              <label className="flex items-center gap-2.5 cursor-pointer group mb-2">
-                <input type="checkbox" name="skill-other" className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer" />
-                <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">Other</span>
-              </label>
-              <input
-                className={inputCls}
-                placeholder="Please specify..."
-              />
-            </div>
+            <OtherOption name="skill-other" placeholder="e.g. Game Development, 3D Modelling..." />
           </div>
         </FieldGroup>
         <FieldGroup label="What skills do you want to learn or improve?" required>
@@ -184,7 +208,10 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
           <textarea className={textareaCls} rows={3} placeholder="Tell us about it..." />
         </FieldGroup>
         <FieldGroup label="Preferred Participation Format" required>
-          <div className="flex flex-wrap gap-5 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+          <div
+            className="flex flex-wrap gap-5 p-4 rounded-xl"
+            style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+          >
             {["Virtual (online only)", "Physical centre (if available)", "Both virtual and physical"].map((f) => (
               <CheckboxOption key={f} label={f} name={`format-${f}`} />
             ))}
@@ -205,7 +232,10 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
             </div>
           </FieldGroup>
         ))}
-        <FieldGroup label="Brief Testimony — How has God been working in your life in the area of your skills, talents and creativity?" required>
+        <FieldGroup
+          label="Brief Testimony — How has God been working in your life in the area of your skills, talents and creativity?"
+          required
+        >
           <textarea className={textareaCls} rows={5} placeholder="Share your testimony..." />
         </FieldGroup>
         <FieldGroup label="Church / Youth Fellowship (Optional)">
@@ -214,7 +244,10 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
       </div>
 
       {/* Consent */}
-      <div className="mb-8 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+      <div
+        className="mb-8 p-5 rounded-xl"
+        style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+      >
         <label className="flex items-start gap-3 cursor-pointer">
           <input type="checkbox" className="w-4 h-4 mt-0.5 accent-[#00c9ff] cursor-pointer flex-shrink-0" />
           <span className="text-[#8892b0] text-sm leading-relaxed">
@@ -235,6 +268,7 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
   );
 }
 
+// ─── MENTOR FORM ──────────────────────────────────────────────────────────────
 function MentorForm({ onSubmit }: { onSubmit: () => void }) {
   return (
     <div>
@@ -277,20 +311,14 @@ function MentorForm({ onSubmit }: { onSubmit: () => void }) {
           </FieldGroup>
         </div>
         <FieldGroup label="Area(s) of Expertise" required>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-5 rounded-xl"
+            style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+          >
             {EXPERTISE_OPTIONS.filter((o) => o !== "Writing / Content Creation").map((opt) => (
               <CheckboxOption key={opt} label={opt} name={`exp-${opt}`} />
             ))}
-            <div className="sm:col-span-2 mt-2">
-              <label className="flex items-center gap-2.5 cursor-pointer group mb-2">
-                <input type="checkbox" name="exp-other" className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer" />
-                <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">Other</span>
-              </label>
-              <input
-                className={inputCls}
-                placeholder="Please specify..."
-              />
-            </div>
+            <OtherOption name="exp-other" placeholder="e.g. Blockchain, DevOps, Cloud Architecture..." />
           </div>
         </FieldGroup>
       </div>
@@ -304,14 +332,20 @@ function MentorForm({ onSubmit }: { onSubmit: () => void }) {
           <textarea className={textareaCls} rows={4} placeholder="Share your heart for the next generation..." />
         </FieldGroup>
         <FieldGroup label="Available Commitment (hours/month)" required>
-          <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+          <div
+            className="flex flex-wrap gap-6 p-4 rounded-xl"
+            style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+          >
             {["2-4 hours/month", "5-8 hours/month", "9+ hours/month"].map((c) => (
               <RadioOption key={c} label={c} name="commitment" />
             ))}
           </div>
         </FieldGroup>
         <FieldGroup label="Preferred Mentorship Format" required>
-          <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+          <div
+            className="flex flex-wrap gap-6 p-4 rounded-xl"
+            style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+          >
             {["Virtual", "In-person", "Both"].map((f) => (
               <RadioOption key={f} label={f} name="format" />
             ))}
@@ -332,7 +366,10 @@ function MentorForm({ onSubmit }: { onSubmit: () => void }) {
             </div>
           </FieldGroup>
         ))}
-        <FieldGroup label="Brief Testimony — How has God been working through your skills?" required>
+        <FieldGroup
+          label="Brief Testimony — How has God been working through your skills?"
+          required
+        >
           <textarea className={textareaCls} rows={5} placeholder="Share your testimony..." />
         </FieldGroup>
         <FieldGroup label="Church / Ministry Affiliation (Optional)">
@@ -341,7 +378,10 @@ function MentorForm({ onSubmit }: { onSubmit: () => void }) {
       </div>
 
       {/* Consent */}
-      <div className="mb-8 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+      <div
+        className="mb-8 p-5 rounded-xl"
+        style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+      >
         <label className="flex items-start gap-3 cursor-pointer">
           <input type="checkbox" className="w-4 h-4 mt-0.5 accent-[#00c9ff] cursor-pointer flex-shrink-0" />
           <span className="text-[#8892b0] text-sm leading-relaxed">
@@ -362,6 +402,7 @@ function MentorForm({ onSubmit }: { onSubmit: () => void }) {
   );
 }
 
+// ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function JoinPage() {
   const [tab, setTab] = useState<"youth" | "mentor">("youth");
   const [submitted, setSubmitted] = useState(false);
@@ -389,7 +430,10 @@ export default function JoinPage() {
             </h1>
           </FadeUp>
           <FadeUp delay={0.15}>
-            <p className="text-[#8892b0] leading-relaxed max-w-2xl" style={{ fontSize: "clamp(16px, 2vw, 19px)" }}>
+            <p
+              className="text-[#8892b0] leading-relaxed max-w-2xl"
+              style={{ fontSize: "clamp(16px, 2vw, 19px)" }}
+            >
               Whether you&apos;re a creative youth ready to build for the Kingdom, or a seasoned
               professional ready to invest in the next generation — there&apos;s a place for you.
             </p>
@@ -397,7 +441,7 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* Form area */}
+      {/* Form */}
       <section
         className="pb-28 relative"
         style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
@@ -428,10 +472,7 @@ export default function JoinPage() {
 
           {/* Form card */}
           <FadeUp delay={0.1}>
-            <div
-              className="card p-10"
-              style={{ borderRadius: 28 }}
-            >
+            <div className="card p-10" style={{ borderRadius: 28 }}>
               <AnimatePresence mode="wait">
                 {submitted ? (
                   <motion.div
