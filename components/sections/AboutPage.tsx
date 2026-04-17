@@ -125,18 +125,14 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp className="text-center mb-16">
             <SectionLabel>In Our Own Words</SectionLabel>
-            <h2
-              className="font-display text-white"
-              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 800, letterSpacing: "-0.02em" }}
-            >
-              Our Taglines
-            </h2>
           </FadeUp>
           <StaggerParent className="space-y-5">
             {[
-              "Building tech that reveals Jesus.",
-              "Tech skills. Kingdom purpose. Global impact.",
-              "Partnering with the Holy Spirit to build what matters.",
+              "We don't just code. We create for a Kingdom.",
+              "Your skills have a purpose. Let's find it together.",
+              "The Holy Spirit is our ultimate Creative Director.",
+              "Building value. Revealing Jesus. Changing lives.",
+              "You were created to create.",
             ].map((tagline, i) => (
               <StaggerChild key={i}>
                 <motion.div
@@ -157,6 +153,62 @@ export default function AboutPage() {
                     style={{ fontFamily: "var(--font-display)", fontSize: "clamp(16px, 2.2vw, 22px)" }}
                   >
                     &ldquo;{tagline}&rdquo;
+                  </p>
+                </motion.div>
+              </StaggerChild>
+            ))}
+          </StaggerParent>
+        </div>
+      </section>
+
+      {/* Inspiring Questions */}
+      <section
+        className="py-24 relative overflow-hidden"
+        style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
+      >
+        <GradientOrb className="left-[-10%] top-1/2" size={500} color="mint" />
+        <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
+          <FadeUp>
+            <SectionLabel>A Moment to Reflect</SectionLabel>
+            <h2
+              className="font-display text-white mb-16"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(26px, 3.5vw, 42px)",
+                fontWeight: 800,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Questions Worth Sitting With
+            </h2>
+          </FadeUp>
+          <StaggerParent className="space-y-6">
+            {[
+              "What if your skills could serve God's Kingdom?",
+              "What if your next project could reveal Jesus Christ to the world?",
+              "What if your creativity had eternal impact?",
+            ].map((q, i) => (
+              <StaggerChild key={i}>
+                <motion.div
+                  whileHover={{ scale: 1.015 }}
+                  className="p-8 rounded-2xl transition-all duration-300 relative overflow-hidden"
+                  style={{
+                    background: "rgba(17,24,80,0.7)",
+                    border: "1px solid rgba(0,255,157,0.12)",
+                  }}
+                >
+                  <div
+                    className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+                    style={{ background: "linear-gradient(to bottom, #00c9ff, #00ff9d)" }}
+                  />
+                  <p
+                    className="text-white font-semibold italic leading-relaxed"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(17px, 2.2vw, 22px)",
+                    }}
+                  >
+                    {q}
                   </p>
                 </motion.div>
               </StaggerChild>

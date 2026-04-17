@@ -155,6 +155,16 @@ function YouthForm({ onSubmit }: { onSubmit: () => void }) {
             {EXPERTISE_OPTIONS.map((opt) => (
               <CheckboxOption key={opt} label={opt} name={`skill-${opt}`} />
             ))}
+            <div className="sm:col-span-2 mt-2">
+              <label className="flex items-center gap-2.5 cursor-pointer group mb-2">
+                <input type="checkbox" name="skill-other" className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer" />
+                <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">Other</span>
+              </label>
+              <input
+                className={inputCls}
+                placeholder="Please specify..."
+              />
+            </div>
           </div>
         </FieldGroup>
         <FieldGroup label="What skills do you want to learn or improve?" required>
@@ -271,6 +281,16 @@ function MentorForm({ onSubmit }: { onSubmit: () => void }) {
             {EXPERTISE_OPTIONS.filter((o) => o !== "Writing / Content Creation").map((opt) => (
               <CheckboxOption key={opt} label={opt} name={`exp-${opt}`} />
             ))}
+            <div className="sm:col-span-2 mt-2">
+              <label className="flex items-center gap-2.5 cursor-pointer group mb-2">
+                <input type="checkbox" name="exp-other" className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer" />
+                <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">Other</span>
+              </label>
+              <input
+                className={inputCls}
+                placeholder="Please specify..."
+              />
+            </div>
           </div>
         </FieldGroup>
       </div>
