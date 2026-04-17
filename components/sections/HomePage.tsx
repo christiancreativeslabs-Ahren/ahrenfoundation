@@ -245,6 +245,129 @@ export default function HomePage() {
         </div>
       </section>
 
+
+      {/* ── PROJECTS PREVIEW ── */}
+      <section
+        className="py-28 relative"
+        style={{ borderTop: "1px solid rgba(0,201,255,0.08)", background: "rgba(13,19,64,0.35)" }}
+      >
+        <GradientOrb className="right-[-5%] top-1/2" size={500} color="cyan" />
+        <GradientOrb className="left-[-5%] top-1/3" size={400} color="mint" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-16">
+            <FadeUp>
+              <SectionLabel>CCLabs Projects</SectionLabel>
+              <h2
+                className="font-display text-white"
+                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 800, letterSpacing: "-0.02em" }}
+              >
+                Building for the <span className="grad-text">Kingdom</span>
+              </h2>
+              <p className="text-[#8892b0] mt-3 max-w-md text-base leading-relaxed">
+                Faith-based digital tools born inside our Christian Creatives Labs.
+              </p>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <Link href="/projects">
+                <GlowButton outline>View All Projects</GlowButton>
+              </Link>
+            </FadeUp>
+          </div>
+
+          <StaggerParent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              {
+                name: "WELLS",
+                tagline: "Living Water, Digital Streams",
+                desc: "A faith-driven platform providing believers with curated spiritual resources, devotionals, and community-driven content.",
+                emoji: "💧",
+                color: "#00c9ff",
+                href: "https://wells.bolt.host/",
+              },
+              {
+                name: "PRAYNATIONS",
+                tagline: "Uniting Nations in Prayer",
+                desc: "A global prayer platform for the lost, unreached people groups, missions, and missionaries across the globe.",
+                emoji: "🌍",
+                color: "#00ff9d",
+                href: "https://praynations.bolt.host/",
+              },
+            ].map((proj, i) => (
+              <StaggerChild key={i}>
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  className="card overflow-hidden transition-all duration-300"
+                  style={{ borderRadius: 24, borderTop: `3px solid \${proj.color}` }}
+                >
+                  <div
+                    className="h-40 flex items-center justify-center relative overflow-hidden"
+                    style={{ background: `radial-gradient(ellipse at center, \${proj.color}10 0%, rgba(8,13,46,0.8) 70%)` }}
+                  >
+                    {[1, 2].map((ring) => (
+                      <motion.div
+                        key={ring}
+                        animate={{ scale: [1, 1.12, 1], opacity: [0.12, 0.04, 0.12] }}
+                        transition={{ duration: 3 + ring, repeat: Infinity, delay: ring * 0.7, ease: "easeInOut" }}
+                        className="absolute rounded-full border"
+                        style={{ width: 80 + ring * 70, height: 80 + ring * 70, borderColor: proj.color + "30" }}
+                      />
+                    ))}
+                    <motion.span
+                      animate={{ y: [0, -6, 0] }}
+                      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                      style={{ fontSize: 52, position: "relative", zIndex: 10 }}
+                    >
+                      {proj.emoji}
+                    </motion.span>
+                  </div>
+
+                  <div className="p-7">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3
+                        className="text-white text-2xl font-black tracking-tight"
+                        style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
+                      >
+                        {proj.name}
+                      </h3>
+                      <span
+                        className="text-[10px] font-bold px-2.5 py-1 rounded-full"
+                        style={{ background: proj.color + "15", color: proj.color, border: `1px solid \${proj.color}25` }}
+                      >
+                        Prototype
+                      </span>
+                    </div>
+                    <p className="text-sm italic font-semibold mb-3" style={{ color: proj.color }}>
+                      {proj.tagline}
+                    </p>
+                    <p className="text-[#8892b0] text-sm leading-relaxed mb-6">{proj.desc}</p>
+                    <div className="flex gap-3 items-center">
+                      <Link href="/projects">
+                        <motion.span
+                          whileHover={{ x: 3 }}
+                          className="text-sm font-bold cursor-pointer"
+                          style={{ color: proj.color }}
+                        >
+                          Learn more →
+                        </motion.span>
+                      </Link>
+                      <span className="text-[#8892b0]">·</span>
+                      <a href={proj.href} target="_blank" rel="noopener noreferrer">
+                        <motion.span
+                          whileHover={{ x: 3 }}
+                          className="flex items-center gap-1 text-[#8892b0] text-sm font-semibold hover:text-white transition-colors cursor-pointer"
+                        >
+                          Visit prototype <ArrowRight size={13} />
+                        </motion.span>
+                      </a>
+                    </div>
+                  </div>
+                </motion.div>
+              </StaggerChild>
+            ))}
+          </StaggerParent>
+        </div>
+      </section>
+
       {/* ── VISION STATEMENT ── */}
       <section
         className="py-28 relative overflow-hidden"
