@@ -4,7 +4,7 @@ export const TEAM = [
     role: "IT Systems & Strategy",
     label: "Team Lead",
     photo: "/team/emmanuel-akin-williams.jpg",
-    bio: "The Visioneer of Ahren Foundation, Emmanuel leads in a key capacity within the platform. His heart is to see young believers use their tech skills to create valuable products that impact lives and reveal Jesus Christ to the world.",
+    bio: "Emmanuel leads in a key capacity within the platform. His heart is to see young believers use their tech skills to create valuable products that impact lives and reveal Jesus Christ to the world.",
     featured: true,
   },
   {

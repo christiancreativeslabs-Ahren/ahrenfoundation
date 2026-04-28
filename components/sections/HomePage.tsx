@@ -232,125 +232,62 @@ export default function HomePage() {
       </section>
 
 
-      {/* ── PROJECTS PREVIEW ── */}
+      {/* ── PROJECTS ANNOUNCEMENT ── */}
       <section
-        className="py-28 relative"
+        className="py-14 relative"
         style={{ borderTop: "1px solid rgba(0,201,255,0.08)", background: "rgba(13,19,64,0.35)" }}
       >
-        <GradientOrb className="right-[-5%] top-1/2" size={500} color="cyan" />
-        <GradientOrb className="left-[-5%] top-1/3" size={400} color="mint" />
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-16">
-            <FadeUp>
-              <SectionLabel>CCLabs Projects</SectionLabel>
-              <h2
-                className="font-display text-white"
-                style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 800, letterSpacing: "-0.02em" }}
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
+          <FadeUp>
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              className="relative overflow-hidden rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center gap-8"
+              style={{
+                background: "linear-gradient(135deg, rgba(0,201,255,0.06) 0%, rgba(0,255,157,0.04) 100%)",
+                border: "1px solid rgba(0,201,255,0.2)",
+              }}
+            >
+              {/* Glow blob */}
+              <div
+                className="absolute right-[-60px] top-[-60px] w-64 h-64 rounded-full blur-3xl pointer-events-none"
+                style={{ background: "radial-gradient(circle, rgba(0,255,157,0.1), transparent 70%)" }}
+              />
+              {/* Pulsing icon */}
+              <div
+                className="flex-shrink-0 flex items-center justify-center w-20 h-20 rounded-2xl relative"
+                style={{ background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.2)" }}
               >
-                Building for the <span className="grad-text">Kingdom</span>
-              </h2>
-              <p className="text-[#8892b0] mt-3 max-w-md text-base leading-relaxed">
-                Faith-based digital tools born inside our Christian Creatives Labs.
-              </p>
-            </FadeUp>
-            <FadeUp delay={0.1}>
-              <Link href="/projects">
-                <GlowButton outline>View All Projects</GlowButton>
-              </Link>
-            </FadeUp>
-          </div>
-
-          <StaggerParent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                name: "WELLS",
-                tagline: "Living Water, Digital Streams",
-                desc: "A faith-driven platform providing believers with curated spiritual resources, devotionals, and community-driven content.",
-                emoji: "💧",
-                color: "#00c9ff",
-                href: "https://wells.bolt.host/",
-              },
-              {
-                name: "PRAYNATIONS",
-                tagline: "Uniting Nations in Prayer",
-                desc: "A global prayer platform for the lost, unreached people groups, missions, and missionaries across the globe.",
-                emoji: "🌍",
-                color: "#00ff9d",
-                href: "https://praynations.bolt.host/",
-              },
-            ].map((proj, i) => (
-              <StaggerChild key={i}>
-                <motion.div
-                  whileHover={{ y: -8 }}
-                  className="card overflow-hidden transition-all duration-300"
-                  style={{ borderRadius: 24, borderTop: `3px solid \${proj.color}` }}
+                <span style={{ fontSize: 38 }}>🛠️</span>
+                <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full grad-bg animate-pulse" />
+              </div>
+              {/* Text */}
+              <div className="flex-1 text-center md:text-left">
+                <div className="text-[10px] font-bold tracking-[0.18em] uppercase grad-text mb-2">
+                  CCLabs — Live Now
+                </div>
+                <h3
+                  className="text-white text-2xl md:text-3xl font-bold mb-3"
+                  style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
                 >
-                  <div
-                    className="h-40 flex items-center justify-center relative overflow-hidden"
-                    style={{ background: `radial-gradient(ellipse at center, \${proj.color}10 0%, rgba(8,13,46,0.8) 70%)` }}
-                  >
-                    {[1, 2].map((ring) => (
-                      <motion.div
-                        key={ring}
-                        animate={{ scale: [1, 1.12, 1], opacity: [0.12, 0.04, 0.12] }}
-                        transition={{ duration: 3 + ring, repeat: Infinity, delay: ring * 0.7, ease: "easeInOut" }}
-                        className="absolute rounded-full border"
-                        style={{ width: 80 + ring * 70, height: 80 + ring * 70, borderColor: proj.color + "30" }}
-                      />
-                    ))}
-                    <motion.span
-                      animate={{ y: [0, -6, 0] }}
-                      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                      style={{ fontSize: 52, position: "relative", zIndex: 10 }}
-                    >
-                      {proj.emoji}
-                    </motion.span>
-                  </div>
-
-                  <div className="p-7">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3
-                        className="text-white text-2xl font-black tracking-tight"
-                        style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
-                      >
-                        {proj.name}
-                      </h3>
-                      <span
-                        className="text-[10px] font-bold px-2.5 py-1 rounded-full"
-                        style={{ background: proj.color + "15", color: proj.color, border: `1px solid \${proj.color}25` }}
-                      >
-                        Prototype
-                      </span>
-                    </div>
-                    <p className="text-sm italic font-semibold mb-3" style={{ color: proj.color }}>
-                      {proj.tagline}
-                    </p>
-                    <p className="text-[#8892b0] text-sm leading-relaxed mb-6">{proj.desc}</p>
-                    <div className="flex gap-3 items-center">
-                      <Link href="/projects">
-                        <motion.span
-                          whileHover={{ x: 3 }}
-                          className="text-sm font-bold cursor-pointer"
-                          style={{ color: proj.color }}
-                        >
-                          Learn more →
-                        </motion.span>
-                      </Link>
-                      <span className="text-[#8892b0]">·</span>
-                      <a href={proj.href} target="_blank" rel="noopener noreferrer">
-                        <motion.span
-                          whileHover={{ x: 3 }}
-                          className="flex items-center gap-1 text-[#8892b0] text-sm font-semibold hover:text-white transition-colors cursor-pointer"
-                        >
-                          Visit prototype <ArrowRight size={13} />
-                        </motion.span>
-                      </a>
-                    </div>
-                  </div>
-                </motion.div>
-              </StaggerChild>
-            ))}
-          </StaggerParent>
+                  We&apos;re Building for the Kingdom
+                </h3>
+                <p className="text-[#8892b0] text-base leading-relaxed max-w-xl">
+                  Our Christian Creatives Labs have launched their first faith-based tech projects.
+                  Discover the digital tools we&apos;re crafting to advance the Great Commission.
+                </p>
+              </div>
+              {/* CTA */}
+              <Link href="/projects" className="flex-shrink-0">
+                <motion.button
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 36px rgba(0,201,255,0.35)" }}
+                  whileTap={{ scale: 0.97 }}
+                  className="grad-bg text-[#080d2e] font-bold text-sm px-8 py-4 rounded-full flex items-center gap-2 whitespace-nowrap"
+                >
+                  See Our Projects <ArrowRight size={16} />
+                </motion.button>
+              </Link>
+            </motion.div>
+          </FadeUp>
         </div>
       </section>
 
