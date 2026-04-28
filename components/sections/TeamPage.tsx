@@ -40,7 +40,7 @@ export default function TeamPage() {
       {/* Featured leaders */}
       <section className="py-16 relative" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <StaggerParent className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+          <StaggerParent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
             {TEAM.filter((m) => m.featured).map((member, i) => (
               <StaggerChild key={i}>
                 <motion.div

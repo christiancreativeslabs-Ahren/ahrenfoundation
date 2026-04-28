@@ -4,7 +4,7 @@ export const TEAM = [
     role: "IT Systems & Strategy",
     label: "Team Lead",
     photo: "/team/emmanuel-akin-williams.jpg",
-    bio: "The visionary behind Ahren Foundation, Emmanuel bridges faith and technology to raise a generation of Holy Spirit-led innovators. His heart is to see believers use their tech gifts to reveal Jesus Christ to the world.",
+    bio: "The Visioneer of Ahren Foundation, Emmanuel leads in a key capacity within the platform. His heart is to see young believers use their tech skills to create valuable products that impact lives and reveal Jesus Christ to the world.",
     featured: true,
   },
   {
@@ -19,9 +19,9 @@ export const TEAM = [
     name: "Dien Bassey",
     role: "Software Engineer · Fullstack Developer",
     label: "Team Lead",
-    photo: null,
-    bio: "Building robust, scalable solutions that serve the Kingdom.",
-    featured: false,
+    photo: "/team/dien-bassey.jpg",
+    bio: "Fullstack engineer and builder at heart, Dien brings technical excellence and Kingdom purpose to every line of code — crafting robust, scalable solutions that serve the Body of Christ.",
+    featured: true,
   },
   {
     name: "Joshua Akinyoade",

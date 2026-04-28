@@ -7,6 +7,7 @@ import { ArrowRight, Sparkles, Users, Zap, Globe2 } from "lucide-react";
 import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 import { STATS, WHAT_WE_DO, BLOGS } from "@/lib/data";
 import MarqueeTicker from "@/components/MarqueeTicker";
+import ScripturesSection from "@/components/ScripturesSection";
 
 function FloatingParticle({ delay = 0, size = 3, top = "20%", left = "10%" }) {
   return (
@@ -63,24 +64,6 @@ export default function HomePage() {
           style={{ y: heroY, opacity: heroOpacity }}
           className="relative z-10 text-center max-w-5xl mx-auto px-6 pt-24"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-10"
-            style={{
-              background: "rgba(0,201,255,0.08)",
-              border: "1px solid rgba(0,201,255,0.2)",
-            }}
-          >
-            <Sparkles size={13} className="text-[#00c9ff]" />
-            <span className="text-[#00c9ff] text-xs font-bold tracking-[0.12em] uppercase">
-              Faith meets Technology
-            </span>
-            <Sparkles size={13} className="text-[#00ff9d]" />
-          </motion.div>
-
           {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 60 }}
@@ -414,6 +397,8 @@ export default function HomePage() {
           </FadeUp>
         </div>
       </section>
+
+      <ScripturesSection />
 
       {/* ── WHY AHREN ── */}
       <section className="py-28 relative">

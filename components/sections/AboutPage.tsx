@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
+import ScripturesSection from "@/components/ScripturesSection";
 
 export default function AboutPage() {
   const pillars = [
@@ -213,6 +214,8 @@ export default function AboutPage() {
           </StaggerParent>
         </div>
       </section>
+
+      <ScripturesSection />
 
       {/* What makes us different */}
       <section className="py-24 relative">

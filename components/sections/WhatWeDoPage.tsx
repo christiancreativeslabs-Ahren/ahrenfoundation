@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb, GlowButton } from "@/components/ui";
+import ScripturesSection from "@/components/ScripturesSection";
 import { WHAT_WE_DO } from "@/lib/data";
 import { ArrowRight } from "lucide-react";
 
@@ -165,6 +166,8 @@ export default function WhatWeDoPage() {
           </FadeUp>
         </div>
       </section>
+
+      <ScripturesSection />
 
       {/* CTA */}
       <section className="py-24 relative">
