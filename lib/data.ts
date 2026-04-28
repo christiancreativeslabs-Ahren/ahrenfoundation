@@ -142,6 +142,7 @@ export const NAV_LINKS = [
   { label: "About", href: "/about" },
   { label: "What We Do", href: "/what-we-do" },
   { label: "Projects", href: "/projects" },
+  { label: "Objectives", href: "/objectives" },
   { label: "Team", href: "/team" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },

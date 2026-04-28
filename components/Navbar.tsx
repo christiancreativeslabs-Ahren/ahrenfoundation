@@ -19,9 +19,10 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
+  // Split nav: left links + right CTA
+  const mainLinks = NAV_LINKS;
 
   return (
     <>
@@ -30,46 +31,40 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "glass-nav py-3" : "bg-transparent py-5"
+          scrolled ? "glass-nav py-2.5" : "bg-transparent py-4"
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <nav className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 2 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
+          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
+            <motion.div whileHover={{ scale: 1.05, rotate: 2 }} transition={{ type: "spring", stiffness: 400 }}>
               <Image
                 src="/assets/logo-icon-color.png"
                 alt="Ahren Foundation"
-                width={38}
-                height={38}
+                width={34}
+                height={34}
                 className="rounded-xl"
               />
             </motion.div>
             <div className="flex flex-col leading-none">
-              <span
-                className="font-display font-bold text-white text-[15px] tracking-tight"
-                style={{ fontFamily: "var(--font-display, Syne, sans-serif)" }}
-              >
+              <span className="font-display font-bold text-white text-[14px] tracking-tight" style={{ fontFamily: "var(--font-display, Syne, sans-serif)" }}>
                 Ahren Foundation
               </span>
-              <span className="text-[10px] grad-text font-semibold tracking-widest uppercase">
+              <span className="text-[9px] grad-text font-semibold tracking-widest uppercase hidden sm:block">
                 Faith · Tech · Purpose
               </span>
             </div>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map((link) => {
+          {/* Desktop nav — scrollable horizontally if needed */}
+          <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
+            {mainLinks.map((link) => {
               const active = pathname === link.href;
               return (
                 <Link key={link.href} href={link.href}>
                   <motion.span
                     whileHover={{ color: "#00c9ff" }}
-                    className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer block ${
+                    className={`relative px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-200 cursor-pointer block whitespace-nowrap ${
                       active ? "text-[#00c9ff]" : "text-[#8892b0]"
                     }`}
                     style={{ fontFamily: "var(--font-body)" }}
@@ -90,12 +85,12 @@ export default function Navbar() {
           </div>
 
           {/* CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center flex-shrink-0">
             <Link href="/join">
               <motion.button
-                whileHover={{ scale: 1.04, boxShadow: "0 0 30px rgba(0,201,255,0.35)" }}
+                whileHover={{ scale: 1.04, boxShadow: "0 0 28px rgba(0,201,255,0.35)" }}
                 whileTap={{ scale: 0.97 }}
-                className="grad-bg text-[#080d2e] font-bold text-sm px-6 py-2.5 rounded-full transition-all duration-200"
+                className="grad-bg text-[#080d2e] font-bold text-[13px] px-5 py-2.5 rounded-full transition-all duration-200"
               >
                 Join Us
               </motion.button>
@@ -104,7 +99,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden text-white p-2"
+            className="lg:hidden text-white p-2 flex-shrink-0"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -117,44 +112,56 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 glass-nav flex flex-col pt-24 px-6 pb-10 lg:hidden"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-40 flex flex-col pt-20 px-6 pb-10 lg:hidden overflow-y-auto"
+            style={{ background: "rgba(8,13,46,0.98)", backdropFilter: "blur(24px)" }}
           >
-            <div className="flex flex-col gap-2">
-              {NAV_LINKS.map((link, i) => (
+            <div className="flex flex-col gap-1 flex-1">
+              {mainLinks.map((link, i) => (
                 <motion.div
                   key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 }}
+                  transition={{ delay: i * 0.05 }}
                 >
                   <Link
                     href={link.href}
-                    className={`block py-4 text-xl font-semibold border-b border-[rgba(0,201,255,0.1)] transition-colors ${
-                      pathname === link.href ? "grad-text" : "text-[#8892b0]"
+                    className={`flex items-center justify-between py-4 text-lg font-semibold border-b transition-colors ${
+                      pathname === link.href ? "grad-text border-[rgba(0,201,255,0.2)]" : "text-[#8892b0] border-[rgba(0,201,255,0.06)]"
                     }`}
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {link.label}
+                    {pathname === link.href && (
+                      <span className="w-2 h-2 rounded-full grad-bg" />
+                    )}
                   </Link>
                 </motion.div>
               ))}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6"
-              >
-                <Link href="/join">
-                  <button className="grad-bg text-[#080d2e] font-bold text-base w-full py-4 rounded-2xl">
-                    Join the Community
-                  </button>
-                </Link>
-              </motion.div>
             </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: mainLinks.length * 0.05 + 0.1 }}
+              className="mt-8 space-y-3"
+            >
+              <Link href="/join">
+                <button className="grad-bg text-[#080d2e] font-bold text-base w-full py-4 rounded-2xl">
+                  Join the Community
+                </button>
+              </Link>
+              <Link href="/contact">
+                <button
+                  className="w-full py-4 rounded-2xl font-bold text-sm text-[#8892b0] transition-colors"
+                  style={{ border: "1px solid rgba(0,201,255,0.15)" }}
+                >
+                  Contact Us
+                </button>
+              </Link>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

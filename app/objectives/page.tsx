@@ -1,20 +1,20 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import TeamPage from "@/components/sections/TeamPage";
+import ObjectivesPage from "@/components/sections/ObjectivesPage";
 import PageTransition from "@/components/PageTransition";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Team — Ahren Foundation",
-  description: "Meet the executive team leading Ahren Foundation's mission to empower Kingdom innovators.",
+  title: "Objectives — Ahren Foundation",
+  description: "Eight Spirit-led objectives that define how we move from vision to Kingdom impact.",
 };
 
-export default function Team() {
+export default function Objectives() {
   return (
     <PageTransition>
       <>
         <Navbar />
-        <TeamPage />
+        <ObjectivesPage />
         <Footer />
       </>
     </PageTransition>

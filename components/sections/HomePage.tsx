@@ -2,11 +2,11 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles, Users, Zap, Globe2 } from "lucide-react";
 import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 import { STATS, WHAT_WE_DO, BLOGS } from "@/lib/data";
+import MarqueeTicker from "@/components/MarqueeTicker";
 
 function FloatingParticle({ delay = 0, size = 3, top = "20%", left = "10%" }) {
   return (
@@ -160,6 +160,9 @@ export default function HomePage() {
           style={{ background: "linear-gradient(90deg, transparent, rgba(0,201,255,0.3), transparent)" }}
         />
       </section>
+
+      {/* ── MARQUEE TICKER ── */}
+      <MarqueeTicker />
 
       {/* ── STATS ── */}
       <section
