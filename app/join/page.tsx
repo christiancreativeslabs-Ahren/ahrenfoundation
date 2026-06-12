@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Join — Ahren Foundation",
-  description: "Apply as a Creative Youth or become a Mentor with Ahren Foundation.",
+  description: "Apply for the Ahren Foundation 9-Week Youth Mentorship Program on Creativity, Tech Skills & God's Purpose.",
 };
 
 export default function Join() {

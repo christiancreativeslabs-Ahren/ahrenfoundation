@@ -18,7 +18,7 @@ export default function WhatWeDoPage() {
 
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp>
-            <SectionLabel>Programs & Initiatives</SectionLabel>
+            <SectionLabel>Our Initiatives</SectionLabel>
             <h1
               className="font-display text-white leading-[1.02] mb-6"
               style={{
@@ -192,8 +192,8 @@ export default function WhatWeDoPage() {
               <Link href="/join">
                 <GlowButton>Apply as Creative Youth <ArrowRight size={16} /></GlowButton>
               </Link>
-              <Link href="/join">
-                <GlowButton outline>Become a Mentor</GlowButton>
+              <Link href="/citireach">
+                <GlowButton outline>Join CitiReach</GlowButton>
               </Link>
             </div>
           </FadeUp>

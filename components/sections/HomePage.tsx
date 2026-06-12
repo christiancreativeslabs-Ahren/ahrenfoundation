@@ -8,6 +8,7 @@ import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, Gradient
 import { STATS, WHAT_WE_DO, BLOGS } from "@/lib/data";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import ScripturesSection from "@/components/ScripturesSection";
+import TechShowcase from "@/components/TechShowcase";
 
 function FloatingParticle({ delay = 0, size = 3, top = "20%", left = "10%" }) {
   return (
@@ -77,17 +78,17 @@ export default function HomePage() {
               letterSpacing: "-0.03em",
             }}
           >
-            <span className="text-white">Aligning </span>
-            <span className="grad-text">Tech & Creativity</span>
+            <span className="text-white">Tech, </span>
+            <span className="grad-text">Creativity</span>
             <br />
-            <span className="text-white">with </span>
+            <span className="text-white">&amp; </span>
             <span
-              className="text-white relative inline-block"
+              className="grad-text relative inline-block"
               style={{
                 textShadow: "0 0 80px rgba(0,201,255,0.3)",
               }}
             >
-              God&apos;s Purpose
+              Purpose
             </span>
           </motion.h1>
 
@@ -174,7 +175,7 @@ export default function HomePage() {
         <GradientOrb className="top-1/2 right-[-5%]" size={500} color="mint" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <FadeUp className="text-center mb-16">
-            <SectionLabel>Programs & Initiatives</SectionLabel>
+            <SectionLabel>Our Initiatives</SectionLabel>
             <h2
               className="font-display text-white leading-tight"
               style={{
@@ -187,11 +188,11 @@ export default function HomePage() {
               What We Do
             </h2>
             <p className="text-[#8892b0] mt-4 max-w-lg mx-auto text-base leading-relaxed">
-              Everything we do is designed to align tech skills and creativity with God&apos;s eternal purpose.
+              Four focused initiatives, all designed to align tech skills and creativity with God&apos;s eternal purpose.
             </p>
           </FadeUp>
 
-          <StaggerParent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <StaggerParent className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
             {WHAT_WE_DO.map((item, i) => (
               <StaggerChild key={i}>
                 <motion.div
@@ -405,6 +406,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <TechShowcase />
+
       {/* ── BLOG PREVIEW ── */}
       <section
         className="py-28 relative"
@@ -495,14 +498,14 @@ export default function HomePage() {
               <span className="grad-text">the Kingdom?</span>
             </h2>
             <p className="text-[#8892b0] text-lg max-w-lg mx-auto mb-12 leading-relaxed">
-              Whether you&apos;re a creative youth or a seasoned professional, there&apos;s a place for you in this movement.
+              Are you a creative, tech-inclined young believer ready to align your gifts with God&apos;s purpose? There&apos;s a place for you in this movement.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/join">
                 <GlowButton>Apply as Creative Youth <ArrowRight size={16} /></GlowButton>
               </Link>
-              <Link href="/join">
-                <GlowButton outline>Become a Mentor</GlowButton>
+              <Link href="/citireach">
+                <GlowButton outline>Join CitiReach</GlowButton>
               </Link>
             </div>
           </FadeUp>

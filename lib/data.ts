@@ -4,7 +4,7 @@ export const TEAM = [
     role: "IT Systems & Strategy",
     label: "Team Lead",
     photo: "/team/emmanuel-akin-williams.jpg",
-    bio: "Emmanuel leads in a key capacity within the platform. His heart is to see young believers use their tech skills to create valuable products that impact lives and reveal Jesus Christ to the world.",
+    bio: "Emmanuel is a Tech consultant with over a decade of experience. His passion is to see the lost saved, believers boldly preach the gospel, and young believers use their creativity, gifts, and tech skills to build products, services & platforms that impact lives and reveal Jesus Christ to the world.",
     featured: true,
   },
   {
@@ -27,54 +27,40 @@ export const TEAM = [
     name: "Joshua Akinyoade",
     role: "Fullstack Developer",
     label: "Team Lead",
-    photo: null,
-    bio: "Crafting quality code for Christ-centered digital experiences.",
-    featured: false,
+    photo: "/team/joshua-akinyoade.jpg",
+    bio: "Fullstack developer with a heart for the Kingdom, Joshua crafts quality, Christ-centered digital experiences that serve the Church and reveal Jesus to a digital generation.",
+    featured: true,
   },
 ];
 
 export const WHAT_WE_DO = [
   {
-    icon: "⚡",
-    title: "Free Seasonal Tech Workshops",
-    shortTitle: "Workshops",
-    color: "#00c9ff",
-    desc: "We run free seasonal tech workshops equipping youths with in-demand skills — practical, Spirit-led, and impact-focused. Every session bridges faith and technology in a hands-on learning environment accessible to all.",
-  },
-  {
     icon: "🧪",
-    title: "Christian Creatives Labs",
-    shortTitle: "CC Labs",
-    color: "#00ff9d",
-    desc: "CCLabs is our flagship collaborative space where young believers build Christ-centered tech solutions under mentorship — then launch real-world projects serving local churches, including faith-based apps for discipleship, ministry administration, community building, and global missions.",
+    title: "Christian Creatives Labs (CCLabs)",
+    shortTitle: "CCLabs",
+    color: "#00c9ff",
+    desc: "Our Faith-based Product Development Labs — a collaborative space where young believers build Christ-centered tech products under mentorship, then launch real-world solutions that serve local churches, missions, discipleship, and the wider Body of Christ.",
   },
   {
-    icon: "📱",
-    title: "Faith-Based Tech Products",
-    shortTitle: "Products",
-    color: "#00c9ff",
-    desc: "We develop and deploy digital tools that reveal Jesus and serve the Body of Christ. From discipleship platforms to ministry management systems, we build technology that carries the Kingdom from concept to global deployment.",
+    icon: "🌱",
+    title: "Youth Mentorship & Empowerment",
+    shortTitle: "Mentorship",
+    color: "#00ff9d",
+    desc: "Creativity & Tech Skills Alignment with God's Purpose — a Quarterly Cohort that walks young believers through discovering, sharpening, and consecrating their creativity and tech skills to build products that reveal Jesus Christ.",
   },
   {
     icon: "🤝",
     title: "Believers in Tech Fellowship",
     shortTitle: "Fellowship",
-    color: "#00ff9d",
-    desc: "Our Believers in Tech Fellowship is a vibrant community built around Fellowship, Fun, Creative Discussions, Networking, Collaboration, and so much more. This is where faith-driven technologists find genuine community, sharpen each other, and build Kingdom products together.",
-  },
-  {
-    icon: "🚀",
-    title: "Member Product Showcase",
-    shortTitle: "Showcase",
     color: "#00c9ff",
-    desc: "We actively showcase and promote our members' faith-based tech products to the wider body of Christ and beyond. If you've built something for the Kingdom, Ahren Foundation is the platform to amplify your work.",
+    desc: "Held twice a year — a vibrant gathering built around Worship, Tech Talk, Games, Networking and more. This is where faith-driven technologists find genuine community, are refreshed, sharpen one another, and build Kingdom products together.",
   },
   {
-    icon: "🌍",
-    title: "Mentorship & Collaboration",
-    shortTitle: "Mentorship",
+    icon: "📢",
+    title: "CitiReach — Street Gospel Initiative",
+    shortTitle: "CitiReach",
     color: "#00ff9d",
-    desc: "Connecting young believers with seasoned professionals committed to stewarding their expertise for God's glory. Through 1-on-1 mentorship and strategic partnerships, we accelerate growth and Kingdom impact across continents.",
+    desc: "Our Quarterly Edition street evangelism movement. United believers from different churches with one mission — boldly preaching Jesus Christ and revealing His love to people in every corner of the city, saving the lost and getting the unchurched churched.",
   },
 ];
 
@@ -91,7 +77,7 @@ export const BLOGS = [
   {
     id: 2,
     date: "March 28, 2026",
-    tag: "CC Labs",
+    tag: "CCLabs",
     title: "How Christian Creatives Labs Are Changing Communities",
     excerpt: "Inside the collaborative spaces where young believers are building Christ-centered apps for discipleship, ministry administration, and global missions.",
     readTime: "7 min read",
@@ -121,7 +107,7 @@ export const STATS = [
   { value: "7", label: "Continents" },
   { value: "50+", label: "Global Mentors" },
   { value: "20+", label: "Projects / Year" },
-  { value: "∞", label: "Kingdom Impact" },
+  { value: "\u221e", label: "Kingdom Impact" },
 ];
 
 export const EXPERTISE_OPTIONS = [
@@ -139,11 +125,11 @@ export const EXPERTISE_OPTIONS = [
 
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "About Us", href: "/about" },
   { label: "What We Do", href: "/what-we-do" },
   { label: "Projects", href: "/projects" },
-  { label: "Objectives", href: "/objectives" },
+  { label: "CitiReach", href: "/citireach" },
   { label: "Team", href: "/team" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact Us", href: "/contact" },
 ];

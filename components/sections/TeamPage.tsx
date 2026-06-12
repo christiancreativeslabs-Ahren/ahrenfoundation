@@ -156,11 +156,11 @@ export default function TeamPage() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Want to Partner <span className="grad-text">With Us?</span>
+              Want to be Part of <span className="grad-text">This Movement?</span>
             </h2>
             <p className="text-[#8892b0] text-lg mb-10 max-w-lg mx-auto leading-relaxed">
-              We&apos;re always looking for mentors, collaborators, and Kingdom-minded professionals
-              to join this movement.
+              Join a growing community of young believers using their creativity, gifts, and tech
+              skills to build for the Kingdom.
             </p>
             <a href="/join">
               <motion.button
@@ -168,7 +168,7 @@ export default function TeamPage() {
                 whileTap={{ scale: 0.97 }}
                 className="grad-bg text-[#080d2e] font-bold text-base px-10 py-4 rounded-full"
               >
-                Become a Mentor
+                Apply as Creative Youth
               </motion.button>
             </a>
           </FadeUp>
