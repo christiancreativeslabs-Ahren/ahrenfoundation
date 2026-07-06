@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Mail, Phone, Globe, CheckCircle2, Send } from "lucide-react";
+import { Mail, Phone, MapPin, CheckCircle2, Send } from "lucide-react";
 import { NAV_LINKS } from "@/lib/data";
 
 export default function Footer() {
@@ -163,10 +163,10 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4">
               {[
-                { icon: <Mail size={14} />, value: "ahrenfoundation@gmail.com", href: "mailto:ahrenfoundation@gmail.com" },
+                { icon: <Mail size={14} />, value: "hello@ahrenfoundation.org", href: "mailto:hello@ahrenfoundation.org" },
                 { icon: <Phone size={14} />, value: "+234 806 131 5942", href: "tel:+2348061315942" },
                 { icon: <Phone size={14} />, value: "+44 7762 496766", href: "tel:+447762496766" },
-                { icon: <Globe size={14} />, value: "Global · 7 Continents", href: null },
+                { icon: <MapPin size={14} />, value: "TMCG - 21 Karmo District Modern Market, Abuja", href: null },
               ].map((c, i) => (
                 <li key={i}>
                   {c.href ? (
@@ -193,8 +193,9 @@ export default function Footer() {
                 Our Projects
               </p>
               {[
-                { name: "WELLS", href: "https://wells.bolt.host/", color: "#00c9ff" },
-                { name: "PRAYNATIONS", href: "https://praynations.bolt.host/", color: "#00ff9d" },
+                { name: "YouWells", href: "https://youwells.lovable.app/", color: "#00c9ff" },
+                { name: "Bibeli", href: "https://bibeli.lovable.app/", color: "#a78bfa" },
+                { name: "PrayNations", href: "https://praynations.bolt.host/", color: "#00ff9d" },
               ].map((p) => (
                 <a
                   key={p.name}

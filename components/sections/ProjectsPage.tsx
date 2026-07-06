@@ -2,36 +2,63 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ExternalLink, Droplets, Globe2, ArrowUpRight, Sparkles, Layers } from "lucide-react";
+import { ExternalLink, Droplets, Globe2, ArrowUpRight, Sparkles, Layers, BookOpen } from "lucide-react";
 import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 
 const projects = [
   {
-    id: "wells",
-    name: "WELLS",
-    tagline: "Living Water, Digital Streams",
-    label: "Spiritual Resources Platform",
-    href: "https://wells.bolt.host/",
+    id: "youwells",
+    name: "YouWells",
+    tagline: "Wholeness for Spirit, Soul & Body",
+    label: "Faith & Wellness Platform",
+    href: "https://youwells.lovable.app/",
     status: "Prototype",
     color: "#00c9ff",
     colorAlt: "#0ea5e9",
     icon: <Droplets size={28} />,
     emoji: "💧",
     description:
-      "WELLS is a faith-driven platform designed to provide believers with curated spiritual resources, devotionals, and community-driven content — a digital wellspring for those thirsting for deeper connection with God.",
+      "YouWells is a faith-driven wellness platform designed to help believers thrive in spirit, soul, and body — a digital wellspring for those pursuing wholeness and a deeper connection with God.",
     longDesc:
-      "Inspired by John 4:14 — 'But whoever drinks the water I give them will never thirst' — WELLS is being built as the go-to digital destination for believers who want to grow deeper in God. From curated devotionals and Spirit-led resources to community-driven content and worship tools, WELLS is designed to be a living, breathing stream of Kingdom content.",
+      "Inspired by John 4:14 — 'Whoever drinks the water I give them will never thirst' — YouWells is being built as a digital destination for believers who want to grow deeper in God while pursuing holistic wellbeing. From curated devotionals and Spirit-led resources to wellness tools and community-driven content, YouWells is designed to be a living, breathing stream of Kingdom content.",
     features: [
       "Curated daily devotionals",
-      "Spirit-led spiritual resources",
+      "Spirit-led wellness resources",
       "Community-driven content",
-      "Deeper connection with God",
+      "Wholeness in spirit, soul & body",
     ],
     scripture: "John 4:14",
     scriptureText: "Whoever drinks the water I give them will never thirst.",
     gradient: "from-[#0ea5e9] to-[#00c9ff]",
     bgGlow: "rgba(0,201,255,0.07)",
     borderAccent: "rgba(0,201,255,0.3)",
+  },
+  {
+    id: "bibeli",
+    name: "Bibeli",
+    tagline: "The Word, Reimagined",
+    label: "Bible & Discipleship App",
+    href: "https://bibeli.lovable.app/",
+    status: "Prototype",
+    color: "#a78bfa",
+    colorAlt: "#7c3aed",
+    icon: <BookOpen size={28} />,
+    emoji: "📖",
+    description:
+      "Bibeli is a Bible and discipleship platform crafted to help believers engage Scripture deeply — reading, studying, and growing in the Word of God through a beautiful, modern experience.",
+    longDesc:
+      "Bibeli reimagines how believers engage with Scripture. Built to make the Word accessible, immersive, and deeply personal, Bibeli combines reading plans, study tools, and discipleship pathways to help every believer grow in the knowledge of God. From daily reading to deep study, Bibeli is a companion for the journey of faith.",
+    features: [
+      "Immersive Bible reading experience",
+      "Study tools & reading plans",
+      "Discipleship pathways",
+      "Grow deeper in the Word",
+    ],
+    scripture: "Psalm 119:105",
+    scriptureText: "Thy word is a lamp unto my feet, and a light unto my path.",
+    gradient: "from-[#7c3aed] to-[#a78bfa]",
+    bgGlow: "rgba(167,139,250,0.08)",
+    borderAccent: "rgba(167,139,250,0.3)",
   },
   {
     id: "praynations",
@@ -395,7 +422,7 @@ export default function ProjectsPage() {
               are in development — built by Spirit-led innovators from our community.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/what-we-do">
+              <Link href="/about">
                 <motion.button
                   whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(0,201,255,0.35)" }}
                   whileTap={{ scale: 0.97 }}

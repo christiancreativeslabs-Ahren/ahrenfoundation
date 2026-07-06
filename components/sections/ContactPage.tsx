@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, Globe, CheckCircle2, MessageSquare, Send } from "lucide-react";
+import { Mail, Phone, Globe, CheckCircle2, MessageSquare, Send, MapPin } from "lucide-react";
 import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 
 const inputCls =
@@ -26,32 +26,40 @@ function FieldGroup({ label, required, children }: { label: string; required?: b
 const contacts = [
   {
     icon: <Mail size={18} />,
-    label: "Email",
-    value: "ahrenfoundation@gmail.com",
-    href: "mailto:ahrenfoundation@gmail.com",
+    label: "General Email",
+    value: "hello@ahrenfoundation.org",
+    href: "mailto:hello@ahrenfoundation.org",
     color: "#00c9ff",
+  },
+  {
+    icon: <MapPin size={18} />,
+    label: "Address",
+    value: "TMCG - 21 Karmo District Modern Market, Abuja",
+    href: null,
+    color: "#00ff9d",
   },
   {
     icon: <Phone size={18} />,
     label: "Nigeria",
     value: "+234 806 131 5942",
     href: "tel:+2348061315942",
-    color: "#00ff9d",
+    color: "#00c9ff",
   },
   {
     icon: <Phone size={18} />,
     label: "United Kingdom",
     value: "+44 7762 496766",
     href: "tel:+447762496766",
-    color: "#00c9ff",
-  },
-  {
-    icon: <Globe size={18} />,
-    label: "Reach",
-    value: "Global · 7 Continents",
-    href: null,
     color: "#00ff9d",
   },
+];
+
+const departmentEmails = [
+  { label: "General Enquiries", email: "hello@ahrenfoundation.org" },
+  { label: "Mentorship", email: "mentors@ahrenfoundation.org" },
+  { label: "Projects", email: "projects@ahrenfoundation.org" },
+  { label: "Partnerships", email: "partners@ahrenfoundation.org" },
+  { label: "Williams (Founder)", email: "williams@ahrenfoundation.org" },
 ];
 
 export default function ContactPage() {
@@ -167,9 +175,35 @@ export default function ContactPage() {
                     Ahren Foundation
                   </h4>
                   <p className="text-[#8892b0] text-sm leading-relaxed">
-                    Empowering youths for societal impact and purposeful living through tech
-                    programs, mentorship, and strategic collaborations — to the glory of God.
+                    A youth development platform where Christian creatives find purpose,
+                    community, and opportunity — building a global network of believers in tech
+                    for the glory of God.
                   </p>
+                </div>
+
+                {/* Department emails */}
+                <div className="mt-6">
+                  <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-4">
+                    Direct Departments
+                  </div>
+                  <div className="space-y-2">
+                    {departmentEmails.map((d, i) => (
+                      <a
+                        key={i}
+                        href={`mailto:${d.email}`}
+                        className="flex items-center justify-between gap-3 p-3.5 rounded-xl transition-all duration-200 group"
+                        style={{ background: "#111850", border: "1px solid rgba(0,201,255,0.08)" }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Mail size={14} className="text-[#00ff9d] flex-shrink-0" />
+                          <span className="text-[#8892b0] text-xs">{d.label}</span>
+                        </div>
+                        <span className="text-white text-xs font-semibold group-hover:grad-text transition-all">
+                          {d.email}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </FadeUp>

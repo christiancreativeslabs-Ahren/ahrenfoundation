@@ -4,29 +4,29 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { FadeUp, SectionLabel } from "@/components/ui";
 
-// Curated Unsplash images — diverse people in tech, coding, collaboration, creativity
+// Curated Unsplash images — African / Black believers in tech, coding, collaboration, creativity
 const IMAGES = [
   {
-    src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
-    alt: "Team collaborating on technology",
+    src: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80",
+    alt: "African professional working in tech",
     span: "lg:col-span-2 lg:row-span-2",
     label: "Collaboration",
   },
   {
-    src: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80",
-    alt: "Writing code on a laptop",
+    src: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=600&q=80",
+    alt: "African developer coding",
     span: "",
     label: "Building",
   },
   {
-    src: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80",
-    alt: "Creative team working together",
+    src: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80",
+    alt: "African creative team working together",
     span: "",
     label: "Creativity",
   },
   {
-    src: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80",
-    alt: "Developers working as a team",
+    src: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80",
+    alt: "Diverse African team collaborating",
     span: "lg:col-span-2",
     label: "Community",
   },

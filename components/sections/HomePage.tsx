@@ -100,9 +100,8 @@ export default function HomePage() {
             className="text-[#8892b0] max-w-2xl mx-auto leading-relaxed mb-12 text-balance"
             style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
           >
-            Partnering with the Holy Spirit to create value that impacts lives and reveals
-            Jesus Christ — from mission fields to marketplaces, from code to creativity,
-            building a global network of believers in tech.
+            A Youth Development platform, where Christian creatives find purpose,
+            community, and opportunity.
           </motion.p>
 
           {/* CTAs */}
@@ -117,7 +116,7 @@ export default function HomePage() {
                 Join the Community <ArrowRight size={16} />
               </GlowButton>
             </Link>
-            <Link href="/what-we-do">
+            <Link href="/about">
               <GlowButton outline>
                 Discover What We Do
               </GlowButton>
@@ -225,8 +224,8 @@ export default function HomePage() {
           </StaggerParent>
 
           <FadeUp className="text-center mt-12">
-            <Link href="/what-we-do">
-              <GlowButton outline>See All Programs</GlowButton>
+            <Link href="/about">
+              <GlowButton outline>Learn More About Us</GlowButton>
             </Link>
           </FadeUp>
         </div>

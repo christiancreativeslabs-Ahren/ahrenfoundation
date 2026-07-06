@@ -126,7 +126,6 @@ export const EXPERTISE_OPTIONS = [
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
-  { label: "What We Do", href: "/what-we-do" },
   { label: "Projects", href: "/projects" },
   { label: "CitiReach", href: "/citireach" },
   { label: "Team", href: "/team" },

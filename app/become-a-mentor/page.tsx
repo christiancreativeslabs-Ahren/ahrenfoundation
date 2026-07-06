@@ -1,20 +1,21 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import WhatWeDoPage from "@/components/sections/WhatWeDoPage";
+import BecomeMentorPage from "@/components/sections/BecomeMentorPage";
 import PageTransition from "@/components/PageTransition";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "What We Do — Ahren Foundation",
-  description: "Free tech workshops, CCLabs, fellowship, mentorship and more — all powered by faith and purpose.",
+  title: "Become a Mentor — Ahren Foundation",
+  description: "Mentor young Christian creatives. Your skills. Their future. Kingdom impact.",
+  robots: { index: false, follow: false },
 };
 
-export default function WhatWeDo() {
+export default function BecomeMentor() {
   return (
     <PageTransition>
       <>
         <Navbar />
-        <WhatWeDoPage />
+        <BecomeMentorPage />
         <Footer />
       </>
     </PageTransition>
