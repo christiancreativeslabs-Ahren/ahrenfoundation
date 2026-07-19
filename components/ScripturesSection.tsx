@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
-import { FadeUp, StaggerParent, StaggerChild } from "@/components/ui";
+import { FadeUp, StaggerParent, StaggerChild } from "@/components/ui/custom";
 
 const SCRIPTURES = [
   {
@@ -36,7 +36,8 @@ export default function ScripturesSection() {
     <section
       className="py-24 relative overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, #080d2e 0%, #0a1035 50%, #080d2e 100%)",
+        background:
+          "linear-gradient(180deg, #080d2e 0%, #0a1035 50%, #080d2e 100%)",
         borderTop: "1px solid rgba(0,201,255,0.08)",
         borderBottom: "1px solid rgba(0,201,255,0.08)",
       }}
@@ -45,14 +46,18 @@ export default function ScripturesSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: "radial-gradient(rgba(0,201,255,0.07) 1px, transparent 1px)",
+          backgroundImage:
+            "radial-gradient(rgba(0,201,255,0.07) 1px, transparent 1px)",
           backgroundSize: "30px 30px",
         }}
       />
       {/* Centre glow */}
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-[100px] pointer-events-none"
-        style={{ background: "radial-gradient(ellipse, rgba(0,201,255,0.05) 0%, transparent 70%)" }}
+        style={{
+          background:
+            "radial-gradient(ellipse, rgba(0,201,255,0.05) 0%, transparent 70%)",
+        }}
       />
 
       <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -71,12 +76,11 @@ export default function ScripturesSection() {
               letterSpacing: "-0.02em",
             }}
           >
-            The Scriptures We{" "}
-            <span className="grad-text">Stand On</span>
+            The Scriptures We <span className="grad-text">Stand On</span>
           </h2>
           <p className="text-[#8892b0] text-sm max-w-md mx-auto leading-relaxed">
-            Our foundation is not just tech — it is the Word of God. These scriptures anchor
-            everything we build, teach, and create.
+            Our foundation is not just tech — it is the Word of God. These
+            scriptures anchor everything we build, teach, and create.
           </p>
         </FadeUp>
 
@@ -94,7 +98,9 @@ export default function ScripturesSection() {
                 {/* Left accent bar */}
                 <div
                   className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-2xl"
-                  style={{ background: `linear-gradient(to bottom, ${s.color}, transparent)` }}
+                  style={{
+                    background: `linear-gradient(to bottom, ${s.color}, transparent)`,
+                  }}
                 />
 
                 {/* Theme pill */}

@@ -2,8 +2,21 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ExternalLink, Droplets, Globe2, ArrowUpRight, Sparkles, Layers } from "lucide-react";
-import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
+import {
+  ExternalLink,
+  Droplets,
+  Globe2,
+  ArrowUpRight,
+  Sparkles,
+  Layers,
+} from "lucide-react";
+import {
+  SectionLabel,
+  FadeUp,
+  StaggerParent,
+  StaggerChild,
+  GradientOrb,
+} from "@/components/ui/custom";
 
 const projects = [
   {
@@ -55,14 +68,21 @@ const projects = [
       "Nations-focused prayer strategy",
     ],
     scripture: "1 Timothy 2:1",
-    scriptureText: "I urge that petitions, prayers, intercession... be made for all people.",
+    scriptureText:
+      "I urge that petitions, prayers, intercession... be made for all people.",
     gradient: "from-[#10b981] to-[#00ff9d]",
     bgGlow: "rgba(0,255,157,0.07)",
     borderAccent: "rgba(0,255,157,0.3)",
   },
 ];
 
-function ProjectCard({ project, index }: { project: (typeof projects)[0]; index: number }) {
+function ProjectCard({
+  project,
+  index,
+}: {
+  project: (typeof projects)[0];
+  index: number;
+}) {
   const isEven = index % 2 === 0;
 
   return (
@@ -70,7 +90,11 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.9, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.9,
+        delay: index * 0.15,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className="relative"
     >
       {/* Glow orb behind card */}
@@ -89,10 +113,14 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
         {/* Top accent bar */}
         <div
           className="h-1 w-full"
-          style={{ background: `linear-gradient(90deg, ${project.color}, ${project.colorAlt})` }}
+          style={{
+            background: `linear-gradient(90deg, ${project.color}, ${project.colorAlt})`,
+          }}
         />
 
-        <div className={`grid lg:grid-cols-2 gap-0 ${!isEven ? "lg:grid-flow-dense" : ""}`}>
+        <div
+          className={`grid lg:grid-cols-2 gap-0 ${!isEven ? "lg:grid-flow-dense" : ""}`}
+        >
           {/* Visual side */}
           <div
             className={`relative flex items-center justify-center min-h-[380px] overflow-hidden ${!isEven ? "lg:col-start-2" : ""}`}
@@ -107,7 +135,12 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
               <motion.div
                 key={ring}
                 animate={{ scale: [1, 1.08, 1], opacity: [0.15, 0.06, 0.15] }}
-                transition={{ duration: 4 + ring, repeat: Infinity, delay: ring * 0.8, ease: "easeInOut" }}
+                transition={{
+                  duration: 4 + ring,
+                  repeat: Infinity,
+                  delay: ring * 0.8,
+                  ease: "easeInOut",
+                }}
                 className="absolute rounded-full border"
                 style={{
                   width: 120 + ring * 90,
@@ -121,7 +154,11 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
             <div className="relative z-10 text-center">
               <motion.div
                 animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="inline-flex items-center justify-center w-28 h-28 rounded-3xl mb-6"
                 style={{
                   background: `linear-gradient(135deg, ${project.color}20, ${project.colorAlt}15)`,
@@ -167,14 +204,19 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
 
             {/* Scripture watermark */}
             <div className="absolute bottom-5 left-0 right-0 text-center">
-              <p className="text-[10px] italic opacity-30" style={{ color: project.color }}>
+              <p
+                className="text-[10px] italic opacity-30"
+                style={{ color: project.color }}
+              >
                 {project.scripture}
               </p>
             </div>
           </div>
 
           {/* Content side */}
-          <div className={`p-10 lg:p-12 flex flex-col justify-center ${!isEven ? "lg:col-start-1 lg:row-start-1" : ""}`}>
+          <div
+            className={`p-10 lg:p-12 flex flex-col justify-center ${!isEven ? "lg:col-start-1 lg:row-start-1" : ""}`}
+          >
             {/* Label */}
             <div className="flex items-center gap-3 mb-5">
               <span
@@ -196,7 +238,10 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
             {/* Name */}
             <h3
               className="text-white text-4xl font-black mb-3 tracking-tight"
-              style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}
+              style={{
+                fontFamily: "var(--font-display)",
+                letterSpacing: "-0.03em",
+              }}
             >
               {project.name}
             </h3>
@@ -226,7 +271,10 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
                     className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
                     style={{ background: project.color + "20" }}
                   >
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: project.color }} />
+                    <div
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ background: project.color }}
+                    />
                   </div>
                   <span className="text-[#e8eeff] text-sm">{f}</span>
                 </li>
@@ -236,16 +284,24 @@ function ProjectCard({ project, index }: { project: (typeof projects)[0]; index:
             {/* Scripture */}
             <div
               className="p-4 rounded-2xl mb-8 relative overflow-hidden"
-              style={{ background: project.color + "08", border: `1px solid ${project.color}18` }}
+              style={{
+                background: project.color + "08",
+                border: `1px solid ${project.color}18`,
+              }}
             >
               <div
                 className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-full"
-                style={{ background: `linear-gradient(to bottom, ${project.color}, ${project.colorAlt})` }}
+                style={{
+                  background: `linear-gradient(to bottom, ${project.color}, ${project.colorAlt})`,
+                }}
               />
               <p className="text-[#8892b0] text-xs italic leading-relaxed pl-3">
                 &ldquo;{project.scriptureText}&rdquo;
               </p>
-              <p className="text-xs font-bold pl-3 mt-1" style={{ color: project.color }}>
+              <p
+                className="text-xs font-bold pl-3 mt-1"
+                style={{ color: project.color }}
+              >
                 — {project.scripture}
               </p>
             </div>
@@ -283,8 +339,16 @@ export default function ProjectsPage() {
       {/* ── HEADER ── */}
       <section className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-40" />
-        <GradientOrb className="top-[-15%] left-[-5%]" size={700} color="cyan" />
-        <GradientOrb className="top-[10%] right-[-5%]" size={500} color="mint" />
+        <GradientOrb
+          className="top-[-15%] left-[-5%]"
+          size={700}
+          color="cyan"
+        />
+        <GradientOrb
+          className="top-[10%] right-[-5%]"
+          size={500}
+          color="mint"
+        />
 
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp>
@@ -298,8 +362,7 @@ export default function ProjectsPage() {
                 letterSpacing: "-0.03em",
               }}
             >
-              Building for the{" "}
-              <span className="grad-text">Kingdom</span>
+              Building for the <span className="grad-text">Kingdom</span>
             </h1>
           </FadeUp>
           <FadeUp delay={0.15}>
@@ -307,9 +370,9 @@ export default function ProjectsPage() {
               className="text-[#8892b0] leading-relaxed max-w-2xl"
               style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
             >
-              Digital tools and platforms crafted at the intersection of faith and technology —
-              born in our Christian Creatives Labs, built by Spirit-led innovators, and launched
-              for eternal Kingdom impact.
+              Digital tools and platforms crafted at the intersection of faith
+              and technology — born in our Christian Creatives Labs, built by
+              Spirit-led innovators, and launched for eternal Kingdom impact.
             </p>
           </FadeUp>
         </div>
@@ -318,14 +381,30 @@ export default function ProjectsPage() {
       {/* ── INTRO STRIP ── */}
       <section
         className="py-10 relative"
-        style={{ borderTop: "1px solid rgba(0,201,255,0.08)", borderBottom: "1px solid rgba(0,201,255,0.08)", background: "rgba(17,24,80,0.3)" }}
+        style={{
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+          borderBottom: "1px solid rgba(0,201,255,0.08)",
+          background: "rgba(17,24,80,0.3)",
+        }}
       >
         <div className="max-w-7xl mx-auto px-6">
           <StaggerParent className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
-              { icon: <Sparkles size={18} />, label: "Spirit-Led", desc: "Every project is prayed over before the first line of code" },
-              { icon: <Layers size={18} />, label: "CCLabs Built", desc: "Developed inside our Christian Creatives Labs community" },
-              { icon: <Globe2 size={18} />, label: "Kingdom Impact", desc: "Designed to advance the Great Commission globally" },
+              {
+                icon: <Sparkles size={18} />,
+                label: "Spirit-Led",
+                desc: "Every project is prayed over before the first line of code",
+              },
+              {
+                icon: <Layers size={18} />,
+                label: "CCLabs Built",
+                desc: "Developed inside our Christian Creatives Labs community",
+              },
+              {
+                icon: <Globe2 size={18} />,
+                label: "Kingdom Impact",
+                desc: "Designed to advance the Great Commission globally",
+              },
             ].map((item, i) => (
               <StaggerChild key={i}>
                 <div className="flex flex-col items-center gap-2">
@@ -341,7 +420,9 @@ export default function ProjectsPage() {
                   >
                     {item.label}
                   </span>
-                  <span className="text-[#8892b0] text-xs leading-relaxed max-w-[200px]">{item.desc}</span>
+                  <span className="text-[#8892b0] text-xs leading-relaxed max-w-[200px]">
+                    {item.desc}
+                  </span>
                 </div>
               </StaggerChild>
             ))}
@@ -351,8 +432,16 @@ export default function ProjectsPage() {
 
       {/* ── PROJECT CARDS ── */}
       <section className="py-24 relative">
-        <GradientOrb className="left-[-10%] top-[20%]" size={600} color="cyan" />
-        <GradientOrb className="right-[-10%] top-[60%]" size={600} color="mint" />
+        <GradientOrb
+          className="left-[-10%] top-[20%]"
+          size={600}
+          color="cyan"
+        />
+        <GradientOrb
+          className="right-[-10%] top-[60%]"
+          size={600}
+          color="mint"
+        />
 
         <div className="max-w-6xl mx-auto px-6 relative z-10 space-y-16">
           {projects.map((project, i) => (
@@ -364,14 +453,24 @@ export default function ProjectsPage() {
       {/* ── MORE COMING SOON ── */}
       <section
         className="py-24 relative overflow-hidden"
-        style={{ borderTop: "1px solid rgba(0,201,255,0.08)", background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)" }}
+        style={{
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+          background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)",
+        }}
       >
-        <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={700} color="cyan" />
+        <GradientOrb
+          className="left-1/2 -translate-x-1/2 top-0"
+          size={700}
+          color="cyan"
+        />
         <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
           <FadeUp>
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-8"
-              style={{ background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.2)" }}
+              style={{
+                background: "rgba(0,201,255,0.08)",
+                border: "1px solid rgba(0,201,255,0.2)",
+              }}
             >
               <span className="w-2 h-2 rounded-full grad-bg animate-pulse" />
               <span className="text-[#00c9ff] text-xs font-bold tracking-widest uppercase">
@@ -391,13 +490,17 @@ export default function ProjectsPage() {
               <span className="grad-text">Built Right Now</span>
             </h2>
             <p className="text-[#8892b0] text-lg max-w-lg mx-auto mb-12 leading-relaxed">
-              Our Christian Creatives Labs are always working. More faith-based tech products
-              are in development — built by Spirit-led innovators from our community.
+              Our Christian Creatives Labs are always working. More faith-based
+              tech products are in development — built by Spirit-led innovators
+              from our community.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/what-we-do">
                 <motion.button
-                  whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(0,201,255,0.35)" }}
+                  whileHover={{
+                    scale: 1.04,
+                    boxShadow: "0 0 40px rgba(0,201,255,0.35)",
+                  }}
                   whileTap={{ scale: 0.97 }}
                   className="grad-bg text-[#080d2e] font-bold text-base px-8 py-4 rounded-full flex items-center gap-2"
                 >

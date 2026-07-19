@@ -1,0 +1,478 @@
+
+                     CREATIVE YOUTH USER JOURNEY – AHREN FOUNDATION                
+                                                                             
+  LANDING PAGE                                                               
+        │                                                                      
+       ▼                                                                      
+  CREATIVE YOUTH SIGN‑UP FORM 
+│       │                                                                  
+│       ▼                                                                     
+│  WELCOME EMAIL (Immediate)                                               
+│       │                                                                  
+│       ▼                                                                 
+│  WEEKLY EMAIL LESSONS (9 weeks) ────────► MONTHLY VIRTUAL SESSION      
+│       │                                      with assigned mentor        
+│       │                                      (3 months total)            
+│       ▼                                                                  
+│  COMPLETE 9 WEEKS                                                        
+│       │                                                                  
+│       ▼                                                                  
+│  CERTIFICATE OF COMPLETION (Email + Download)                            
+│       │                                                                  
+│       ▼                                                                  
+│  VERIFIED MEMBER STATUS GRANTED                                          
+│       │                                                                  
+│       ▼                                                                  
+│  LOGIN CREDENTIALS EMAILED                                               
+│       │                                                                  
+│       ▼                                                                  
+│  VERIFIED MEMBER DASHBOARD                                               
+│       │                                                                  
+│       ├──► Community Feed/Chat with other verified members in our community online                                        
+│       ├──► Resource Library   (Blog, Downloadable Books, Links, etc)                                           
+│       ├──► Incubation Program Access (In-view)                              
+│       ├──► Upcoming Events (meet‑ups, conference)                        
+│       ├──► Project Showcase (Showcase your project. Add info about your project)                                             
+│       ├──► Funding/Partnership Opportunities                           
+│       └──► Mentor Directory (limited access for advanced help)                          
+
+
+
+
+
+Step 1: Landing Page
+Step 2: Creative Youth Sign‑Up Form (Already on the Website)
+Step 3: Welcome Email (Immediate)
+Dear [Mentee Name],
+
+Thank you for joining Ahren Foundation!
+
+Here is what happens next:
+
+1. You will receive a weekly email lesson every Monday for 9 weeks.
+2. You have been assigned a mentor. They will contact you within 7 days to schedule your monthly virtual meeting (3 meetings total, one per month).
+3. Complete at least 7 of the 9 weekly assignments via our Google Classroom to receive your Certificate of Completion.
+4. After certification, you will become a Verified Member and receive login credentials to our exclusive online community.
+
+Your first weekly lesson will arrive next Monday.
+
+We are excited to walk with you.
+
+— Ahren Foundation Team
+
+
+Step 4: Weekly Email Lessons (9 Weeks)
+Automation Tool: MailerLite / Brevo / ConvertKit
+Schedule: Every Monday at 9am (mentee's local time zone preference)
+Email Template (each week):
+Element
+Content
+Subject
+Week [X] – [Topic Title]
+Header
+Ahren Foundation logo
+Bible Passage
+One key scripture (KJV)
+Bible Illustration
+Short story (Bezalel, David, Joseph, etc.)
+Simple Truth
+One paragraph
+Prayer
+Short prayer
+Assignment
+2–4 questions to answer (reply to email)
+Reminder
+Your monthly virtual session with your mentor is on [date].
+
+Assignment Reply Tracking: Mentees reply to the email. Their response is logged in the automation tool or a connected Google Sheet.
+Step 5: Monthly Virtual Session with Mentor
+Frequency: Once per month (3 sessions total over 3 months)
+Duration: 1 hour per session
+Platform: Zoom / Google Meet
+Session Structure:
+Time
+Activity
+0–10 min
+Check‑in: How are you? What has been hard?
+10–30 min
+Discuss the past month's weekly lessons
+30–50 min
+Help mentee refine their Kingdom project idea
+50–60 min
+Prayer and next steps
+
+Mentor Tool: A simple Google Sheet to track attendance and notes.
+
+Step 6: Certificate of Completion (End of Week 9)
+Trigger: Automated after the mentee completes ≥7 of 9 weekly assignments.
+Delivery Method: Email with PDF attachment.
+Certificate Content:
+
+
+AHREN FOUNDATION
+
+Certificate of Completion
+
+This certifies that [Mentee Name]
+
+has successfully completed the 9‑Week Kingdom Creativity Mentorship Program
+
+[Date]
+
+[Executive Director Signature]
+
+
+Email Subject: Congratulations! Your Ahren Foundation Certificate & Next Steps
+
+
+
+
+Step 7: Verified Member Status & Login Credentials
+For our verified members - AHREN CREATIVE 
+Trigger: After certificate is issued (automated or manual).
+Email Content:
+
+
+Dear [Mentee Name],
+
+Congratulations on completing the 9‑week mentorship!
+
+You are now a Verified Member of Ahren Foundation.
+
+Your dashboard login details:
+Website: https://community.ahrenfoundation.org/login
+Username: [email address]
+Password: [temporary password – change on first login]
+
+Inside your dashboard, you can:
+• Connect and chat with other verified members
+• Access our resource library (videos, templates, toolkits)
+• Join the Incubation Program to build your Kingdom project
+• Register for upcoming meet‑ups and the Annual Conference
+• Showcase your project for funding opportunities
+• Browse partnership opportunities
+
+Welcome to the inner circle Ahren Creative. We can't wait to see what you build.
+
+— Ahren Foundation Team
+
+
+
+
+
+
+
+
+
+ MENTOR JOURNEY (VISUAL OVERVIEW)
+
+                      MENTOR ONBOARDING FLOW – AHREN FOUNDATION              
+                                                                           
+│  LANDING PAGE (Become a Mentor)                                              
+│       │                                                                     
+│       ▼                                                                      
+│  SIGN-UP FORM                                                                
+│       │                                                                      
+│       ▼                                                                      
+│  WELCOME EMAIL (Immediate)                                                   
+│       │                                                                      
+│       ▼                                                                      
+│  APPLICATION REVIEW (5–7 business days)                                      
+│       │                                                                      
+│       ├───► (If rejected) Thank you email ───► Exit                          
+│       │                                                                      
+│       ▼ (If approved)                                                        
+│  EXECUTIVE VIRTUAL MEETING (30 Mins)                                          
+│       │                                                                      
+│       ▼                                                                      
+│  MENTOR AGREEMENT SIGNED (Digital)                                          
+│       │                                                                      
+│       ▼                                                                      
+│  MENTOR ORIENTATION (Self‑paced video + PDF)                                 
+│       │                                                                      
+│       ▼                                                                      
+│  MENTOR GETS ASSIGNED TO A YOUTH                                             
+│       │                                                                      
+│       ▼                                                                      
+│  FIRST MENTORSHIP SESSION (with assigned youth (s))                              
+│       │                                                                      
+│       ▼                                                                      
+│  POST‑ASSIGNMENT SCREENING (Feedback from youth + attendance check)          
+│       │                                                                      
+│       ▼                                                                      
+│  VERIFIED MENTOR STATUS GRANTED                                              
+│       │                                                                      
+│       ▼                                                                      
+│  LOGIN CREDENTIALS EMAILED (Community Dashboard)                             
+│       │                                                                      
+│       ▼                                                                      
+│  ACCESS TO:                                                                  
+│  • Mentor Resource Library                                                   
+│  • Mentor‑Only Chat Channel                                                  
+│  • Advanced Training Opportunities                                           
+│  • Paid / Subsidized Course Creation                    
+│  • All Ahren Events (Meet‑ups, Conference, etc)                    
+
+
+
+Step 1: Landing Page (Become a Mentor)
+URL: ahrenfoundation.org/become-a-mentor
+Key Sections:
+Section
+Content
+Hero
+"Your skills can shape a generation. Become an Ahren Mentor."
+Who We Need
+A Christian, Spirit‑filled creatives, entrepreneurs, product builders, passionate about making positive impact in the lives of youths   
+Commitment
+1hour/month for 3 Months (3 Hours in Total)
+Benefits
+Verified status, opportunities to invest in younger creatives, resource access, paid training opportunities, community and lots more
+Call‑to‑Action
+"Apply to Mentor →" button
+
+User Action: Clicks button → Redirects to Mentor Sign‑Up Form.
+ 
+
+
+
+Step 2: Mentor Sign‑Up Form
+URL: ahrenfoundation.org/mentor-apply
+Form Fields:
+Section
+Fields
+Personal
+Full Name, Email, Phone, Country/Continent
+Professional
+Profession/Industry, Years of Experience, Area(s) of Expertise (checkboxes)
+Mentorship Commitment
+Why mentor? Hours/month available, Preferred format (Virtual/In‑person/Both)
+Faith Background
+Born‑again? Holy Spirit baptism? Brief testimony, Church affiliation (optional)
+Agreement
+☐ I agree to the mentorship guidelines and commit to stewarding my time for God's glory.
+
+Submit Button: "Submit Application →"
+Post‑Submit: Show confirmation screen + trigger welcome email.
+
+
+MENTOR WELCOME EMAIL
+Subject: Welcome to Ahren Foundation – Your Mentor Application Has Been Received
+
+Email Body
+Dear [Mentor Name],
+Thank you for taking this step.
+Your application to become a mentor with Ahren Foundation has been received. We are truly honored that you are willing to share your skills, time, and heart with the next generation of young believers in tech and creativity.
+What happens next?
+Step
+What to Expect
+1. Review (5–7 business days)
+Our team will prayerfully review your application.
+2. Virtual Meeting (if shortlisted)
+We will contact you to schedule a 30 Minutes virtual meeting with our executive team.
+3. Orientation & Matching
+After the meeting, you will receive the Mentor Agreement, orientation materials, and be matched with a youth mentee.
+
+
+While you wait
+Read through our Mentor Guidelines (attached / linked below)
+Pray for the young person who will be assigned to you
+Think about your own journey — what would you have wanted a mentor to tell you when you were starting out?
+A word from our team
+"You are not just sharing skills. You are shaping a life. You are helping someone discover that their creativity and tech abilities have Kingdom purpose. That is eternal work."
+We are praying for you already.
+
+In Christ,
+The Ahren Foundation Team
+
+P.S. If you have any questions before we reach out, reply to this email. We would love to hear from you.
+
+ATTACHMENT
+Mentor Guidelines (PDF) – one page summary of expectations and commitment
+AUTOMATION SETUP NOTE
+Field
+Value
+
+
+
+
+Trigger
+Mentor application form submitted
+To
+[Mentor Email Address]
+From
+hello@ahrenfoundation.org
+Reply‑to
+hello@ahrenfoundation.org
+Attachment
+Mentor Guidelines PDF 
+
+
+AHREN FOUNDATION – MENTOR GUIDELINES
+Thank you for answering the call to shape a generation.
+OUR VISION
+A global network of believers in tech using their skills and creativity to build valuable products and services — creating value, impacting lives, and revealing Jesus Christ.
+
+YOUR ROLE AS A MENTOR
+You are not a technical teacher. You are not a career coach. You are:
+Role
+What It Means
+Encourager
+"You can do this. Your skills, gifts, and creativity have purpose."
+Question‑Asker
+"What did you learn this week? What was hard?"
+Story‑Teller
+Share your wins and failures — be real.
+Prayer Partner
+Pray with and for your mentee.
+Door‑Opener
+Introduce them to personal & professional development platforms/opportunities, introduce them to someone in your network (when appropriate).
+Accountability Partner
+"Did you do what you said you would do?"
+
+
+WHAT WE ASK OF YOU
+Commitment
+Detail
+Time
+1 hour per month for 3 months (9 weeks total)
+Weekly
+Read your mentee's weekly email reflection (5 min)
+Monthly
+One 60‑minute virtual session with your mentee
+Prayer
+Pray for your mentee regularly (weekly)
+Communication
+Respond to messages within 48 hours
+Feedback
+Complete a short post‑mentorship survey
+
+
+WHAT WE PROVIDE
+Resource
+Description
+Weekly modules
+9 pre‑written email lessons for your mentee
+Mentor guide
+This document + one‑page session checklist
+Attendance tracker
+Simple Google Sheet to log sessions
+Prayer support
+Mentor WhatsApp group for prayer requests
+Recognition
+Verified mentor badge, project showcase on our website, public thank‑you
+Paid opportunities
+First priority for subsidized advanced training (revenue share)
+
+
+CODE OF CONDUCT – THE GOLDEN RULES
+✅ Do's
+Do
+Why
+Be on time for meetings
+Respects your mentee's time
+Keep conversations confidential
+Builds trust
+Pray with your mentee
+Spiritual covering
+Use God’s word as your foundation for all discussions. Be honest about your own struggles
+Shows humility, encourages mentee
+Communicate if you need to reschedule
+Prevents frustration
+Report any concerns to Ahren leadership
+Safeguards everyone
+
+❌ Don'ts
+Don't
+Why
+Have private 1‑on‑1 meetings outside our approved platforms
+Safeguarding – use Google Meet or Zoom (recorded) or public space
+Share your mentee's personal information
+Confidentiality
+Pressure your mentee spiritually
+Guide, don't force
+Use the relationship for personal gain (sales, recruiting)
+Exploitation
+Disappear without notice
+Let Ahren know if you need to pause or stop
+
+
+THE 9‑WEEK MENTORSHIP STRUCTURE
+Month
+Weekly Emails (Mentee receives)
+Monthly Virtual Session (You lead)
+Month 1
+Weeks 1–3
+Session 1: Purpose & Holy Spirit
+Month 2
+Weeks 4–6
+Session 2: Character & Skills
+Month 3
+Weeks 7–9
+Session 3: Project & Commissioning
+
+Each monthly session should include:
+Check‑in (10 min)
+Discuss the month's lessons (20 min)
+Help refine mentee's Kingdom project (20 min)
+Prayer and next steps (10 min)
+WHAT IS A "KINGDOM PROJECT"?
+A project built by the mentee that:
+Reveals Jesus Christ
+Serves people, the local church or missions
+Solves a real problem with tech or creativity
+Examples: A discipleship app, a church website, a faith‑based social media page, a video series for youth fellowship, a tool for missionaries.
+Your job is not to build it for them. Your job is to ask questions, encourage, and help them clarify the vision.
+
+SAFEGUARDING – OUR NON‑NEGOTIABLE RULE
+Never be alone with a mentee in a private, unrecorded setting.
+Acceptable
+Not Acceptable
+Zoom / Google Meet (with recording on)
+Private WhatsApp video call (unrecorded)
+Public space / church hall
+Your home or mentee's home (without others present)
+Group setting with other mentors/youths
+Late‑night private messaging
+
+If you ever feel uncomfortable, report immediately to Ahren leadership. No question is too small.
+
+WHAT TO DO IF...
+Situation
+Action
+Mentee misses a session
+Send a gentle reminder. Log as absent.
+Mentee shares something concerning (depression, abuse, etc.)
+Counsel as led by the Spirit of God. Notify  Ahren leadership within 24 hours.
+You cannot continue mentoring
+Notify Ahren immediately. We will reassign the mentee.
+You have a great idea to organize for a paid course or training for our mentees.
+Pitch it to us at the leadership level. Revenue split: 70% you / 30% Ahren.
+
+
+AFTER YOUR FIRST 9 WEEKS
+If you complete the cycle successfully
+You become a Verified Mentor and receive:
+✅
+Verified badge
+✅
+Login to Ahren community dashboard
+✅
+Access to mentor resource library
+✅
+Priority for free or paid training opportunities
+✅
+Invitations to all Ahren meet-ups and events
+
+
+OUR PRAYER FOR YOU
+Dear Lord Jesus Christ, thank You for this mentor. Stir up your wisdom, patience, creativity and love within them. Use their skills, creativity and testimony to shape a young person's divine purpose. Protect them and their mentee. In Jesus' name, Amen.
+
+SIGN OFF
+By continuing as an Ahren mentor, you agree to:
+Follow these guidelines
+Complete any 9‑week commitment when available (or notify us if unable)
+Represent Ahren Foundation with excellence and integrity
+Welcome to the team. Let's build something eternal.
+— Ahren Foundation Team
+

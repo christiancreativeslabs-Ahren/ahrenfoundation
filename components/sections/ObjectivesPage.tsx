@@ -2,8 +2,24 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Target, Flame, Cpu, Users2, BookOpen, Globe2, Rocket } from "lucide-react";
-import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb, GlowButton } from "@/components/ui";
+import {
+  ArrowRight,
+  Target,
+  Flame,
+  Cpu,
+  Users2,
+  BookOpen,
+  Globe2,
+  Rocket,
+} from "lucide-react";
+import {
+  SectionLabel,
+  FadeUp,
+  StaggerParent,
+  StaggerChild,
+  GradientOrb,
+  GlowButton,
+} from "@/components/ui/custom";
 
 const objectives = [
   {
@@ -70,7 +86,11 @@ export default function ObjectivesPage() {
       {/* ── HEADER ── */}
       <section className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-40" />
-        <GradientOrb className="top-[-15%] right-[-5%]" size={700} color="mint" />
+        <GradientOrb
+          className="top-[-15%] right-[-5%]"
+          size={700}
+          color="mint"
+        />
         <GradientOrb className="bottom-0 left-[-5%]" size={500} color="cyan" />
 
         <div className="max-w-5xl mx-auto px-6 relative z-10">
@@ -89,10 +109,13 @@ export default function ObjectivesPage() {
             </h1>
           </FadeUp>
           <FadeUp delay={0.15}>
-            <p className="text-[#8892b0] leading-relaxed max-w-2xl" style={{ fontSize: "clamp(16px, 2vw, 20px)" }}>
-              Eight clear, Spirit-led objectives that define how Ahren Foundation
-              moves from vision to Kingdom impact — one believer, one product,
-              one community at a time.
+            <p
+              className="text-[#8892b0] leading-relaxed max-w-2xl"
+              style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
+            >
+              Eight clear, Spirit-led objectives that define how Ahren
+              Foundation moves from vision to Kingdom impact — one believer, one
+              product, one community at a time.
             </p>
           </FadeUp>
         </div>
@@ -104,7 +127,11 @@ export default function ObjectivesPage() {
         style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
       >
         <GradientOrb className="left-[-5%] top-[30%]" size={500} color="cyan" />
-        <GradientOrb className="right-[-5%] top-[60%]" size={500} color="mint" />
+        <GradientOrb
+          className="right-[-5%] top-[60%]"
+          size={500}
+          color="mint"
+        />
 
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <StaggerParent className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -168,7 +195,9 @@ export default function ObjectivesPage() {
                     initial={{ width: "0%" }}
                     whileHover={{ width: "100%" }}
                     transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ background: `linear-gradient(90deg, ${obj.color}, transparent)` }}
+                    style={{
+                      background: `linear-gradient(90deg, ${obj.color}, transparent)`,
+                    }}
                   />
                 </motion.div>
               </StaggerChild>
@@ -185,12 +214,19 @@ export default function ObjectivesPage() {
           borderTop: "1px solid rgba(0,201,255,0.08)",
         }}
       >
-        <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={700} color="cyan" />
+        <GradientOrb
+          className="left-1/2 -translate-x-1/2 top-0"
+          size={700}
+          color="cyan"
+        />
         <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
           <FadeUp>
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-8"
-              style={{ background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.2)" }}
+              style={{
+                background: "rgba(0,201,255,0.08)",
+                border: "1px solid rgba(0,201,255,0.2)",
+              }}
             >
               <Target size={13} className="text-[#00c9ff]" />
               <span className="text-[#00c9ff] text-xs font-bold tracking-widest uppercase">
@@ -210,9 +246,10 @@ export default function ObjectivesPage() {
               <span className="grad-text">one mission</span>
             </h2>
             <p className="text-[#8892b0] text-lg max-w-2xl mx-auto leading-relaxed mb-12">
-              To build a global community of believers in tech who are using their tech
-              skills, gifts, and creativity in line with God&apos;s plans and purposes on
-              earth — revealing Jesus Christ to every nation, tribe, and tongue.
+              To build a global community of believers in tech who are using
+              their tech skills, gifts, and creativity in line with God&apos;s
+              plans and purposes on earth — revealing Jesus Christ to every
+              nation, tribe, and tongue.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link href="/join">
@@ -221,9 +258,7 @@ export default function ObjectivesPage() {
                 </GlowButton>
               </Link>
               <Link href="/what-we-do">
-                <GlowButton outline>
-                  See How We Work
-                </GlowButton>
+                <GlowButton outline>See How We Work</GlowButton>
               </Link>
             </div>
           </FadeUp>

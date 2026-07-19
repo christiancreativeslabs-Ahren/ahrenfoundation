@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { NAV_LINKS } from "@/lib/data";
+import AuthActions from "@/components/auth/auth-actions";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -86,15 +87,7 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center flex-shrink-0">
-            <Link href="/join">
-              <motion.button
-                whileHover={{ scale: 1.04, boxShadow: "0 0 28px rgba(0,201,255,0.35)" }}
-                whileTap={{ scale: 0.97 }}
-                className="grad-bg text-[#080d2e] font-bold text-[13px] px-5 py-2.5 rounded-full transition-all duration-200"
-              >
-                Join Us
-              </motion.button>
-            </Link>
+            <AuthActions />
           </div>
 
           {/* Mobile hamburger */}
@@ -148,11 +141,7 @@ export default function Navbar() {
               transition={{ delay: mainLinks.length * 0.05 + 0.1 }}
               className="mt-8 space-y-3"
             >
-              <Link href="/join">
-                <button className="grad-bg text-[#080d2e] font-bold text-base w-full py-4 rounded-2xl">
-                  Join the Community
-                </button>
-              </Link>
+              <AuthActions mobile />
               <Link href="/contact">
                 <button
                   className="w-full py-4 rounded-2xl font-bold text-sm text-[#8892b0] transition-colors"

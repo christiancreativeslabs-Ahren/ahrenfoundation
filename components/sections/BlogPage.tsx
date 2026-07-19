@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, User, Tag } from "lucide-react";
-import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
+import {
+  SectionLabel,
+  FadeUp,
+  StaggerParent,
+  StaggerChild,
+  GradientOrb,
+} from "@/components/ui/custom";
 import { BLOGS } from "@/lib/data";
 
 type Blog = (typeof BLOGS)[0];
@@ -16,7 +22,10 @@ function BlogModal({ post, onClose }: { post: Blog; onClose: () => void }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-6"
-        style={{ background: "rgba(8,13,46,0.92)", backdropFilter: "blur(20px)" }}
+        style={{
+          background: "rgba(8,13,46,0.92)",
+          backdropFilter: "blur(20px)",
+        }}
         onClick={onClose}
       >
         <motion.div
@@ -33,7 +42,11 @@ function BlogModal({ post, onClose }: { post: Blog; onClose: () => void }) {
             <div className="flex items-center gap-3 flex-wrap">
               <span
                 className="text-xs font-bold px-3 py-1.5 rounded-full"
-                style={{ background: "rgba(0,201,255,0.1)", border: "1px solid rgba(0,201,255,0.2)", color: "#00c9ff" }}
+                style={{
+                  background: "rgba(0,201,255,0.1)",
+                  border: "1px solid rgba(0,201,255,0.2)",
+                  color: "#00c9ff",
+                }}
               >
                 <Tag size={10} className="inline mr-1" />
                 {post.tag}
@@ -71,23 +84,29 @@ function BlogModal({ post, onClose }: { post: Blog; onClose: () => void }) {
             style={{ background: "rgba(0,201,255,0.1)" }}
           />
 
-          <p className="text-[#8892b0] text-base leading-relaxed mb-6">{post.excerpt}</p>
           <p className="text-[#8892b0] text-base leading-relaxed mb-6">
-            This article explores the intersection of faith and technology — how believers
-            can consecrate their skills, creativity, and technical expertise to the Holy
-            Spirit and see the Kingdom of God advance in the digital age.
+            {post.excerpt}
+          </p>
+          <p className="text-[#8892b0] text-base leading-relaxed mb-6">
+            This article explores the intersection of faith and technology — how
+            believers can consecrate their skills, creativity, and technical
+            expertise to the Holy Spirit and see the Kingdom of God advance in
+            the digital age.
           </p>
           <p className="text-[#8892b0] text-base leading-relaxed">
-            Full articles are coming soon as part of our content program. Subscribe to the
-            Ahren Foundation newsletter to be notified when new articles are published.
-            In the meantime, join our Believers in Tech Fellowship to be part of these
-            conversations live.
+            Full articles are coming soon as part of our content program.
+            Subscribe to the Ahren Foundation newsletter to be notified when new
+            articles are published. In the meantime, join our Believers in Tech
+            Fellowship to be part of these conversations live.
           </p>
 
           <div className="mt-10 flex gap-3 flex-wrap">
             <a href="/join">
               <motion.button
-                whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(0,201,255,0.3)" }}
+                whileHover={{
+                  scale: 1.03,
+                  boxShadow: "0 0 30px rgba(0,201,255,0.3)",
+                }}
                 whileTap={{ scale: 0.97 }}
                 className="grad-bg text-[#080d2e] font-bold text-sm px-6 py-3 rounded-full"
               >
@@ -115,14 +134,19 @@ export default function BlogPage() {
   const [filter, setFilter] = useState("All");
 
   const tags = ["All", ...Array.from(new Set(BLOGS.map((b) => b.tag)))];
-  const filtered = filter === "All" ? BLOGS : BLOGS.filter((b) => b.tag === filter);
+  const filtered =
+    filter === "All" ? BLOGS : BLOGS.filter((b) => b.tag === filter);
 
   return (
     <main className="bg-[#080d2e] overflow-hidden">
       {/* Header */}
       <section className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-40" />
-        <GradientOrb className="top-[-10%] right-[-5%]" size={600} color="mint" />
+        <GradientOrb
+          className="top-[-10%] right-[-5%]"
+          size={600}
+          color="mint"
+        />
         <GradientOrb className="bottom-0 left-[-5%]" size={500} color="cyan" />
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp>
@@ -140,9 +164,12 @@ export default function BlogPage() {
             </h1>
           </FadeUp>
           <FadeUp delay={0.15}>
-            <p className="text-[#8892b0] leading-relaxed max-w-2xl" style={{ fontSize: "clamp(16px, 2vw, 20px)" }}>
-              Reflections, stories, and insights from the intersection of faith, creativity,
-              and technology — for the believer who builds.
+            <p
+              className="text-[#8892b0] leading-relaxed max-w-2xl"
+              style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
+            >
+              Reflections, stories, and insights from the intersection of faith,
+              creativity, and technology — for the believer who builds.
             </p>
           </FadeUp>
         </div>
@@ -151,7 +178,11 @@ export default function BlogPage() {
       {/* Filter tags */}
       <section
         className="py-8 sticky top-[70px] z-20"
-        style={{ background: "rgba(8,13,46,0.9)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(0,201,255,0.08)" }}
+        style={{
+          background: "rgba(8,13,46,0.9)",
+          backdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(0,201,255,0.08)",
+        }}
       >
         <div className="max-w-7xl mx-auto px-6 flex gap-3 flex-wrap">
           {tags.map((tag) => (
@@ -163,8 +194,15 @@ export default function BlogPage() {
               className="text-xs font-bold px-4 py-2 rounded-full transition-all duration-200"
               style={
                 filter === tag
-                  ? { background: "linear-gradient(135deg,#00c9ff,#00ff9d)", color: "#080d2e" }
-                  : { background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.15)", color: "#8892b0" }
+                  ? {
+                      background: "linear-gradient(135deg,#00c9ff,#00ff9d)",
+                      color: "#080d2e",
+                    }
+                  : {
+                      background: "rgba(0,201,255,0.08)",
+                      border: "1px solid rgba(0,201,255,0.15)",
+                      color: "#8892b0",
+                    }
               }
             >
               {tag}
@@ -190,13 +228,21 @@ export default function BlogPage() {
                     <div className="flex items-center gap-3 mb-6">
                       <span
                         className="text-xs font-bold px-3 py-1.5 rounded-full"
-                        style={{ background: "rgba(0,201,255,0.1)", border: "1px solid rgba(0,201,255,0.2)", color: "#00c9ff" }}
+                        style={{
+                          background: "rgba(0,201,255,0.1)",
+                          border: "1px solid rgba(0,201,255,0.2)",
+                          color: "#00c9ff",
+                        }}
                       >
                         {BLOGS[0].tag}
                       </span>
                       <span
                         className="text-xs font-bold px-3 py-1.5 rounded-full"
-                        style={{ background: "rgba(0,255,157,0.08)", border: "1px solid rgba(0,255,157,0.2)", color: "#00ff9d" }}
+                        style={{
+                          background: "rgba(0,255,157,0.08)",
+                          border: "1px solid rgba(0,255,157,0.2)",
+                          color: "#00ff9d",
+                        }}
                       >
                         ★ Featured
                       </span>
@@ -247,7 +293,11 @@ export default function BlogPage() {
                   <div className="flex items-center justify-between mb-5">
                     <span
                       className="text-xs font-bold px-3 py-1.5 rounded-full"
-                      style={{ background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.15)", color: "#00c9ff" }}
+                      style={{
+                        background: "rgba(0,201,255,0.08)",
+                        border: "1px solid rgba(0,201,255,0.15)",
+                        color: "#00c9ff",
+                      }}
                     >
                       {post.tag}
                     </span>
@@ -262,7 +312,9 @@ export default function BlogPage() {
                   >
                     {post.title}
                   </h3>
-                  <p className="text-[#8892b0] text-sm leading-relaxed mb-6">{post.excerpt}</p>
+                  <p className="text-[#8892b0] text-sm leading-relaxed mb-6">
+                    {post.excerpt}
+                  </p>
                   <div
                     className="flex items-center justify-between pt-5"
                     style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
@@ -287,11 +339,17 @@ export default function BlogPage() {
           <FadeUp className="text-center mt-16">
             <div
               className="inline-block px-8 py-5 rounded-2xl"
-              style={{ background: "rgba(17,24,80,0.6)", border: "1px solid rgba(0,201,255,0.1)" }}
+              style={{
+                background: "rgba(17,24,80,0.6)",
+                border: "1px solid rgba(0,201,255,0.1)",
+              }}
             >
               <p className="text-[#8892b0] text-sm">
                 More articles coming soon.{" "}
-                <a href="/join" className="grad-text font-semibold hover:opacity-80 transition-opacity">
+                <a
+                  href="/join"
+                  className="grad-text font-semibold hover:opacity-80 transition-opacity"
+                >
                   Join the community
                 </a>{" "}
                 to be notified.

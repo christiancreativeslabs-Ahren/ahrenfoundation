@@ -32,3 +32,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+#ADDED
+.agents
+.codex
+.vscode
+/__refs
+/db/migrations/development
+/db/migrations/staging
