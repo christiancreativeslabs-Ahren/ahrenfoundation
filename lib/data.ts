@@ -70,6 +70,11 @@ export const MENTORS = [
     bio: "James Edidiong Victory is a fashion designer, entrepreneur, and the CEO of MayensTouch Ltd, with over a decade of experience in the fashion industry since 2014. While fashion is her profession, her true passion is raising a generation of purpose-driven young people who are firmly rooted in God. She believes that spiritual growth is the foundation for a fulfilled and impactful life and is committed to mentoring, empowering, and equipping young people to discover their God-given purpose, grow in their faith, and become positive changemakers in their communities. Through mentorship, leadership, and service, Edidiong is dedicated to inspiring lives that reflect excellence, purpose, and lasting impact.",
   },
   {
+    name: "John Ayomide Akinola",
+    photo: "/mentors/john-akinola.jpg",
+    bio: "John is a Platform Engineer and Cloud Instructor with expertise spanning DevOps, cloud architecture, and full-stack development. He teaches cloud engineering, DevOps, and cybersecurity to instructor-led cohorts, and has built and shipped platforms across logistics, education, and ministry. Passionate about closing the skills gap for young African technologists, John mentors emerging creatives to build with excellence, think in systems, and use their technical gifts to create solutions that serve people and glorify God.",
+  },
+  {
     name: "Joshua Akinyoade",
     photo: "/mentors/joshua-akinyoade.jpg",
     bio: "Joshua is a Lead Software Engineer with over eight years of experience designing scalable systems that directly drive high ROI for business operations. Beyond technical strategy, he thrives on cross-functional collaboration, working closely with teams and stakeholders to maximize the value of every project. His commitment to excellence is reflected in his contributions to technical documentation, seamless system integrations, and leveraging external services for business growth. Skilled in both software development and data operations, Joshua is passionate about fostering innovation and efficiency to deliver impactful, results-driven solutions.",
@@ -196,7 +201,7 @@ export const BLOGS = [
 ];
 
 export const STATS = [
-  { value: "24+", label: "Mentors & Facilitators" },
+  { value: "25+", label: "Mentors & Facilitators" },
   { value: "6", label: "Week Masterclass" },
   { value: "4", label: "Core Initiatives" },
   { value: "\u221e", label: "Kingdom Impact" },
