@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
@@ -148,6 +149,33 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Image band */}
+      <section className="relative overflow-hidden" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+          {[
+            { src: "/showcase/collaborate-whiteboard.jpg", alt: "Christian creatives collaborating", label: "Collaborate" },
+            { src: "/showcase/tech-community.jpg", alt: "Believers in Tech community", label: "Community" },
+            { src: "/showcase/prayer-gathering.jpg", alt: "Believers gathered in prayer", label: "Spirit-Led" },
+          ].map((img, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: i * 0.12 }}
+              className="relative group overflow-hidden"
+              style={{ height: 280 }}
+            >
+              <Image src={img.src} alt={img.alt} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(8,13,46,0.92) 0%, rgba(8,13,46,0.3) 60%, rgba(8,13,46,0.5) 100%)" }} />
+              <div className="absolute bottom-6 left-6">
+                <span className="grad-text text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>{img.label}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* Our Anchor / Belief */}
       <section className="py-24 relative">
         <GradientOrb className="right-[-10%] top-1/2" size={500} color="mint" />
@@ -177,7 +205,7 @@ export default function AboutPage() {
                 instruments through which He builds His Kingdom on earth — one line of code, one
                 design, one conversation at a time.
               </p>
-              <Link href="/join">
+              <Link href="/apply">
                 <GlowButton>
                   Apply as Creative Youth <ArrowRight size={16} />
                 </GlowButton>

@@ -85,7 +85,7 @@ function BlogModal({ post, onClose }: { post: Blog; onClose: () => void }) {
           </p>
 
           <div className="mt-10 flex gap-3 flex-wrap">
-            <a href="/join">
+            <a href="/apply">
               <motion.button
                 whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(0,201,255,0.3)" }}
                 whileTap={{ scale: 0.97 }}
@@ -291,7 +291,7 @@ export default function BlogPage() {
             >
               <p className="text-[#8892b0] text-sm">
                 More articles coming soon.{" "}
-                <a href="/join" className="grad-text font-semibold hover:opacity-80 transition-opacity">
+                <a href="/apply" className="grad-text font-semibold hover:opacity-80 transition-opacity">
                   Join the community
                 </a>{" "}
                 to be notified.

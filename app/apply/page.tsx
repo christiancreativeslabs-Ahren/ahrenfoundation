@@ -1,20 +1,20 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ProjectsPage from "@/components/sections/ProjectsPage";
+import JoinPage from "@/components/sections/JoinPage";
 import PageTransition from "@/components/PageTransition";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Projects — Ahren Foundation | Building for the Kingdom",
-  description: "WELLS and PrayNations — faith-based tech products built inside our Christian Creatives Labs.",
+  title: "Apply — 6-Weeks Christian Creatives Masterclass | Ahren Foundation",
+  description: "Apply for the Ahren Foundation 6-Weeks Christian Creatives Masterclass Program on Creativity, Tech Skills & God's Purpose.",
 };
 
-export default function Projects() {
+export default function Apply() {
   return (
     <PageTransition>
       <>
         <Navbar />
-        <ProjectsPage />
+        <JoinPage />
         <Footer />
       </>
     </PageTransition>

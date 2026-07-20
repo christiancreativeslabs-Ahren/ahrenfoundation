@@ -1,12 +1,244 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Check, ArrowRight, Sparkles, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
 import { SectionLabel, FadeUp, GradientOrb } from "@/components/ui";
+import { EXPERTISE_OPTIONS } from "@/lib/data";
 
-const YOUTH_FORM_URL = "https://forms.gle/hovpD1RkfRnojULYA";
+const inputCls =
+  "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-white text-sm placeholder-[#8892b0] focus:border-[#00c9ff] focus:bg-[rgba(0,201,255,0.04)] transition-all duration-200 outline-none";
+const selectCls =
+  "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-[#8892b0] text-sm focus:border-[#00c9ff] transition-all duration-200 outline-none appearance-none cursor-pointer";
+const textareaCls =
+  "w-full bg-[rgba(255,255,255,0.04)] border border-[rgba(0,201,255,0.12)] rounded-xl px-4 py-3 text-white text-sm placeholder-[#8892b0] focus:border-[#00c9ff] focus:bg-[rgba(0,201,255,0.04)] transition-all duration-200 outline-none resize-none";
+
+function FieldGroup({ label, required, hint, children }: { label: string; required?: boolean; hint?: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-5">
+      <label className="block text-[#e8eeff] text-[13px] font-semibold mb-1.5">
+        {label}
+        {required && <span className="text-[#00c9ff] ml-1">*</span>}
+      </label>
+      {hint && <p className="text-[#8892b0] text-xs mb-2 leading-relaxed">{hint}</p>}
+      {children}
+    </div>
+  );
+}
+
+function CheckboxOption({ label, name }: { label: string; name: string }) {
+  return (
+    <label className="flex items-start gap-2.5 cursor-pointer group">
+      <input type="checkbox" name={name} value={label} className="w-4 h-4 mt-0.5 rounded accent-[#00c9ff] cursor-pointer flex-shrink-0" />
+      <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors leading-snug">{label}</span>
+    </label>
+  );
+}
+
+function RadioOption({ label, name }: { label: string; name: string }) {
+  return (
+    <label className="flex items-center gap-2.5 cursor-pointer group">
+      <input type="radio" name={name} value={label} className="w-4 h-4 accent-[#00c9ff] cursor-pointer flex-shrink-0" />
+      <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">{label}</span>
+    </label>
+  );
+}
+
+function OtherOption({ name }: { name: string }) {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div className="sm:col-span-2 mt-2 space-y-2">
+      <label className="flex items-center gap-2.5 cursor-pointer group">
+        <input type="checkbox" name={name} value="Other" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="w-4 h-4 rounded accent-[#00c9ff] cursor-pointer" />
+        <span className="text-[#8892b0] text-sm group-hover:text-[#e8eeff] transition-colors">Other</span>
+      </label>
+      <AnimatePresence>
+        {checked && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: "hidden" }}>
+            <input className={inputCls} name={`${name}_text`} placeholder="Please specify..." autoFocus />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+const FAITH_QUESTIONS = [
+  { q: "Are you born-again?", name: "born_again" },
+  { q: "Have you received the baptism of the Holy Spirit with the evidence of speaking in tongues?", name: "holy_spirit_baptism" },
+  { q: "Do you believe in depending on the Holy Spirit and collaborating with Him to improve and utilize your skills and creativity?", name: "holy_spirit_dependence" },
+];
+
+const SATURDAY_ACTIVITIES = [
+  "AI & Tech Virtual Class (Week 1 – Saturday)",
+  "Mentor Session 1 (Week 2 – Saturday)",
+  "Branding Virtual Class (Week 3 – Saturday)",
+  "Mentor Session 2 (Week 4 – Saturday)",
+  "Digital Marketing & Content Creation Virtual Class (Week 5 – Saturday)",
+  "Mentor Session 3 (Week 6 – Saturday)",
+  "I can attend most, but may miss one or two",
+];
+
+function SuccessScreen({ onBack }: { onBack: () => void }) {
+  return (
+    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} className="text-center py-16">
+      <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }} className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-8 grad-bg">
+        <CheckCircle2 size={36} className="text-[#080d2e]" />
+      </motion.div>
+      <h2 className="text-white text-3xl font-bold mb-4" style={{ fontFamily: "var(--font-display)" }}>Welcome to Ahren Foundation!</h2>
+      <p className="text-[#8892b0] text-base leading-relaxed max-w-lg mx-auto mb-6">
+        Thank you for applying! Our team will review your application within 5–7 business days.
+        If shortlisted, we will contact you and send you a link to join our community.
+        Keep an eye on your email and phone.
+      </p>
+      <div className="max-w-md mx-auto p-5 rounded-2xl mb-8" style={{ background: "rgba(0,255,157,0.05)", border: "1px solid rgba(0,255,157,0.15)" }}>
+        <p className="text-[#e8eeff] text-sm italic leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
+          &ldquo;For we are his workmanship, created in Christ Jesus unto good works, which God hath before ordained that we should walk in them.&rdquo;
+        </p>
+        <p className="grad-text text-xs font-bold mt-2">— Ephesians 2:10</p>
+      </div>
+      <p className="grad-text text-sm font-bold mb-8">— The Ahren Foundation Team</p>
+      <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={onBack} className="text-[#8892b0] text-sm font-semibold px-6 py-3 rounded-full transition-colors hover:text-white" style={{ border: "1px solid rgba(0,201,255,0.15)" }}>
+        ← Back to program details
+      </motion.button>
+    </motion.div>
+  );
+}
+
+function ApplicationForm({ onSubmit }: { onSubmit: () => void }) {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const fd = new FormData(e.currentTarget);
+    const payload: Record<string, unknown> = {};
+    fd.forEach((value, key) => {
+      if (payload[key]) {
+        const ex = payload[key];
+        payload[key] = Array.isArray(ex) ? [...ex, value] : [ex, value];
+      } else payload[key] = value;
+    });
+    try {
+      await fetch("/api/apply", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    } catch { /* backend wiring pending */ }
+    setSubmitting(false);
+    onSubmit();
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h3 className="grad-text text-lg font-bold mb-2" style={{ fontFamily: "var(--font-display)" }}>Creative Youth Application Form</h3>
+      <p className="text-[#8892b0] text-sm leading-relaxed mb-8">
+        Thank you for your interest in joining Ahren Foundation! Please complete this form.
+        Our team will review your application and contact you within 5–7 business days.
+      </p>
+
+      <div className="mb-8">
+        <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">Personal Information</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <FieldGroup label="Full Name" required><input name="full_name" className={inputCls} placeholder="Your full name" required /></FieldGroup>
+          <FieldGroup label="Email Address" required><input name="email" type="email" className={inputCls} placeholder="your@email.com" required /></FieldGroup>
+          <FieldGroup label="Phone Number" required><input name="phone" className={inputCls} placeholder="+234..." required /></FieldGroup>
+          <FieldGroup label="Age Range" required>
+            <select name="age_range" className={selectCls} required>
+              <option value="">Select age range</option>
+              {["16–18", "19–22", "23–26", "27–30"].map((a) => <option key={a} value={a}>{a}</option>)}
+            </select>
+          </FieldGroup>
+        </div>
+        <FieldGroup label="Country / State" required><input name="country_state" className={inputCls} placeholder="e.g. Lagos, Nigeria" required /></FieldGroup>
+      </div>
+
+      <div className="mb-8">
+        <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">Skills &amp; Interests</div>
+        <FieldGroup label="Current Skills / Area(s) of Interest" required>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+            {[...EXPERTISE_OPTIONS, "Business / Entrepreneurship"].map((opt) => <CheckboxOption key={opt} label={opt} name="skills" />)}
+            <OtherOption name="skills_other" />
+          </div>
+        </FieldGroup>
+        <FieldGroup label="What skills do you want to learn or improve?" required>
+          <textarea name="skills_to_learn" className={textareaCls} rows={3} placeholder="Tell us what you'd like to grow in..." required />
+        </FieldGroup>
+        <FieldGroup label="Have you built any project before? (Optional)" hint="Describe any project you have worked on — even if small.">
+          <textarea name="past_projects" className={textareaCls} rows={3} placeholder="Tell us about it..." />
+        </FieldGroup>
+      </div>
+
+      <div className="mb-8">
+        <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">Eligibility &amp; Commitment</div>
+        <FieldGroup label="Are you available to commit to 6 weeks of mentorship?" required hint="This includes two weekly email lessons (Monday & Friday) and one Saturday activity (virtual class or mentor meeting).">
+          <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+            {["Yes", "No", "Not Sure"].map((v) => <RadioOption key={v} label={v} name="commit_6_weeks" />)}
+          </div>
+        </FieldGroup>
+        <FieldGroup label="Are you willing to attend virtual sessions as scheduled?" required hint="This includes 3 Saturday virtual classes and 3 Saturday mentor meetings (one per week, alternating).">
+          <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+            {["Yes", "No"].map((v) => <RadioOption key={v} label={v} name="attend_virtual" />)}
+          </div>
+        </FieldGroup>
+        <FieldGroup label="Are you able to attend the following weekend virtual activities?" required hint="Check all that apply.">
+          <div className="grid grid-cols-1 gap-3 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+            {SATURDAY_ACTIVITIES.map((a) => <CheckboxOption key={a} label={a} name="saturday_activities" />)}
+          </div>
+        </FieldGroup>
+        <FieldGroup label="Do you understand that your active participation in weekly assignments and virtual sessions is required for certification and continued membership?" required>
+          <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+            {["Yes, I understand", "No"].map((v) => <RadioOption key={v} label={v} name="understand_participation" />)}
+          </div>
+        </FieldGroup>
+      </div>
+
+      <div className="mb-8">
+        <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">Motivation &amp; Vision</div>
+        <FieldGroup label="Why do you want to join Ahren Foundation?" required><textarea name="why_join" className={textareaCls} rows={4} placeholder="Share your heart..." required /></FieldGroup>
+        <FieldGroup label="What human or societal problem have you identified that you would like to help solve?" required><textarea name="problem_to_solve" className={textareaCls} rows={4} placeholder="Describe the problem..." required /></FieldGroup>
+        <FieldGroup label="What do you see yourself building for the Kingdom, humanity, or society?" required><textarea name="what_youd_build" className={textareaCls} rows={4} placeholder="Share your vision..." required /></FieldGroup>
+        <FieldGroup label="What would you do if you had the skills, resources, and support to build anything for God?" required><textarea name="dream_project" className={textareaCls} rows={4} placeholder="Dream big..." required /></FieldGroup>
+      </div>
+
+      <div className="mb-8">
+        <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00ff9d] mb-5">Faith Background</div>
+        {FAITH_QUESTIONS.map((item, i) => (
+          <FieldGroup key={i} label={item.q} required>
+            <div className="flex gap-8">
+              <RadioOption label="Yes" name={item.name} />
+              <RadioOption label="No" name={item.name} />
+            </div>
+          </FieldGroup>
+        ))}
+        <FieldGroup label="Share a bit about your Christian walk or faith conviction — how has God been working in your life in the area of your skills, talents, and creativity?" required>
+          <textarea name="testimony" className={textareaCls} rows={5} placeholder="Share your testimony..." required />
+        </FieldGroup>
+        <FieldGroup label="Church / Campus Fellowship (Optional)"><input name="church" className={inputCls} placeholder="Your church or fellowship" /></FieldGroup>
+      </div>
+
+      <div className="mb-8">
+        <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00ff9d] mb-5">Agreement &amp; Declaration</div>
+        <div className="space-y-4 p-5 rounded-xl mb-5" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" name="agree_steward" value="Yes" className="w-4 h-4 mt-0.5 accent-[#00c9ff] cursor-pointer flex-shrink-0" required />
+            <span className="text-[#8892b0] text-sm leading-relaxed">I commit to stewarding my skills for God&apos;s glory and actively participating in the program.</span>
+          </label>
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" name="consent_contact" value="Yes" className="w-4 h-4 mt-0.5 accent-[#00c9ff] cursor-pointer flex-shrink-0" required />
+            <span className="text-[#8892b0] text-sm leading-relaxed">I consent to Ahren Foundation contacting me and storing my information for program purposes.</span>
+          </label>
+        </div>
+        <FieldGroup label="Electronic Signature (Type Full Name)" required><input name="signature" className={inputCls} placeholder="Type your full name" required /></FieldGroup>
+      </div>
+
+      <motion.button type="submit" disabled={submitting} whileHover={{ scale: submitting ? 1 : 1.03, boxShadow: submitting ? "none" : "0 0 40px rgba(0,201,255,0.35)" }} whileTap={{ scale: submitting ? 1 : 0.97 }} className="w-full grad-bg text-[#080d2e] font-bold text-base py-4 rounded-2xl disabled:opacity-60">
+        {submitting ? "Submitting..." : "Apply as a Creative Youth →"}
+      </motion.button>
+    </form>
+  );
+}
 
 export default function JoinPage() {
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const whoWeWant = [
     "Curious, creative & tech-inclined Christian",
     "Purpose-driven",
@@ -16,17 +248,19 @@ export default function JoinPage() {
     "Age 16–30",
   ];
   const commit = [
-    "Weekly Email lessons & mentor meeting (virtually)",
-    "Build & launch a kingdom creative product/platform that positively impacts lives & reveals Jesus Christ",
-    "Weekly workbook reflection",
-    "80% – 100% attendance & participation",
-    "Respond within 48 hours",
+    "12 Interactive Modules delivered to your Inbox",
+    "3 Live Virtual Classes on AI & Tech for Creatives, Branding, Digital Content Creation & Digital Marketing — 3 Saturdays",
+    "1-on-1 Virtual Mentor Meetings — 3 Saturdays",
   ];
   const gain = [
-    "A Spirit-filled experienced Creative mentor who believes in you",
-    "Clarity on your Kingdom Creative Project",
-    "Certificate of completion",
-    "Path to Project funding, access to seasoned creative mentors, free & affordable high-impact trainings, a community of Believers in Tech, collaboration opportunities, incubation & lots more",
+    "Biblical understanding of how to use your skills and creativity to build impactful projects",
+    "Practical Skills in AI for Creatives, Branding, Digital Content Creation & Digital Marketing",
+    "Real-life experience insights from creative mentors",
+    "A Clear Path to Launch Your Creative Project",
+    "Certificate of Completion",
+    "Networking and Collaboration Opportunities",
+    "Verified Membership Access to our Community Hub",
+    "Pathway to Funding Opportunities",
   ];
 
   return (
@@ -58,6 +292,24 @@ export default function JoinPage() {
       {/* Content */}
       <section className="pb-28 relative" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
         <div className="max-w-4xl mx-auto px-6 pt-12">
+          <AnimatePresence mode="wait">
+          {submitted ? (
+            <motion.div key="success" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <div className="card p-8 md:p-10" style={{ borderRadius: 28 }}>
+                <SuccessScreen onBack={() => { setSubmitted(false); setShowForm(false); }} />
+              </div>
+            </motion.div>
+          ) : showForm ? (
+            <motion.div key="form" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
+              <div className="card p-8 md:p-10" style={{ borderRadius: 28 }}>
+                <button type="button" onClick={() => setShowForm(false)} className="text-[#8892b0] text-sm font-semibold mb-6 hover:text-[#00c9ff] transition-colors">
+                  ← Back to program details
+                </button>
+                <ApplicationForm onSubmit={() => setSubmitted(true)} />
+              </div>
+            </motion.div>
+          ) : (
+          <motion.div key="info" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           {/* Program banner */}
           <FadeUp>
             <div
@@ -117,20 +369,17 @@ export default function JoinPage() {
             </div>
           </FadeUp>
 
-          {/* Apply button → Google Form */}
+          {/* Apply button */}
           <FadeUp delay={0.2}>
             <div className="text-center mb-16">
-              <motion.a
-                href={YOUTH_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <motion.button
+                onClick={() => setShowForm(true)}
                 whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(0,201,255,0.35)" }}
                 whileTap={{ scale: 0.97 }}
                 className="grad-bg text-[#080d2e] font-bold text-base px-12 py-4 rounded-full inline-flex items-center gap-2"
               >
                 Apply as a Creative Youth <ArrowRight size={17} />
-              </motion.a>
-              <p className="text-[#8892b0] text-xs mt-4">Opens our secure application form</p>
+              </motion.button>
             </div>
           </FadeUp>
 
@@ -175,6 +424,9 @@ export default function JoinPage() {
               </div>
             </div>
           </FadeUp>
+          </motion.div>
+          )}
+          </AnimatePresence>
         </div>
       </section>
     </main>

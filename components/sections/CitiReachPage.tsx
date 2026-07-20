@@ -215,10 +215,7 @@ export default function CitiReachPage() {
             >
               Your Feet Could Be <span className="grad-text">Beautiful!</span>
             </h2>
-            <p className="text-[#8892b0] text-lg mb-3 leading-relaxed">Ready to win souls for Christ? Join us.</p>
-            <p className="text-[#8892b0] text-sm mb-10">
-              <span className="text-white font-semibold">Next outreach:</span> October – December 2026
-            </p>
+            <p className="text-[#8892b0] text-lg mb-10 leading-relaxed">Ready to win souls for Christ? Join us.</p>
 
             <motion.a
               href={SIGNUP_URL}

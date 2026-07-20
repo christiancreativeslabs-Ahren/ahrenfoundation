@@ -97,8 +97,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-[#8892b0] text-sm leading-relaxed max-w-sm mb-7">
-              Aligning tech skills and creativity with God&apos;s purpose — partnering with the
-              Holy Spirit to create value that impacts lives and reveals Jesus Christ to the world.
+              Purpose, Community, and Opportunity.
             </p>
             <div className="flex gap-2 flex-wrap">
               {["Faith", "Tech", "Community", "Kingdom", "CCLabs"].map((tag) => (
@@ -140,7 +139,7 @@ export default function Footer() {
                 </li>
               ))}
               <li>
-                <Link href="/join">
+                <Link href="/apply">
                   <motion.span
                     whileHover={{ x: 4, color: "#00ff9d" }}
                     className="text-[#8892b0] text-sm cursor-pointer transition-colors duration-200 flex items-center gap-2"
@@ -187,29 +186,6 @@ export default function Footer() {
               ))}
             </ul>
 
-            {/* Projects quick links */}
-            <div className="mt-6 pt-6" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
-              <p className="text-[10px] font-bold tracking-widest uppercase text-[#8892b0] mb-3">
-                Our Projects
-              </p>
-              {[
-                { name: "YouWells", href: "https://youwells.lovable.app/", color: "#00c9ff" },
-                { name: "Bibeli", href: "https://bibeli.lovable.app/", color: "#a78bfa" },
-                { name: "PrayNations", href: "https://praynations.bolt.host/", color: "#00ff9d" },
-              ].map((p) => (
-                <a
-                  key={p.name}
-                  href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 mb-2 text-sm font-semibold hover:opacity-80 transition-opacity"
-                  style={{ color: p.color }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: p.color }} />
-                  {p.name} ↗
-                </a>
-              ))}
-            </div>
           </div>
         </div>
 

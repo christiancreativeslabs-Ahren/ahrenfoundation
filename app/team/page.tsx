@@ -1,22 +1,2 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import TeamPage from "@/components/sections/TeamPage";
-import PageTransition from "@/components/PageTransition";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Team — Ahren Foundation",
-  description: "Meet the executive team leading Ahren Foundation's mission to empower Kingdom innovators.",
-};
-
-export default function Team() {
-  return (
-    <PageTransition>
-      <>
-        <Navbar />
-        <TeamPage />
-        <Footer />
-      </>
-    </PageTransition>
-  );
-}
+import { redirect } from "next/navigation";
+export default function Team() { redirect("/mentors"); }

@@ -86,7 +86,7 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex items-center flex-shrink-0">
-            <Link href="/join">
+            <Link href="/apply">
               <motion.button
                 whileHover={{ scale: 1.04, boxShadow: "0 0 28px rgba(0,201,255,0.35)" }}
                 whileTap={{ scale: 0.97 }}
@@ -148,7 +148,7 @@ export default function Navbar() {
               transition={{ delay: mainLinks.length * 0.05 + 0.1 }}
               className="mt-8 space-y-3"
             >
-              <Link href="/join">
+              <Link href="/apply">
                 <button className="grad-bg text-[#080d2e] font-bold text-base w-full py-4 rounded-2xl">
                   Join the Community
                 </button>

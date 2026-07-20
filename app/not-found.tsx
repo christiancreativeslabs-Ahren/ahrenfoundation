@@ -110,14 +110,14 @@ export default function NotFound() {
               Go Home
             </motion.button>
           </Link>
-          <Link href="/projects">
+          <Link href="/about">
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               className="font-bold text-sm px-8 py-3.5 rounded-full flex items-center gap-2 transition-all"
               style={{ border: "1.5px solid rgba(0,201,255,0.3)", color: "#00c9ff" }}
             >
-              Our Projects <ArrowRight size={15} />
+              About Us <ArrowRight size={15} />
             </motion.button>
           </Link>
         </motion.div>
