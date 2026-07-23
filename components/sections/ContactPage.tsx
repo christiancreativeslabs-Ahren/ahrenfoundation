@@ -47,6 +47,13 @@ const contacts = [
   },
   {
     icon: <Phone size={18} />,
+    label: "Call / WhatsApp",
+    value: "+234 704 755 5064",
+    href: "tel:+2347047555064",
+    color: "#00ff9d",
+  },
+  {
+    icon: <Phone size={18} />,
     label: "United Kingdom",
     value: "+44 7762 496766",
     href: "tel:+447762496766",
@@ -59,7 +66,6 @@ const departmentEmails = [
   { label: "Mentorship", email: "mentors@ahrenfoundation.org" },
   { label: "Projects", email: "projects@ahrenfoundation.org" },
   { label: "Partnerships", email: "partners@ahrenfoundation.org" },
-  { label: "Williams (Founder)", email: "williams@ahrenfoundation.org" },
 ];
 
 export default function ContactPage() {

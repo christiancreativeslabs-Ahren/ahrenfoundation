@@ -232,6 +232,53 @@ export default function HomePage() {
       </section>
 
 
+      {/* ── FAITH & TECH IN ACTION ── */}
+      <section
+        className="py-16 relative"
+        style={{ borderTop: "1px solid rgba(0,201,255,0.08)", background: "rgba(13,19,64,0.35)" }}
+      >
+        <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={500} color="mint" />
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
+          <FadeUp>
+            <div
+              className="relative overflow-hidden rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center gap-8"
+              style={{
+                background: "linear-gradient(135deg, rgba(0,201,255,0.06) 0%, rgba(0,255,157,0.04) 100%)",
+                border: "1px solid rgba(0,201,255,0.2)",
+              }}
+            >
+              <div
+                className="absolute right-[-60px] top-[-60px] w-64 h-64 rounded-full blur-3xl pointer-events-none"
+                style={{ background: "radial-gradient(circle, rgba(0,255,157,0.1), transparent 70%)" }}
+              />
+              <div
+                className="flex-shrink-0 flex items-center justify-center w-20 h-20 rounded-2xl relative"
+                style={{ background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.2)" }}
+              >
+                <span style={{ fontSize: 38 }}>🛠️</span>
+                <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full grad-bg animate-pulse" />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <div className="text-[10px] font-bold tracking-[0.18em] uppercase grad-text mb-2">
+                  CCLabs
+                </div>
+                <h3
+                  className="text-white text-2xl md:text-3xl font-bold mb-3"
+                  style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
+                >
+                  Faith &amp; Tech in Action
+                </h3>
+                <p className="text-[#8892b0] text-base leading-relaxed max-w-2xl">
+                  Our Christian Creatives Labs (CCLabs) have launched their first faith-based tech
+                  projects. Join us as we build digital tools that support missions, strengthen
+                  ministries, and advance the Great Commission.
+                </p>
+              </div>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
       {/* ── VISION STATEMENT ── */}
       <section
         className="py-28 relative overflow-hidden"

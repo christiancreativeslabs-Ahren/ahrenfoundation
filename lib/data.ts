@@ -225,6 +225,7 @@ export const NAV_LINKS = [
   { label: "About Us", href: "/about" },
   { label: "CitiReach", href: "/citireach" },
   { label: "Meet Our Mentors", href: "/mentors" },
+  { label: "Partner With Us", href: "/partners" },
   { label: "Blog", href: "/blog" },
   { label: "Contact Us", href: "/contact" },
 ];

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 import { MENTORS } from "@/lib/data";
 
@@ -109,6 +109,55 @@ export default function MentorsPage() {
                 More mentors joining soon — we&apos;re onboarding Christian creatives and industry
                 experts from around the world.
               </p>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* Join Our Team of Mentors */}
+      <section
+        className="py-20 relative overflow-hidden"
+        style={{ borderTop: "1px solid rgba(0,201,255,0.08)", background: "rgba(13,19,64,0.35)" }}
+      >
+        <GradientOrb className="right-[-5%] top-1/4" size={500} color="mint" />
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <FadeUp>
+            <div
+              className="rounded-3xl p-10 md:p-12 text-center relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, rgba(0,255,157,0.07) 0%, rgba(0,201,255,0.05) 100%)",
+                border: "1px solid rgba(0,255,157,0.22)",
+              }}
+            >
+              <div
+                className="absolute left-[-50px] bottom-[-50px] w-56 h-56 rounded-full blur-3xl pointer-events-none"
+                style={{ background: "radial-gradient(circle, rgba(0,255,157,0.1), transparent 70%)" }}
+              />
+              <div className="relative z-10">
+                <div className="text-[10px] font-bold tracking-[0.18em] uppercase grad-text mb-3">
+                  Become a Mentor
+                </div>
+                <h2
+                  className="text-white text-2xl md:text-3xl font-bold mb-5"
+                  style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
+                >
+                  Join Our Team of Mentors
+                </h2>
+                <p className="text-[#8892b0] text-base leading-relaxed max-w-2xl mx-auto mb-8">
+                  Are you a Christian creative, tech professional, industry expert, a product builder
+                  or an entrepreneur with a heart for investing in the next generation of young
+                  creatives? We would love to have you on our team as a mentor or facilitator.
+                </p>
+                <motion.a
+                  href="mailto:mentors@ahrenfoundation.org"
+                  whileHover={{ scale: 1.04, boxShadow: "0 0 36px rgba(0,255,157,0.3)" }}
+                  whileTap={{ scale: 0.97 }}
+                  className="grad-bg text-[#080d2e] font-bold text-sm px-8 py-4 rounded-full inline-flex items-center gap-2"
+                >
+                  <Mail size={16} />
+                  mentors@ahrenfoundation.org
+                </motion.a>
+              </div>
             </div>
           </FadeUp>
         </div>

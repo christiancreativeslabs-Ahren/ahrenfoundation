@@ -254,7 +254,7 @@ export default function JoinPage() {
   ];
   const gain = [
     "Biblical understanding of how to use your skills and creativity to build impactful projects",
-    "Practical Skills in AI for Creatives, Branding, Digital Content Creation & Digital Marketing",
+    "Practical Digital Skills Training in AI for Creatives, Branding, Digital Content Creation & Digital Marketing",
     "Real-life experience insights from creative mentors",
     "A Clear Path to Launch Your Creative Project",
     "Certificate of Completion",
@@ -331,6 +331,37 @@ export default function JoinPage() {
                 </p>
               </div>
             </div>
+          </FadeUp>
+
+          {/* Cohort now open banner */}
+          <FadeUp delay={0.08}>
+            <motion.div
+              animate={{ boxShadow: ["0 0 0 rgba(0,255,157,0)", "0 0 28px rgba(0,255,157,0.18)", "0 0 0 rgba(0,255,157,0)"] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="rounded-2xl p-6 md:p-7 mb-8 relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, rgba(0,255,157,0.09) 0%, rgba(0,201,255,0.06) 100%)",
+                border: "1px solid rgba(0,255,157,0.28)",
+              }}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex items-center gap-2.5 flex-shrink-0">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff9d] opacity-70" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00ff9d]" />
+                  </span>
+                  <span className="text-[#00ff9d] text-[11px] font-bold tracking-[0.16em] uppercase whitespace-nowrap">
+                    New Cohort Now Open
+                  </span>
+                </div>
+                <p className="text-[#e8eeff] text-sm md:text-[15px] leading-relaxed">
+                  Program kicks off in <span className="text-white font-bold">September 2026</span>.
+                  {" "}Application Deadline:{" "}
+                  <span className="text-white font-bold">August 22, 2026</span>.
+                  {" "}Spots are limited — apply today.
+                </p>
+              </div>
+            </motion.div>
           </FadeUp>
 
           {/* Three columns */}

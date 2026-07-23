@@ -97,7 +97,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-[#8892b0] text-sm leading-relaxed max-w-sm mb-7">
-              Purpose, Community, and Opportunity.
+              Creativity, Tech, Purpose &amp; Community
             </p>
             <div className="flex gap-2 flex-wrap">
               {["Faith", "Tech", "Community", "Kingdom", "CCLabs"].map((tag) => (
