@@ -118,7 +118,7 @@ export const MENTORS = [
   {
     name: "Tolulope Fadare",
     photo: "/mentors/tolulope-fadare.jpg",
-    bio: "Tolulope Fadare is a creative technologist with nearly a decade of experience building at the intersection of design and technology. She is called to help young Christian creatives discover and sharpen their God-given gifts, guiding them to grow in both their craft and their confidence. She mentors with the belief that creativity is spiritual, and is committed to walking alongside the next generation as they find their voice in Christ.",
+    bio: "Tolulope Fadare is a creative technologist with nearly a decade of experience building at the intersection of design and technology. He is called to help young Christian creatives discover and sharpen their God-given gifts, guiding them to grow in both their craft and their confidence. He mentors with the belief that creativity is spiritual, and is committed to walking alongside the next generation as they find their voice in Christ.",
   },
   {
     name: "Zacchaeus Akinwale",
