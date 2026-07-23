@@ -70,12 +70,12 @@ const FAITH_QUESTIONS = [
 ];
 
 const SATURDAY_ACTIVITIES = [
-  "AI & Tech Virtual Class (Week 1 – Saturday)",
-  "Mentor Session 1 (Week 2 – Saturday)",
-  "Branding Virtual Class (Week 3 – Saturday)",
-  "Mentor Session 2 (Week 4 – Saturday)",
-  "Digital Marketing & Content Creation Virtual Class (Week 5 – Saturday)",
-  "Mentor Session 3 (Week 6 – Saturday)",
+  "AI & Tech Class (Week 1 – Saturday, September 5)",
+  "Mentor Session 1 (Week 2 – Saturday, September 12)",
+  "Branding Class (Week 3 – Saturday, September 19)",
+  "Mentor Session 2 (Week 4 – Saturday, September 26)",
+  "Digital Content Creation & Digital Marketing Class (Week 5 – Saturday, October 3)",
+  "Mentor Session 3 (Week 6 – Saturday, October 10)",
   "I can attend most, but may miss one or two",
 ];
 
@@ -168,22 +168,17 @@ function ApplicationForm({ onSubmit }: { onSubmit: () => void }) {
 
       <div className="mb-8">
         <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">Eligibility &amp; Commitment</div>
-        <FieldGroup label="Are you available to commit to 6 weeks of mentorship?" required hint="This includes two weekly email lessons (Monday & Friday) and one Saturday activity (virtual class or mentor meeting).">
+        <FieldGroup label="Are you available to commit to 6-weeks of Digital Skills Training & Creativity Mentorship?" required hint="This includes two weekly interactive modules (Monday & Friday) accessible on our platform.">
           <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
             {["Yes", "No", "Not Sure"].map((v) => <RadioOption key={v} label={v} name="commit_6_weeks" />)}
           </div>
         </FieldGroup>
-        <FieldGroup label="Are you willing to attend virtual sessions as scheduled?" required hint="This includes 3 Saturday virtual classes and 3 Saturday mentor meetings (one per week, alternating).">
-          <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
-            {["Yes", "No"].map((v) => <RadioOption key={v} label={v} name="attend_virtual" />)}
-          </div>
-        </FieldGroup>
-        <FieldGroup label="Are you able to attend the following weekend virtual activities?" required hint="Check all that apply.">
+        <FieldGroup label="Are you available to attend the six weekend virtual sessions, scheduled between 9:00 AM and 12:00 noon, from September 1st through October 10th?" required hint="Check all that apply.">
           <div className="grid grid-cols-1 gap-3 p-5 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
             {SATURDAY_ACTIVITIES.map((a) => <CheckboxOption key={a} label={a} name="saturday_activities" />)}
           </div>
         </FieldGroup>
-        <FieldGroup label="Do you understand that your active participation in weekly assignments and virtual sessions is required for certification and continued membership?" required>
+        <FieldGroup label="Do you understand that your active participation in the weekly interactive modules and virtual sessions is required for certification and verified membership?" required>
           <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
             {["Yes, I understand", "No"].map((v) => <RadioOption key={v} label={v} name="understand_participation" />)}
           </div>
@@ -192,7 +187,7 @@ function ApplicationForm({ onSubmit }: { onSubmit: () => void }) {
 
       <div className="mb-8">
         <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00c9ff] mb-5">Motivation &amp; Vision</div>
-        <FieldGroup label="Why do you want to join Ahren Foundation?" required><textarea name="why_join" className={textareaCls} rows={4} placeholder="Share your heart..." required /></FieldGroup>
+        <FieldGroup label="Why do you want to join our Community of Christian Creatives at Ahren Foundation?" required><textarea name="why_join" className={textareaCls} rows={4} placeholder="Share your heart..." required /></FieldGroup>
         <FieldGroup label="What human or societal problem have you identified that you would like to help solve?" required><textarea name="problem_to_solve" className={textareaCls} rows={4} placeholder="Describe the problem..." required /></FieldGroup>
         <FieldGroup label="What do you see yourself building for the Kingdom, humanity, or society?" required><textarea name="what_youd_build" className={textareaCls} rows={4} placeholder="Share your vision..." required /></FieldGroup>
         <FieldGroup label="What would you do if you had the skills, resources, and support to build anything for God?" required><textarea name="dream_project" className={textareaCls} rows={4} placeholder="Dream big..." required /></FieldGroup>
@@ -282,8 +277,9 @@ export default function JoinPage() {
           </FadeUp>
           <FadeUp delay={0.15}>
             <p className="text-[#8892b0] leading-relaxed max-w-2xl" style={{ fontSize: "clamp(16px, 2vw, 19px)" }}>
-              Are you a curious, creative, tech-inclined young believer ready to align your gifts with
-              God&apos;s purpose? Our 6-Weeks Christian Creatives Masterclass Program was built for you.
+              Are you a curious, creative, tech-inclined believer ready to learn how to steward your
+              skills, gifts and creative prowess for God&apos;s purposes on earth? Then this program
+              is for you.
             </p>
           </FadeUp>
         </div>
@@ -323,7 +319,7 @@ export default function JoinPage() {
                   <span className="text-[#00c9ff] text-[11px] font-bold tracking-widest uppercase">6-Weeks Program</span>
                 </div>
                 <h2 className="text-white text-2xl md:text-3xl font-bold mb-3 leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                  6-Weeks Christian Creatives Masterclass Program
+                  6-Weeks Tech &amp; Creativity Masterclass Program
                 </h2>
                 <p className="text-[#8892b0] text-base leading-relaxed">
                   On Creativity, Tech Skills &amp; God&apos;s Purpose — a guided journey to discover, sharpen, and

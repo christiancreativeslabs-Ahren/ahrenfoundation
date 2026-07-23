@@ -187,7 +187,7 @@ export default function MentorsPage() {
               Want to Be Mentored by <span className="grad-text">These Leaders?</span>
             </h2>
             <p className="text-[#8892b0] text-lg mb-10 max-w-lg mx-auto leading-relaxed">
-              Join our 6-Weeks Christian Creatives Masterclass Program and be paired with a
+              Join our 6-Weeks Tech & Creativity Masterclass Program and be paired with a
               Spirit-filled mentor who believes in you.
             </p>
             <a href="/apply">

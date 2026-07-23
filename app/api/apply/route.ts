@@ -41,7 +41,6 @@ export interface ApplicationPayload {
 
   // Eligibility & Commitment
   commit_6_weeks: string;
-  attend_virtual: string;
   saturday_activities: string | string[];
   understand_participation: string;
 
@@ -77,7 +76,6 @@ const REQUIRED_FIELDS: (keyof ApplicationPayload)[] = [
   "country_state",
   "skills_to_learn",
   "commit_6_weeks",
-  "attend_virtual",
   "understand_participation",
   "why_join",
   "problem_to_solve",
