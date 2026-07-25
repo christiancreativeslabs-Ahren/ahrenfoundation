@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Check, ArrowRight, Sparkles, Lock, LogIn } from "lucide-react";
 import { SectionLabel, FadeUp, GradientOrb } from "@/components/ui";
 
-const APPLY_URL = "/training/apply";
+const APPLY_URL = "http://www.ahrenfoundation.org/training/apply";
 const LOGIN_URL = "https://www.ahrenfoundation.org/hub/login";
 
 const whoWeWant = [
@@ -120,6 +120,8 @@ export default function HubPage() {
             <div className="text-center mb-12">
               <motion.a
                 href={APPLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(0,201,255,0.35)" }}
                 whileTap={{ scale: 0.97 }}
                 className="grad-bg text-[#080d2e] font-bold text-base px-12 py-4 rounded-full inline-flex items-center gap-2"
@@ -238,6 +240,8 @@ export default function HubPage() {
                 </motion.a>
                 <motion.a
                   href={APPLY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className="flex-1 font-bold text-base py-4 rounded-2xl inline-flex items-center justify-center gap-2 transition-all"

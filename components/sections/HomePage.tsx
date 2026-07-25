@@ -488,9 +488,9 @@ export default function HomePage() {
               Are you a creative, tech-inclined young believer ready to align your gifts with God&apos;s purpose? There&apos;s a place for you in this movement.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/training/apply">
+              <a href="http://www.ahrenfoundation.org/training/apply" target="_blank" rel="noopener noreferrer">
                 <GlowButton>Apply as Creative Youth <ArrowRight size={16} /></GlowButton>
-              </Link>
+              </a>
               <Link href="/citireach">
                 <GlowButton outline>Join CitiReach</GlowButton>
               </Link>

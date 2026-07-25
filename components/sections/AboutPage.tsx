@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -205,11 +204,11 @@ export default function AboutPage() {
                 instruments through which He builds His Kingdom on earth — one line of code, one
                 design, one conversation at a time.
               </p>
-              <Link href="/training/apply">
+              <a href="http://www.ahrenfoundation.org/training/apply" target="_blank" rel="noopener noreferrer">
                 <GlowButton>
                   Apply as Creative Youth <ArrowRight size={16} />
                 </GlowButton>
-              </Link>
+              </a>
             </FadeUp>
 
             <StaggerParent className="space-y-4">

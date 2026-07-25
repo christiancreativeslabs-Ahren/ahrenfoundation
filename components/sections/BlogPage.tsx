@@ -85,7 +85,7 @@ function BlogModal({ post, onClose }: { post: Blog; onClose: () => void }) {
           </p>
 
           <div className="mt-10 flex gap-3 flex-wrap">
-            <a href="/training/apply">
+            <a href="http://www.ahrenfoundation.org/training/apply" target="_blank" rel="noopener noreferrer">
               <motion.button
                 whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(0,201,255,0.3)" }}
                 whileTap={{ scale: 0.97 }}
