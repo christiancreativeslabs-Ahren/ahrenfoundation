@@ -139,7 +139,7 @@ export default function Footer() {
                 </li>
               ))}
               <li>
-                <Link href="/apply">
+                <Link href="/hub">
                   <motion.span
                     whileHover={{ x: 4, color: "#00ff9d" }}
                     className="text-[#8892b0] text-sm cursor-pointer transition-colors duration-200 flex items-center gap-2"

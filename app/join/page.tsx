@@ -1,2 +1,2 @@
 import { redirect } from "next/navigation";
-export default function Join() { redirect("/apply"); }
+export default function Join() { redirect("/hub"); }

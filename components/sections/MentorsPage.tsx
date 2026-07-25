@@ -190,7 +190,7 @@ export default function MentorsPage() {
               Join our 6-Weeks Tech & Creativity Masterclass Program and be paired with a
               Spirit-filled mentor who believes in you.
             </p>
-            <a href="/apply">
+            <a href="/training/apply">
               <motion.button
                 whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(0,201,255,0.35)" }}
                 whileTap={{ scale: 0.97 }}

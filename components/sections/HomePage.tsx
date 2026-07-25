@@ -111,9 +111,9 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="flex flex-wrap gap-4 justify-center mb-20"
           >
-            <Link href="/apply">
+            <Link href="/hub">
               <GlowButton>
-                Join the Community <ArrowRight size={16} />
+                Join our Community <ArrowRight size={16} />
               </GlowButton>
             </Link>
             <Link href="/about">
@@ -488,7 +488,7 @@ export default function HomePage() {
               Are you a creative, tech-inclined young believer ready to align your gifts with God&apos;s purpose? There&apos;s a place for you in this movement.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/apply">
+              <Link href="/training/apply">
                 <GlowButton>Apply as Creative Youth <ArrowRight size={16} /></GlowButton>
               </Link>
               <Link href="/citireach">

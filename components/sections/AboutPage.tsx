@@ -205,7 +205,7 @@ export default function AboutPage() {
                 instruments through which He builds His Kingdom on earth — one line of code, one
                 design, one conversation at a time.
               </p>
-              <Link href="/apply">
+              <Link href="/training/apply">
                 <GlowButton>
                   Apply as Creative Youth <ArrowRight size={16} />
                 </GlowButton>
