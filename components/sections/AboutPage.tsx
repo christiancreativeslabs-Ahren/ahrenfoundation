@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
+import {
+  SectionLabel,
+  GlowButton,
+  FadeUp,
+  StaggerParent,
+  StaggerChild,
+  GradientOrb,
+} from "@/components/ui";
 import ScripturesSection from "@/components/ScripturesSection";
 import { WHAT_WE_DO } from "@/lib/data";
 
@@ -13,8 +20,16 @@ export default function AboutPage() {
       {/* Page Header */}
       <section className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-50" />
-        <GradientOrb className="top-[-20%] right-[-10%]" size={700} color="cyan" />
-        <GradientOrb className="bottom-[-10%] left-[-10%]" size={500} color="mint" />
+        <GradientOrb
+          className="top-[-20%] right-[-10%]"
+          size={700}
+          color="cyan"
+        />
+        <GradientOrb
+          className="bottom-[-10%] left-[-10%]"
+          size={500}
+          color="mint"
+        />
 
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp>
@@ -36,16 +51,20 @@ export default function AboutPage() {
               className="text-[#8892b0] leading-relaxed max-w-3xl"
               style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
             >
-              Ahren Foundation is a youth development platform, where Christian creatives find
-              purpose, community, and opportunity. We are building a global network of believers
-              in tech who create value, serve their generation, and advance the Kingdom of God.
+              Ahren Foundation is a youth development platform, where Christian
+              creatives find purpose, community, and opportunity. We are
+              building a global network of believers in tech who create value,
+              serve their generation, and advance the Kingdom of God.
             </p>
           </FadeUp>
         </div>
       </section>
 
       {/* Vision & Mission */}
-      <section className="py-24 relative" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
+      <section
+        className="py-24 relative"
+        style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
+      >
         <div className="max-w-7xl mx-auto px-6">
           <StaggerParent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <StaggerChild>
@@ -55,13 +74,17 @@ export default function AboutPage() {
                 style={{ borderRadius: 28, borderTop: "3px solid #00c9ff" }}
               >
                 <div className="text-5xl mb-6">🔭</div>
-                <div className="text-xs font-bold tracking-[0.15em] uppercase mb-4" style={{ color: "#00c9ff" }}>
+                <div
+                  className="text-xs font-bold tracking-[0.15em] uppercase mb-4"
+                  style={{ color: "#00c9ff" }}
+                >
                   Our Vision
                 </div>
                 <p className="text-[#8892b0] text-[15px] leading-relaxed flex-1">
-                  We envision a global network of Christian creatives using their tech skills and
-                  creativity to solve problems, build value, and glorify Jesus Christ — transforming
-                  industries and communities for God&apos;s glory.
+                  We envision a global network of Christian creatives using
+                  their tech skills and creativity to solve problems, build
+                  value, and glorify Jesus Christ — transforming industries and
+                  communities for God&apos;s glory.
                 </p>
               </motion.div>
             </StaggerChild>
@@ -72,13 +95,17 @@ export default function AboutPage() {
                 style={{ borderRadius: 28, borderTop: "3px solid #00ff9d" }}
               >
                 <div className="text-5xl mb-6">🎯</div>
-                <div className="text-xs font-bold tracking-[0.15em] uppercase mb-4" style={{ color: "#00ff9d" }}>
+                <div
+                  className="text-xs font-bold tracking-[0.15em] uppercase mb-4"
+                  style={{ color: "#00ff9d" }}
+                >
                   Our Mission
                 </div>
                 <p className="text-[#8892b0] text-[15px] leading-relaxed flex-1">
-                  To equip Christian creatives with tech skills, mentorship, and collaborative
-                  opportunities — helping them align their skills and creativity with God&apos;s
-                  purpose, build valuable products, and serve their generation for Kingdom impact.
+                  To equip Christian creatives with tech skills, mentorship, and
+                  collaborative opportunities — helping them align their skills
+                  and creativity with God&apos;s purpose, build valuable
+                  products, and serve their generation for Kingdom impact.
                 </p>
               </motion.div>
             </StaggerChild>
@@ -89,10 +116,17 @@ export default function AboutPage() {
       {/* What We Do — Initiatives */}
       <section
         className="py-24 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)", borderTop: "1px solid rgba(0,201,255,0.08)" }}
+        style={{
+          background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)",
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+        }}
       >
         <GradientOrb className="right-[-5%] top-1/3" size={500} color="mint" />
-        <GradientOrb className="left-[-5%] bottom-1/4" size={400} color="cyan" />
+        <GradientOrb
+          className="left-[-5%] bottom-1/4"
+          size={400}
+          color="cyan"
+        />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <FadeUp className="text-center mb-16">
             <div className="flex justify-center">
@@ -110,8 +144,8 @@ export default function AboutPage() {
               Our <span className="grad-text">Initiatives</span>
             </h2>
             <p className="text-[#8892b0] mt-4 max-w-lg mx-auto text-base leading-relaxed">
-              Four focused initiatives, all designed to align tech skills and creativity with
-              God&apos;s eternal purpose.
+              Four focused initiatives, all designed to align tech skills and
+              creativity with God&apos;s eternal purpose.
             </p>
           </FadeUp>
 
@@ -130,7 +164,10 @@ export default function AboutPage() {
                 >
                   <div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 flex-shrink-0"
-                    style={{ background: item.color + "15", border: `1px solid ${item.color}25` }}
+                    style={{
+                      background: item.color + "15",
+                      border: `1px solid ${item.color}25`,
+                    }}
                   >
                     {item.icon}
                   </div>
@@ -140,7 +177,9 @@ export default function AboutPage() {
                   >
                     {item.title}
                   </h3>
-                  <p className="text-[#8892b0] text-sm leading-relaxed flex-1">{item.desc}</p>
+                  <p className="text-[#8892b0] text-sm leading-relaxed flex-1">
+                    {item.desc}
+                  </p>
                 </motion.div>
               </StaggerChild>
             ))}
@@ -149,12 +188,27 @@ export default function AboutPage() {
       </section>
 
       {/* Image band */}
-      <section className="relative overflow-hidden" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
+      <section
+        className="relative overflow-hidden"
+        style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
           {[
-            { src: "/showcase/collaborate-whiteboard.jpg", alt: "Christian creatives collaborating", label: "Collaborate" },
-            { src: "/showcase/tech-community.jpg", alt: "Believers in Tech community", label: "Community" },
-            { src: "/showcase/prayer-gathering.jpg", alt: "Believers gathered in prayer", label: "Spirit-Led" },
+            {
+              src: "/showcase/collaborate-whiteboard.jpg",
+              alt: "Christian creatives collaborating",
+              label: "Collaborate",
+            },
+            {
+              src: "/showcase/tech-community.jpg",
+              alt: "Believers in Tech community",
+              label: "Community",
+            },
+            {
+              src: "/showcase/prayer-gathering.jpg",
+              alt: "Believers gathered in prayer",
+              label: "Spirit-Led",
+            },
           ].map((img, i) => (
             <motion.div
               key={i}
@@ -165,10 +219,27 @@ export default function AboutPage() {
               className="relative group overflow-hidden"
               style={{ height: 280 }}
             >
-              <Image src={img.src} alt={img.alt} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" />
-              <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(8,13,46,0.92) 0%, rgba(8,13,46,0.3) 60%, rgba(8,13,46,0.5) 100%)" }} />
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(8,13,46,0.92) 0%, rgba(8,13,46,0.3) 60%, rgba(8,13,46,0.5) 100%)",
+                }}
+              />
               <div className="absolute bottom-6 left-6">
-                <span className="grad-text text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>{img.label}</span>
+                <span
+                  className="grad-text text-lg font-bold"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {img.label}
+                </span>
               </div>
             </motion.div>
           ))}
@@ -195,16 +266,23 @@ export default function AboutPage() {
                 <span className="grad-text">Ultimate Creative Director</span>
               </h2>
               <p className="text-[#8892b0] text-base leading-relaxed mb-6">
-                We believe our best work happens not in our own strength, but in genuine dependence
-                on the Holy Spirit. He is our ultimate Creative Director. We collaborate with Him to
-                steward every skill, every spark of creativity, and every technology at our disposal.
+                We believe our best work happens not in our own strength, but in
+                genuine dependence on the Holy Spirit. He is our ultimate
+                Creative Director. We collaborate with Him to steward every
+                skill, every spark of creativity, and every technology at our
+                disposal.
               </p>
               <p className="text-[#8892b0] text-base leading-relaxed mb-10">
-                We believe when believers consecrate their tech skills to God, they become
-                instruments through which He builds His Kingdom on earth — one line of code, one
-                design, one conversation at a time.
+                We believe when believers consecrate their tech skills to God,
+                they become instruments through which He builds His Kingdom on
+                earth — one line of code, one design, one conversation at a
+                time.
               </p>
-              <a href="http://www.ahrenfoundation.org/training/apply" target="_blank" rel="noopener noreferrer">
+              <a
+                href="/training/apply"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <GlowButton>
                   Apply as Creative Youth <ArrowRight size={16} />
                 </GlowButton>
@@ -213,25 +291,52 @@ export default function AboutPage() {
 
             <StaggerParent className="space-y-4">
               {[
-                { num: "01", title: "Prayer before code", body: "Every project, workshop, and fellowship starts with prayer. We build on the altar, not just the terminal." },
-                { num: "02", title: "Community over competition", body: "We celebrate each other's wins. In the Kingdom, your growth is our growth." },
-                { num: "03", title: "Excellence for the King", body: "We pursue the highest quality in everything — because the King deserves our best work." },
-                { num: "04", title: "Missions through tech", body: "Technology is our language to preach the Gospel to the digital generation." },
+                {
+                  num: "01",
+                  title: "Prayer before code",
+                  body: "Every project, workshop, and fellowship starts with prayer. We build on the altar, not just the terminal.",
+                },
+                {
+                  num: "02",
+                  title: "Community over competition",
+                  body: "We celebrate each other's wins. In the Kingdom, your growth is our growth.",
+                },
+                {
+                  num: "03",
+                  title: "Excellence for the King",
+                  body: "We pursue the highest quality in everything — because the King deserves our best work.",
+                },
+                {
+                  num: "04",
+                  title: "Missions through tech",
+                  body: "Technology is our language to preach the Gospel to the digital generation.",
+                },
               ].map((item, i) => (
                 <StaggerChild key={i}>
                   <motion.div
                     whileHover={{ x: 6 }}
                     className="flex gap-5 p-6 rounded-xl transition-all duration-300"
-                    style={{ background: "rgba(17,24,80,0.6)", border: "1px solid rgba(0,201,255,0.08)" }}
+                    style={{
+                      background: "rgba(17,24,80,0.6)",
+                      border: "1px solid rgba(0,201,255,0.08)",
+                    }}
                   >
-                    <span className="grad-text text-lg font-bold flex-shrink-0" style={{ fontFamily: "var(--font-display)" }}>
+                    <span
+                      className="grad-text text-lg font-bold flex-shrink-0"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
                       {item.num}
                     </span>
                     <div>
-                      <h4 className="text-white font-bold text-sm mb-1" style={{ fontFamily: "var(--font-display)" }}>
+                      <h4
+                        className="text-white font-bold text-sm mb-1"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
                         {item.title}
                       </h4>
-                      <p className="text-[#8892b0] text-sm leading-relaxed">{item.body}</p>
+                      <p className="text-[#8892b0] text-sm leading-relaxed">
+                        {item.body}
+                      </p>
                     </div>
                   </motion.div>
                 </StaggerChild>
@@ -244,9 +349,16 @@ export default function AboutPage() {
       {/* Taglines */}
       <section
         className="py-24 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)", borderTop: "1px solid rgba(0,201,255,0.08)" }}
+        style={{
+          background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)",
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+        }}
       >
-        <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={600} color="cyan" />
+        <GradientOrb
+          className="left-1/2 -translate-x-1/2 top-0"
+          size={600}
+          color="cyan"
+        />
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <StaggerParent className="space-y-5">
             {[
@@ -260,14 +372,20 @@ export default function AboutPage() {
                 <motion.div
                   whileHover={{ x: 8 }}
                   className="flex items-center gap-6 p-8 rounded-2xl transition-all duration-300"
-                  style={{ background: "rgba(17,24,80,0.6)", border: "1px solid rgba(0,201,255,0.1)" }}
+                  style={{
+                    background: "rgba(17,24,80,0.6)",
+                    border: "1px solid rgba(0,201,255,0.1)",
+                  }}
                 >
                   <div className="w-10 h-10 rounded-full flex-shrink-0 grad-bg flex items-center justify-center text-[#080d2e] font-bold text-sm">
                     {i + 1}
                   </div>
                   <p
                     className="text-white font-semibold italic"
-                    style={{ fontFamily: "var(--font-display)", fontSize: "clamp(16px, 2.2vw, 22px)" }}
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(16px, 2.2vw, 22px)",
+                    }}
                   >
                     &ldquo;{tagline}&rdquo;
                   </p>
@@ -298,13 +416,17 @@ export default function AboutPage() {
                   whileHover={{ scale: 1.01 }}
                   className="p-8 rounded-2xl text-center relative overflow-hidden"
                   style={{
-                    background: "linear-gradient(135deg, rgba(0,201,255,0.06), rgba(0,255,157,0.04))",
+                    background:
+                      "linear-gradient(135deg, rgba(0,201,255,0.06), rgba(0,255,157,0.04))",
                     border: "1px solid rgba(0,201,255,0.15)",
                   }}
                 >
                   <p
                     className="text-white font-semibold italic"
-                    style={{ fontFamily: "var(--font-display)", fontSize: "clamp(18px, 2.5vw, 26px)" }}
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "clamp(18px, 2.5vw, 26px)",
+                    }}
                   >
                     {q}
                   </p>

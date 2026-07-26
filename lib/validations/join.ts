@@ -5,7 +5,7 @@ import { emailEvents } from "@/db/schema";
 import {
   adminJoinNotificationEmail,
   mentorWelcomeEmail,
-  sendResendEmail,
+  sendEmail,
   youthWelcomeEmail,
 } from "@/lib/email";
 
@@ -16,6 +16,16 @@ export type JoinParsedData = {
   phoneNumber: string;
   location: string;
   consent: boolean;
+  ageRange?: string;
+  sex?: string;
+  skills?: string[];
+  skillsOther?: string;
+  skillsToLearn?: string;
+  availability?: string[];
+  whyJoin?: string;
+  faithBornAgain?: string;
+  faithHolySpirit?: string;
+  testimony?: string;
   payload: Record<string, unknown>;
 };
 
@@ -78,28 +88,26 @@ export function parseJoinApplication(formData: FormData): {
   if (applicationType === "youth") {
     const location = String(formData.get("country_state") ?? "").trim();
     const ageRange = String(formData.get("age_range") ?? "").trim();
+    const sex = String(formData.get("sex") ?? "").trim();
     const skills = formData.getAll("skills").map(String).filter(Boolean);
     const otherEnabled = String(formData.get("skills_other_enabled") ?? "") === "other";
     const otherSkill = String(formData.get("skills_other") ?? "").trim();
     const skillsToLearn = String(formData.get("skills_to_learn") ?? "").trim();
     const whyJoin = String(formData.get("why_join") ?? "").trim();
-    const projectExperience = String(formData.get("project_experience") ?? "").trim();
-    const participationFormats = formData.getAll("participation_formats").map(String).filter(Boolean);
+    const availability = formData.getAll("availability").map(String).filter(Boolean);
     const faithBornAgain = String(formData.get("faith_born_again") ?? "");
     const faithHolySpirit = String(formData.get("faith_holy_spirit") ?? "");
-    const faithDependency = String(formData.get("faith_dependency") ?? "");
     const testimony = String(formData.get("testimony") ?? "").trim();
-    const church = String(formData.get("church") ?? "").trim();
 
     requireText(fieldErrors, "country_state", location, "Country / State");
     requireText(fieldErrors, "age_range", ageRange, "Age range");
+    requireText(fieldErrors, "sex", sex, "Sex");
     requireAtLeastOne(fieldErrors, "skills", skills, "skill");
     requireText(fieldErrors, "skills_to_learn", skillsToLearn, "Learning goals");
     requireText(fieldErrors, "why_join", whyJoin, "Motivation");
-    requireAtLeastOne(fieldErrors, "participation_formats", participationFormats, "participation format");
+    requireAtLeastOne(fieldErrors, "availability", availability, "availability option");
     requireYesNo(fieldErrors, "faith_born_again", faithBornAgain, "whether you are born again");
     requireYesNo(fieldErrors, "faith_holy_spirit", faithHolySpirit, "whether you received the baptism of the Holy Spirit");
-    requireYesNo(fieldErrors, "faith_dependency", faithDependency, "your dependence on the Holy Spirit");
     requireText(fieldErrors, "testimony", testimony, "Testimony");
 
     if (otherEnabled && !otherSkill) {
@@ -118,21 +126,27 @@ export function parseJoinApplication(formData: FormData): {
         phoneNumber,
         location,
         consent,
+        ageRange,
+        sex,
+        skills,
+        skillsOther: otherSkill,
+        skillsToLearn,
+        availability,
+        whyJoin,
+        faithBornAgain,
+        faithHolySpirit,
+        testimony,
         payload: {
           ageRange,
+          sex,
           skills,
-          otherSkill,
+          skillsOther: otherSkill,
           skillsToLearn,
-          motivation: whyJoin,
-          projectExperience,
-          participationFormats,
-          faith: {
-            bornAgain: faithBornAgain,
-            holySpirit: faithHolySpirit,
-            dependency: faithDependency,
-          },
+          availability,
+          whyJoin,
+          faithBornAgain,
+          faithHolySpirit,
           testimony,
-          church,
         },
       },
       fieldErrors,
@@ -208,7 +222,7 @@ async function sendAndLogJoinEmail(
   context: { programMemberId?: string } = {},
 ) {
   try {
-    const result = await sendResendEmail(payload);
+    const result = await sendEmail(payload);
     await db.insert(emailEvents).values({
       programMemberId: context.programMemberId ?? null,
       recipientEmail: Array.isArray(payload.to) ? payload.to.join(",") : payload.to,

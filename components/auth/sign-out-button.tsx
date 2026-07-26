@@ -14,9 +14,9 @@ export default function SignOutButton({
 
   const handleSignOut = async () => {
     await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
+        fetchOptions: {
+          onSuccess: () => {
+          router.push("/hub/login");
           router.refresh();
         },
       },

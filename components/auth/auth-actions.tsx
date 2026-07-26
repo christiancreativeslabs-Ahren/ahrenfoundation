@@ -44,7 +44,7 @@ export default function AuthActions({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={containerClass}>
       <Link
-        href="/login"
+        href="/hub/login"
         className={`${linkBase} ${outlineClass} ${mobile ? "w-full" : ""}`}
         style={{ border: "1px solid rgba(0,201,255,0.15)" }}
       >

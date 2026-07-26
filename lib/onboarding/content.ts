@@ -510,12 +510,14 @@ export const MENTEE_WELCOME_EMAIL = {
     "Welcome to Ahren Foundation!",
     "We are so honoured that you have said yes to this journey.",
     "Ahren Foundation is a development platform for youths, where Christian creatives find purpose, community, and opportunity. We are building a global network of believers in tech who create value, serve their generation, and advance the Kingdom of God.",
-    "Over the next 6 weeks, you will embark on a journey designed to help you discover your creative identity, partner with the Holy Spirit, build character and practical skills, and align everything you are with God's purpose for your life.",
+    "Over the next 6 weeks, you will receive a series of interactive lessons designed to help you discover your creative identity, partner with the Holy Spirit, build character and practical skills, and align everything you are with God's purpose for your life.",
     "You are not here by accident. God has something beautiful to build through you - and we are privileged to walk with you.",
   ],
   nextSteps: [
-    "Your first interactive module will arrive in your inbox one week after signup.",
-    "Keep an eye out for details on your upcoming mentor match and virtual classes.",
+    "Your first interactive module will arrive one week after signup, and new lessons will continue on the Monday / Friday rhythm.",
+    "You have been placed on our onboarding path so your mentor match and virtual session details can be coordinated.",
+    "As you progress, complete the lesson questions in each module page and keep your answers saved and submitted.",
+    "When you complete the required lessons, you will receive your certificate of completion and verified member next steps.",
   ],
 };
 

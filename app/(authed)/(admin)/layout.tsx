@@ -15,7 +15,7 @@ export default async function AdminLayout({
   });
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/hub/login");
   }
 
   const adminEmails = getAdminEmails();

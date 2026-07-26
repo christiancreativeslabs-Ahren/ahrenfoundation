@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth/auth";
@@ -27,7 +27,7 @@ import { getAdminEmails } from "@/lib/validations/join";
 import {
   applicationRejectedEmail,
   certificateIssuedEmail,
-  sendResendEmail,
+  sendEmail,
   verifiedAccessEmail,
 } from "@/lib/email";
 import {
@@ -37,6 +37,7 @@ import {
   sendModuleDeliveryNow,
   syncMemberDeliveries as syncOnboardingMemberDeliveries,
 } from "@/lib/onboarding/service";
+import { syncJoinApplicationProjection } from "@/lib/admin/join-applications";
 import { createCertificatePdf } from "@/lib/pdf";
 
 type ActionResult = {
@@ -74,12 +75,40 @@ function optionalText(input: string) {
   return input ? input : null;
 }
 
+async function getMemberJoinApplicationPath(memberId: string) {
+  const [member] = await db
+    .select({
+      joinApplicationId: programMembers.joinApplicationId,
+    })
+    .from(programMembers)
+    .where(eq(programMembers.id, memberId))
+    .limit(1);
+
+  return member?.joinApplicationId
+    ? `/admin/join-applications/${member.joinApplicationId}`
+    : "/admin/join-applications";
+}
+
+async function getDeliveryJoinApplicationPath(deliveryId: string) {
+  const [delivery] = await db
+    .select({
+      programMemberId: moduleDeliveries.programMemberId,
+    })
+    .from(moduleDeliveries)
+    .where(eq(moduleDeliveries.id, deliveryId))
+    .limit(1);
+
+  return delivery?.programMemberId
+    ? getMemberJoinApplicationPath(delivery.programMemberId)
+    : "/admin/join-applications";
+}
+
 async function sendAndLogEmail(
   payload: ReturnType<typeof applicationRejectedEmail>,
   context: { programMemberId?: string } = {},
 ) {
   try {
-    const result = await sendResendEmail(payload);
+    const result = await sendEmail(payload);
     await db.insert(emailEvents).values({
       programMemberId: context.programMemberId ?? null,
       recipientEmail: Array.isArray(payload.to) ? payload.to.join(",") : payload.to,
@@ -155,7 +184,10 @@ export async function updateJoinApplicationStatus(
       );
     }
 
+    await syncJoinApplicationProjection(applicationId);
+
     revalidatePath("/admin/join-applications");
+    revalidatePath(`/admin/join-applications/${applicationId}`);
     revalidatePath("/dashboard");
     return { ok: true, message: "Application status updated." };
   } catch (error) {
@@ -207,7 +239,25 @@ export async function assignMentorToYouth(
       .set({ currentStep: "assigned_to_youth", updatedAt: new Date() })
       .where(eq(programMembers.id, mentorMemberId));
 
+    const linkedMembers = await db
+      .select({
+        id: programMembers.id,
+        joinApplicationId: programMembers.joinApplicationId,
+      })
+      .from(programMembers)
+      .where(inArray(programMembers.id, [youthMemberId, mentorMemberId]));
+
+    await Promise.all(
+      linkedMembers.map((member) =>
+        syncJoinApplicationProjection(member.joinApplicationId),
+      ),
+    );
+
+    const youthPath = await getMemberJoinApplicationPath(youthMemberId);
+    const mentorPath = await getMemberJoinApplicationPath(mentorMemberId);
     revalidatePath("/admin/join-applications");
+    revalidatePath(youthPath);
+    revalidatePath(mentorPath);
     return { ok: true, message: "Mentor assigned." };
   } catch (error) {
     return {
@@ -333,6 +383,8 @@ export async function issueCompletionCertificate(
       })
       .where(eq(programEnrollments.programMemberId, member.id));
 
+    await syncJoinApplicationProjection(member.joinApplicationId);
+
     const formattedIssuedAt = new Intl.DateTimeFormat("en-NG", {
       dateStyle: "long",
     }).format(issuedAt);
@@ -354,6 +406,7 @@ export async function issueCompletionCertificate(
     );
 
     revalidatePath("/admin/join-applications");
+    revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
     revalidatePath("/dashboard");
     return { ok: true, message: "Certificate issued." };
   } catch (error) {
@@ -402,6 +455,8 @@ export async function grantVerifiedStatus(
       .set({ emailVerified: true, updatedAt: new Date() })
       .where(eq(users.email, member.email));
 
+    await syncJoinApplicationProjection(member.joinApplicationId);
+
     await auth.api.requestPasswordReset({
       body: {
         email: member.email,
@@ -415,6 +470,7 @@ export async function grantVerifiedStatus(
     });
 
     revalidatePath("/admin/join-applications");
+    revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
     revalidatePath("/dashboard");
     return { ok: true, message: "Verified access granted." };
   } catch (error) {
@@ -462,7 +518,21 @@ export async function updateMentorOnboardingMilestone(formData: FormData) {
     .set(updates)
     .where(and(eq(programMembers.id, memberId), eq(programMembers.role, "mentor")));
 
-  revalidatePath(`/admin/program-members/${memberId}`);
+  const [member] = await db
+    .select({
+      joinApplicationId: programMembers.joinApplicationId,
+    })
+    .from(programMembers)
+    .where(eq(programMembers.id, memberId))
+    .limit(1);
+
+  if (member) {
+    await syncJoinApplicationProjection(member.joinApplicationId);
+  }
+
+  if (member?.joinApplicationId) {
+    revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
+  }
   revalidatePath("/admin/join-applications");
 }
 
@@ -487,7 +557,7 @@ export async function createDashboardResource(formData: FormData) {
     isPublished,
   });
 
-  revalidatePath("/admin/content");
+  revalidatePath("/admin/opportunities");
   revalidatePath("/dashboard");
 }
 
@@ -514,7 +584,7 @@ export async function createCommunityEvent(formData: FormData) {
     status,
   });
 
-  revalidatePath("/admin/content");
+  revalidatePath("/admin/events");
   revalidatePath("/dashboard");
 }
 
@@ -539,7 +609,7 @@ export async function createOpportunity(formData: FormData) {
     status,
   });
 
-  revalidatePath("/admin/content");
+  revalidatePath("/admin/community-posts");
   revalidatePath("/dashboard");
 }
 
@@ -556,7 +626,7 @@ export async function updateCommunityPostStatus(formData: FormData) {
     .set({ status, updatedAt: new Date() })
     .where(eq(communityPosts.id, postId));
 
-  revalidatePath("/admin/content");
+  revalidatePath("/admin/project-showcases");
   revalidatePath("/dashboard");
 }
 
@@ -594,6 +664,7 @@ export async function resendModuleDelivery(
     revalidatePath("/admin/onboarding");
     revalidatePath("/admin/email-events");
     revalidatePath("/admin/engagement");
+    revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
     return { ok: true, message: "Module email resent." };
   } catch (error) {
     return {
@@ -621,6 +692,7 @@ export async function rescheduleModuleDeliveryAction(
 
     revalidatePath("/admin/onboarding");
     revalidatePath("/admin/engagement");
+    revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
     return { ok: true, message: "Delivery rescheduled." };
   } catch (error) {
     return {
@@ -661,6 +733,7 @@ export async function retryFailedModuleDelivery(
     revalidatePath("/admin/onboarding");
     revalidatePath("/admin/email-events");
     revalidatePath("/admin/engagement");
+    revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
     return { ok: true, message: "Failed delivery retried." };
   } catch (error) {
     return {
@@ -686,6 +759,7 @@ export async function cancelModuleDeliveryAction(
 
     revalidatePath("/admin/onboarding");
     revalidatePath("/admin/engagement");
+    revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
     return { ok: true, message: "Delivery cancelled." };
   } catch (error) {
     return {
@@ -710,7 +784,7 @@ export async function syncMemberDeliveriesAction(
     const result = await syncOnboardingMemberDeliveries(memberId);
 
     revalidatePath("/admin/onboarding");
-    revalidatePath(`/admin/program-members/${memberId}`);
+    revalidatePath(await getMemberJoinApplicationPath(memberId));
     revalidatePath("/admin/join-applications");
     return {
       ok: true,

@@ -1,7 +1,9 @@
-import { desc, eq, inArray } from "drizzle-orm";
+import { asc, desc, eq, inArray, or } from "drizzle-orm";
 import { db } from "@/db";
 import {
   emailEvents,
+  mentorAssignments,
+  mentorshipSessions,
   engagementEvents,
   joinApplications,
   moduleDeliveries,
@@ -35,9 +37,31 @@ export function getStringArray(value: unknown) {
 export function getFaithPayload(payload: JsonRecord) {
   const faith = asRecord(payload?.faith);
   return {
-    bornAgain: getString(faith?.bornAgain),
-    holySpirit: getString(faith?.holySpirit),
-    dependency: getString(faith?.dependency),
+    bornAgain: getString(payload?.faithBornAgain ?? payload?.mentorFaithBornAgain ?? faith?.bornAgain),
+    holySpirit: getString(payload?.faithHolySpirit ?? payload?.mentorFaithHolySpirit ?? faith?.holySpirit),
+    dependency: getString(payload?.faithDependency ?? payload?.mentorFaithDependency ?? faith?.dependency),
+  };
+}
+
+function buildYouthApplicationPayload(application: Record<string, unknown>) {
+  const rawPayload = asRecord(application.payload);
+  const rawFaith = asRecord(rawPayload?.faith);
+  return {
+    ageRange: getString(application.ageRange ?? rawPayload?.ageRange),
+    sex: getString(application.sex ?? rawPayload?.sex),
+    skills: getStringArray(application.skills ?? rawPayload?.skills),
+    skillsOther: getString(application.skillsOther ?? rawPayload?.skillsOther),
+    skillsToLearn: getString(application.skillsToLearn ?? rawPayload?.skillsToLearn),
+    availability: getStringArray(application.availability ?? rawPayload?.availability),
+    whyJoin: getString(application.whyJoin ?? rawPayload?.whyJoin),
+    faithBornAgain: getString(
+      application.faithBornAgain ?? rawPayload?.faithBornAgain ?? rawFaith?.bornAgain,
+    ),
+    faithHolySpirit: getString(
+      application.faithHolySpirit ?? rawPayload?.faithHolySpirit ?? rawFaith?.holySpirit,
+    ),
+    faithDependency: getString(rawPayload?.faithDependency ?? rawFaith?.dependency),
+    testimony: getString(rawPayload?.testimony ?? application.testimony),
   };
 }
 
@@ -138,6 +162,8 @@ export async function getJoinApplicationDetail(applicationId: string) {
 
   if (!row) return null;
 
+  const mergedPayload = buildYouthApplicationPayload(row.application as Record<string, unknown>);
+
   const linkedUser = row.member?.userId
     ? (
         await db
@@ -173,9 +199,144 @@ export async function getJoinApplicationDetail(applicationId: string) {
 
   return {
     ...row,
+    application: {
+      ...row.application,
+      payload: {
+        ...(asRecord(row.application.payload) ?? {}),
+        ...mergedPayload,
+      },
+    },
     linkedUser,
     enrollments: enrollments.map((item) => item.enrollment),
     welcomeEmails,
+  };
+}
+
+export async function getProgramMemberJourneyData(memberId: string) {
+  const [member] = await db
+    .select()
+    .from(programMembers)
+    .where(eq(programMembers.id, memberId))
+    .limit(1);
+
+  if (!member) return null;
+
+  const moduleProgress = await db
+    .select({
+      delivery: moduleDeliveries,
+      enrollment: programEnrollments,
+      module: programModules,
+    })
+    .from(moduleDeliveries)
+    .innerJoin(programEnrollments, eq(programEnrollments.id, moduleDeliveries.enrollmentId))
+    .innerJoin(programModules, eq(programModules.id, moduleDeliveries.moduleId))
+    .where(eq(moduleDeliveries.programMemberId, member.id))
+    .orderBy(desc(programModules.moduleNumber));
+
+  const submissions = await db
+    .select()
+    .from(moduleSubmissions)
+    .where(eq(moduleSubmissions.programMemberId, member.id))
+    .orderBy(desc(moduleSubmissions.submittedAt));
+
+  const assignments = await db
+    .select()
+    .from(mentorAssignments)
+    .where(
+      or(
+        eq(mentorAssignments.youthMemberId, member.id),
+        eq(mentorAssignments.mentorMemberId, member.id),
+      ),
+    )
+    .orderBy(desc(mentorAssignments.createdAt));
+
+  const sessions = assignments.length
+    ? await db
+        .select()
+        .from(mentorshipSessions)
+        .where(eq(mentorshipSessions.assignmentId, assignments[0].id))
+        .orderBy(desc(mentorshipSessions.sessionNumber))
+    : [];
+
+  const latestSubmissionByModule = new Map<string, typeof submissions[number]>();
+  for (const submission of submissions) {
+    if (!latestSubmissionByModule.has(submission.moduleId)) {
+      latestSubmissionByModule.set(submission.moduleId, submission);
+    }
+  }
+
+  const latestSubmissionIds = Array.from(latestSubmissionByModule.values()).map(
+    (submission) => submission.id,
+  );
+
+  const answers = latestSubmissionIds.length
+    ? await db
+        .select({
+          submissionId: moduleSubmissionAnswers.submissionId,
+          answer: moduleSubmissionAnswers.answer,
+          questionNumber: moduleQuestions.questionNumber,
+          prompt: moduleQuestions.prompt,
+        })
+        .from(moduleSubmissionAnswers)
+        .innerJoin(moduleQuestions, eq(moduleQuestions.id, moduleSubmissionAnswers.questionId))
+        .where(inArray(moduleSubmissionAnswers.submissionId, latestSubmissionIds))
+        .orderBy(asc(moduleQuestions.questionNumber))
+    : [];
+
+  const deliveryIds = moduleProgress.map((item) => item.delivery.id);
+  const deliveryEmailEvents = deliveryIds.length
+    ? await db
+        .select()
+        .from(emailEvents)
+        .where(inArray(emailEvents.deliveryId, deliveryIds))
+        .orderBy(desc(emailEvents.createdAt))
+    : [];
+
+  const latestEmailEventByDelivery = new Map<string, typeof deliveryEmailEvents[number]>();
+  for (const event of deliveryEmailEvents) {
+    if (event.deliveryId && !latestEmailEventByDelivery.has(event.deliveryId)) {
+      latestEmailEventByDelivery.set(event.deliveryId, event);
+    }
+  }
+
+  type AnswerRow = (typeof answers)[number];
+  const answersBySubmission = new Map<string, AnswerRow[]>();
+  for (const answer of answers) {
+    const existing = answersBySubmission.get(answer.submissionId) ?? [];
+    existing.push(answer);
+    answersBySubmission.set(answer.submissionId, existing);
+  }
+
+  const completedModules = moduleProgress.filter(
+    (item) => item.delivery.assignmentSubmittedAt,
+  ).length;
+  const completionPercentage = moduleProgress.length
+    ? Math.round((completedModules / moduleProgress.length) * 100)
+    : 0;
+  const currentModule = moduleProgress.find(
+    (item) => !item.delivery.assignmentSubmittedAt,
+  );
+  const nextScheduled = moduleProgress.find(
+    (item) =>
+      item.delivery.status === "scheduled" ||
+      item.delivery.status === "failed" ||
+      item.delivery.status === "cancelled",
+  );
+
+  return {
+    member,
+    moduleProgress,
+    submissions,
+    assignments,
+    sessions,
+    answers,
+    answersBySubmission,
+    latestSubmissionByModule,
+    latestEmailEventByDelivery,
+    completedModules,
+    completionPercentage,
+    currentModule,
+    nextScheduled,
   };
 }
 

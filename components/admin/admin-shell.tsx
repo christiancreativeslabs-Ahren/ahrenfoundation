@@ -43,6 +43,31 @@ const navItems = [
     icon: ClipboardList,
   },
   {
+    href: "/admin/resources",
+    label: "Resources",
+    icon: BookOpen,
+  },
+  {
+    href: "/admin/events",
+    label: "Events",
+    icon: Mail,
+  },
+  {
+    href: "/admin/opportunities",
+    label: "Opportunities",
+    icon: BookOpen,
+  },
+  {
+    href: "/admin/community-posts",
+    label: "Community posts",
+    icon: ScrollText,
+  },
+  {
+    href: "/admin/project-showcases",
+    label: "Project showcases",
+    icon: BookOpen,
+  },
+  {
     href: "/admin/onboarding",
     label: "Onboarding",
     icon: LineChart,
@@ -64,7 +89,7 @@ const navItems = [
   },
   {
     href: "/admin/content",
-    label: "Content",
+    label: "Content hub",
     icon: BookOpen,
   },
 ];

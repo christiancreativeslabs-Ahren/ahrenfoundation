@@ -265,7 +265,7 @@ function YouthForm({
             </div>
           </FieldGroup>
           <FieldGroup
-            label="Phone Number"
+            label="Phone Number (WhatsApp Preferably)"
             required
             error={fieldErrors.phone_number}
           >
@@ -283,12 +283,19 @@ function YouthForm({
               required
             >
               <option value="">Select age range</option>
-              {["16-18", "19-22", "23-26", "27-30", "31-35"].map((a) => (
+              {["16-18", "19-22", "23-26", "27-30"].map((a) => (
                 <option key={a} value={a}>
                   {a}
                 </option>
               ))}
             </select>
+          </FieldGroup>
+          <FieldGroup label="Sex" required error={fieldErrors.sex}>
+            <div className="flex flex-wrap gap-6 p-4 rounded-xl" style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}>
+              {["Male", "Female"].map((s) => (
+                <RadioOption key={s} label={s} name="sex" value={s} />
+              ))}
+            </div>
           </FieldGroup>
         </div>
         <FieldGroup
@@ -352,7 +359,7 @@ function YouthForm({
           Motivation
         </div>
         <FieldGroup
-          label="Why do you want to join us at Ahren Foundation?"
+          label="Why do you want to join our Community of Christian Creatives at Ahren Foundation?"
           required
           error={fieldErrors.why_join}
         >
@@ -364,35 +371,31 @@ function YouthForm({
             required
           />
         </FieldGroup>
-        <FieldGroup label="Have you built any project before? (Optional)">
-          <textarea
-            name="project_experience"
-            className={textareaCls}
-            rows={3}
-            placeholder="Tell us about it..."
-          />
-        </FieldGroup>
         <FieldGroup
-          label="Preferred Participation Format"
+          label="Availability for the six weekend virtual sessions"
           required
-          error={fieldErrors.participation_formats}
+          error={fieldErrors.availability}
         >
           <div
-            className="flex flex-wrap gap-5 p-4 rounded-xl"
+            className="space-y-3 p-5 rounded-xl"
             style={{
               background: "rgba(0,201,255,0.04)",
               border: "1px solid rgba(0,201,255,0.1)",
             }}
           >
             {[
-              "Virtual (online only)",
-              "Physical centre (if available)",
-              "Both virtual and physical",
+              "AI & Tech Class (Week 1 - Saturday, September 5)",
+              "Mentor Session 1 (Week 2 - Saturday, September 12)",
+              "Branding Class (Week 3 - Saturday, September 19)",
+              "Mentor Session 2 (Week 4 - Saturday, September 26)",
+              "Digital Content Creation & Digital Marketing Class (Week 5 - Saturday, October 3)",
+              "Mentor Session 3 (Week 6 - Saturday, October 10)",
+              "I can attend most, but may miss one or two",
             ].map((f) => (
               <CheckboxOption
                 key={f}
                 label={f}
-                name="participation_formats"
+                name="availability"
                 value={f}
               />
             ))}
@@ -404,45 +407,26 @@ function YouthForm({
         <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#00ff9d] mb-5">
           Faith Background
         </div>
-        {FAITH_QUESTIONS.map((q, i) => (
-          <FieldGroup
-            key={q}
-            label={q}
-            required
-            error={
-              i === 0
-                ? fieldErrors.faith_born_again
-                : i === 1
-                  ? fieldErrors.faith_holy_spirit
-                  : fieldErrors.faith_dependency
-            }
-          >
-            <div className="flex gap-8">
-              <RadioOption
-                label="Yes"
-                name={
-                  i === 0
-                    ? "faith_born_again"
-                    : i === 1
-                      ? "faith_holy_spirit"
-                      : "faith_dependency"
-                }
-                value="yes"
-              />
-              <RadioOption
-                label="No"
-                name={
-                  i === 0
-                    ? "faith_born_again"
-                    : i === 1
-                      ? "faith_holy_spirit"
-                      : "faith_dependency"
-                }
-                value="no"
-              />
-            </div>
-          </FieldGroup>
-        ))}
+        <FieldGroup
+          label="Are you born-again?"
+          required
+          error={fieldErrors.faith_born_again}
+        >
+          <div className="flex gap-8">
+            <RadioOption label="Yes" name="faith_born_again" value="yes" />
+            <RadioOption label="No" name="faith_born_again" value="no" />
+          </div>
+        </FieldGroup>
+        <FieldGroup
+          label="Have you received the baptism of the Holy Spirit with the evidence of speaking in tongues?"
+          required
+          error={fieldErrors.faith_holy_spirit}
+        >
+          <div className="flex gap-8">
+            <RadioOption label="Yes" name="faith_holy_spirit" value="yes" />
+            <RadioOption label="No" name="faith_holy_spirit" value="no" />
+          </div>
+        </FieldGroup>
         <FieldGroup
           label="Brief Testimony - How has God been working in your life in the area of your skills, talents and creativity?"
           required
@@ -454,13 +438,6 @@ function YouthForm({
             rows={5}
             placeholder="Share your testimony..."
             required
-          />
-        </FieldGroup>
-        <FieldGroup label="Church / Youth Fellowship (Optional)">
-          <input
-            name="church"
-            className={inputCls}
-            placeholder="Your church or ministry"
           />
         </FieldGroup>
       </div>
@@ -504,7 +481,7 @@ function YouthForm({
         type="submit"
       >
         {loading ? <Loader2 size={16} className="animate-spin" /> : null}
-        {loading ? "Submitting..." : "Apply as a Creative Youth"}
+        {loading ? "Submitting..." : "Submit Application"}
       </motion.button>
     </form>
   );
@@ -833,7 +810,7 @@ function MentorForm({
   );
 }
 
-export default function JoinPage({
+export default function TrainingApplyPage({
   prefilledEmail,
   prefilledName,
 }: {

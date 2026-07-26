@@ -4,7 +4,14 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Sparkles, Users, Zap, Globe2 } from "lucide-react";
-import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
+import {
+  SectionLabel,
+  GlowButton,
+  FadeUp,
+  StaggerParent,
+  StaggerChild,
+  GradientOrb,
+} from "@/components/ui";
 import { STATS, WHAT_WE_DO, BLOGS } from "@/lib/data";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import ScripturesSection from "@/components/ScripturesSection";
@@ -14,7 +21,12 @@ function FloatingParticle({ delay = 0, size = 3, top = "20%", left = "10%" }) {
   return (
     <motion.div
       animate={{ y: [0, -24, 0], opacity: [0.3, 0.8, 0.3] }}
-      transition={{ duration: 4 + delay, repeat: Infinity, delay, ease: "easeInOut" }}
+      transition={{
+        duration: 4 + delay,
+        repeat: Infinity,
+        delay,
+        ease: "easeInOut",
+      }}
       className="absolute rounded-full grad-bg pointer-events-none"
       style={{ width: size, height: size, top, left }}
     />
@@ -23,7 +35,10 @@ function FloatingParticle({ delay = 0, size = 3, top = "20%", left = "10%" }) {
 
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
@@ -38,14 +53,25 @@ export default function HomePage() {
         <div className="absolute inset-0 grid-bg opacity-60" />
 
         {/* Glowing orbs */}
-        <GradientOrb className="top-[-10%] left-[-10%]" size={700} color="cyan" />
-        <GradientOrb className="bottom-[-10%] right-[-10%]" size={600} color="mint" />
+        <GradientOrb
+          className="top-[-10%] left-[-10%]"
+          size={700}
+          color="cyan"
+        />
+        <GradientOrb
+          className="bottom-[-10%] right-[-10%]"
+          size={600}
+          color="mint"
+        />
         <GradientOrb className="top-[30%] left-[40%]" size={400} color="cyan" />
 
         {/* Radial vignette */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, #080d2e 100%)" }}
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, #080d2e 100%)",
+          }}
         />
 
         {/* Floating particles */}
@@ -100,8 +126,8 @@ export default function HomePage() {
             className="text-[#8892b0] max-w-2xl mx-auto leading-relaxed mb-12 text-balance"
             style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
           >
-            A Youth Development platform, where Christian creatives find purpose,
-            community, and opportunity.
+            A Youth Development platform, where Christian creatives find
+            purpose, community, and opportunity.
           </motion.p>
 
           {/* CTAs */}
@@ -117,9 +143,7 @@ export default function HomePage() {
               </GlowButton>
             </Link>
             <Link href="/about">
-              <GlowButton outline>
-                Discover What We Do
-              </GlowButton>
+              <GlowButton outline>Discover What We Do</GlowButton>
             </Link>
           </motion.div>
 
@@ -129,10 +153,14 @@ export default function HomePage() {
             transition={{ duration: 2.5, repeat: Infinity }}
             className="flex flex-col items-center gap-2"
           >
-            <span className="text-[#8892b0] text-[10px] tracking-[0.2em] uppercase">Scroll</span>
+            <span className="text-[#8892b0] text-[10px] tracking-[0.2em] uppercase">
+              Scroll
+            </span>
             <div
               className="w-px h-12"
-              style={{ background: "linear-gradient(to bottom, #00c9ff, transparent)" }}
+              style={{
+                background: "linear-gradient(to bottom, #00c9ff, transparent)",
+              }}
             />
           </motion.div>
         </motion.div>
@@ -140,7 +168,10 @@ export default function HomePage() {
         {/* Decorative horizontal line */}
         <div
           className="absolute bottom-0 left-0 right-0 h-px"
-          style={{ background: "linear-gradient(90deg, transparent, rgba(0,201,255,0.3), transparent)" }}
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(0,201,255,0.3), transparent)",
+          }}
         />
       </section>
 
@@ -150,7 +181,10 @@ export default function HomePage() {
       {/* ── STATS ── */}
       <section
         className="py-16 relative"
-        style={{ borderBottom: "1px solid rgba(0,201,255,0.08)", background: "rgba(13,19,64,0.4)" }}
+        style={{
+          borderBottom: "1px solid rgba(0,201,255,0.08)",
+          background: "rgba(13,19,64,0.4)",
+        }}
       >
         <div className="max-w-5xl mx-auto px-6">
           <StaggerParent className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -162,7 +196,9 @@ export default function HomePage() {
                 >
                   {s.value}
                 </div>
-                <div className="text-[#8892b0] text-sm font-medium">{s.label}</div>
+                <div className="text-[#8892b0] text-sm font-medium">
+                  {s.label}
+                </div>
               </StaggerChild>
             ))}
           </StaggerParent>
@@ -187,7 +223,8 @@ export default function HomePage() {
               What We Do
             </h2>
             <p className="text-[#8892b0] mt-4 max-w-lg mx-auto text-base leading-relaxed">
-              Four focused initiatives, all designed to align tech skills and creativity with God&apos;s eternal purpose.
+              Four focused initiatives, all designed to align tech skills and
+              creativity with God&apos;s eternal purpose.
             </p>
           </FadeUp>
 
@@ -201,7 +238,10 @@ export default function HomePage() {
                 >
                   <div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 flex-shrink-0"
-                    style={{ background: item.color + "15", border: `1px solid ${item.color}25` }}
+                    style={{
+                      background: item.color + "15",
+                      border: `1px solid ${item.color}25`,
+                    }}
                   >
                     {item.icon}
                   </div>
@@ -211,7 +251,9 @@ export default function HomePage() {
                   >
                     {item.title}
                   </h3>
-                  <p className="text-[#8892b0] text-sm leading-relaxed flex-1">{item.desc}</p>
+                  <p className="text-[#8892b0] text-sm leading-relaxed flex-1">
+                    {item.desc}
+                  </p>
                   <div
                     className="mt-6 text-xs font-bold tracking-widest uppercase"
                     style={{ color: item.color }}
@@ -231,29 +273,42 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/* ── FAITH & TECH IN ACTION ── */}
       <section
         className="py-16 relative"
-        style={{ borderTop: "1px solid rgba(0,201,255,0.08)", background: "rgba(13,19,64,0.35)" }}
+        style={{
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+          background: "rgba(13,19,64,0.35)",
+        }}
       >
-        <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={500} color="mint" />
+        <GradientOrb
+          className="left-1/2 -translate-x-1/2 top-0"
+          size={500}
+          color="mint"
+        />
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp>
             <div
               className="relative overflow-hidden rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center gap-8"
               style={{
-                background: "linear-gradient(135deg, rgba(0,201,255,0.06) 0%, rgba(0,255,157,0.04) 100%)",
+                background:
+                  "linear-gradient(135deg, rgba(0,201,255,0.06) 0%, rgba(0,255,157,0.04) 100%)",
                 border: "1px solid rgba(0,201,255,0.2)",
               }}
             >
               <div
                 className="absolute right-[-60px] top-[-60px] w-64 h-64 rounded-full blur-3xl pointer-events-none"
-                style={{ background: "radial-gradient(circle, rgba(0,255,157,0.1), transparent 70%)" }}
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(0,255,157,0.1), transparent 70%)",
+                }}
               />
               <div
                 className="flex-shrink-0 flex items-center justify-center w-20 h-20 rounded-2xl relative"
-                style={{ background: "rgba(0,201,255,0.08)", border: "1px solid rgba(0,201,255,0.2)" }}
+                style={{
+                  background: "rgba(0,201,255,0.08)",
+                  border: "1px solid rgba(0,201,255,0.2)",
+                }}
               >
                 <span style={{ fontSize: 38 }}>🛠️</span>
                 <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full grad-bg animate-pulse" />
@@ -264,14 +319,18 @@ export default function HomePage() {
                 </div>
                 <h3
                   className="text-white text-2xl md:text-3xl font-bold mb-3"
-                  style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    letterSpacing: "-0.02em",
+                  }}
                 >
                   Faith &amp; Tech in Action
                 </h3>
                 <p className="text-[#8892b0] text-base leading-relaxed max-w-2xl">
-                  Our Christian Creatives Labs (CCLabs) have launched their first faith-based tech
-                  projects. Join us as we build digital tools that support missions, strengthen
-                  ministries, and advance the Great Commission.
+                  Our Christian Creatives Labs (CCLabs) have launched their
+                  first faith-based tech projects. Join us as we build digital
+                  tools that support missions, strengthen ministries, and
+                  advance the Great Commission.
                 </p>
               </div>
             </div>
@@ -282,14 +341,30 @@ export default function HomePage() {
       {/* ── VISION STATEMENT ── */}
       <section
         className="py-28 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)", borderTop: "1px solid rgba(0,201,255,0.08)", borderBottom: "1px solid rgba(0,201,255,0.08)" }}
+        style={{
+          background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)",
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+          borderBottom: "1px solid rgba(0,201,255,0.08)",
+        }}
       >
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: "radial-gradient(rgba(0,201,255,0.06) 1px, transparent 1px)", backgroundSize: "32px 32px" }}
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(0,201,255,0.06) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
         />
-        <GradientOrb className="left-[-5%] top-[-20%]" size={500} color="cyan" />
-        <GradientOrb className="right-[-5%] bottom-[-20%]" size={500} color="mint" />
+        <GradientOrb
+          className="left-[-5%] top-[-20%]"
+          size={500}
+          color="cyan"
+        />
+        <GradientOrb
+          className="right-[-5%] bottom-[-20%]"
+          size={500}
+          color="mint"
+        />
 
         <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
           <FadeUp>
@@ -308,9 +383,10 @@ export default function HomePage() {
                 fontFamily: "var(--font-display)",
               }}
             >
-              We envision a global network of Christian creatives using their tech skills and
-              creativity to solve problems, build value, and glorify Jesus Christ — transforming
-              industries and communities for God&apos;s glory.
+              We envision a global network of Christian creatives using their
+              tech skills and creativity to solve problems, build value, and
+              glorify Jesus Christ — transforming industries and communities for
+              God&apos;s glory.
             </p>
             <div className="flex items-center justify-center gap-3">
               <div className="w-12 h-px grad-bg" />
@@ -345,15 +421,16 @@ export default function HomePage() {
                 <span className="grad-text">Creative Director</span>
               </h2>
               <p className="text-[#8892b0] text-base leading-relaxed mb-6">
-                We believe our best work happens not in our own strength, but in genuine
-                dependence on the Holy Spirit. He is our ultimate Creative Director. We
-                collaborate with Him to steward every skill, every spark of creativity, and
-                every technology at our disposal.
+                We believe our best work happens not in our own strength, but in
+                genuine dependence on the Holy Spirit. He is our ultimate
+                Creative Director. We collaborate with Him to steward every
+                skill, every spark of creativity, and every technology at our
+                disposal.
               </p>
               <p className="text-[#8892b0] text-base leading-relaxed mb-10">
-                From mission fields to marketplaces, from code to creativity — we are building
-                a global network of believers who hone their gifts to create value and reach
-                the world for Jesus Christ.
+                From mission fields to marketplaces, from code to creativity —
+                we are building a global network of believers who hone their
+                gifts to create value and reach the world for Jesus Christ.
               </p>
               <Link href="/about">
                 <GlowButton>
@@ -364,10 +441,26 @@ export default function HomePage() {
 
             <StaggerParent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { icon: <Zap size={20} />, title: "Spirit-Led Innovation", desc: "Every project begins with dependence on the Holy Spirit, not just technical ability." },
-                { icon: <Users size={20} />, title: "Global Community", desc: "A worldwide network of believers building together for Kingdom impact." },
-                { icon: <Globe2 size={20} />, title: "Kingdom-First Mindset", desc: "Technology as a tool for mission, ministry, and revealing Jesus to the world." },
-                { icon: <Sparkles size={20} />, title: "Free Access", desc: "Our workshops and programs are free — because the Kingdom is for everyone." },
+                {
+                  icon: <Zap size={20} />,
+                  title: "Spirit-Led Innovation",
+                  desc: "Every project begins with dependence on the Holy Spirit, not just technical ability.",
+                },
+                {
+                  icon: <Users size={20} />,
+                  title: "Global Community",
+                  desc: "A worldwide network of believers building together for Kingdom impact.",
+                },
+                {
+                  icon: <Globe2 size={20} />,
+                  title: "Kingdom-First Mindset",
+                  desc: "Technology as a tool for mission, ministry, and revealing Jesus to the world.",
+                },
+                {
+                  icon: <Sparkles size={20} />,
+                  title: "Free Access",
+                  desc: "Our workshops and programs are free — because the Kingdom is for everyone.",
+                },
               ].map((item, i) => (
                 <StaggerChild key={i}>
                   <motion.div
@@ -381,10 +474,15 @@ export default function HomePage() {
                     >
                       {item.icon}
                     </div>
-                    <h4 className="text-white font-bold text-sm mb-2" style={{ fontFamily: "var(--font-display)" }}>
+                    <h4
+                      className="text-white font-bold text-sm mb-2"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
                       {item.title}
                     </h4>
-                    <p className="text-[#8892b0] text-xs leading-relaxed">{item.desc}</p>
+                    <p className="text-[#8892b0] text-xs leading-relaxed">
+                      {item.desc}
+                    </p>
                   </motion.div>
                 </StaggerChild>
               ))}
@@ -398,7 +496,10 @@ export default function HomePage() {
       {/* ── BLOG PREVIEW ── */}
       <section
         className="py-28 relative"
-        style={{ background: "rgba(13,19,64,0.4)", borderTop: "1px solid rgba(0,201,255,0.08)" }}
+        style={{
+          background: "rgba(13,19,64,0.4)",
+          borderTop: "1px solid rgba(0,201,255,0.08)",
+        }}
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-14">
@@ -435,11 +536,17 @@ export default function HomePage() {
                     <div className="flex items-center justify-between mb-5">
                       <span
                         className="text-xs font-bold px-3 py-1 rounded-full"
-                        style={{ background: "rgba(0,201,255,0.1)", border: "1px solid rgba(0,201,255,0.2)", color: "#00c9ff" }}
+                        style={{
+                          background: "rgba(0,201,255,0.1)",
+                          border: "1px solid rgba(0,201,255,0.2)",
+                          color: "#00c9ff",
+                        }}
                       >
                         {post.tag}
                       </span>
-                      <span className="text-[#8892b0] text-xs">{post.readTime}</span>
+                      <span className="text-[#8892b0] text-xs">
+                        {post.readTime}
+                      </span>
                     </div>
                     <h3
                       className="text-white font-bold text-xl leading-snug mb-3 flex-1"
@@ -447,10 +554,16 @@ export default function HomePage() {
                     >
                       {post.title}
                     </h3>
-                    <p className="text-[#8892b0] text-sm leading-relaxed mb-6">{post.excerpt}</p>
+                    <p className="text-[#8892b0] text-sm leading-relaxed mb-6">
+                      {post.excerpt}
+                    </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-[#8892b0] text-xs">{post.date} · {post.author}</span>
-                      <span className="grad-text text-sm font-bold">Read →</span>
+                      <span className="text-[#8892b0] text-xs">
+                        {post.date} · {post.author}
+                      </span>
+                      <span className="grad-text text-sm font-bold">
+                        Read →
+                      </span>
                     </div>
                   </motion.div>
                 </Link>
@@ -462,15 +575,24 @@ export default function HomePage() {
 
       {/* ── FINAL CTA ── */}
       <section className="py-32 relative overflow-hidden">
-        <GradientOrb className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" size={800} color="cyan" />
+        <GradientOrb
+          className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          size={800}
+          color="cyan"
+        />
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <FadeUp>
             <div
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-8"
-              style={{ background: "rgba(0,255,157,0.08)", border: "1px solid rgba(0,255,157,0.2)" }}
+              style={{
+                background: "rgba(0,255,157,0.08)",
+                border: "1px solid rgba(0,255,157,0.2)",
+              }}
             >
               <span className="w-2 h-2 rounded-full bg-[#00ff9d]" />
-              <span className="text-[#00ff9d] text-xs font-bold tracking-widest uppercase">Ready to Begin?</span>
+              <span className="text-[#00ff9d] text-xs font-bold tracking-widest uppercase">
+                Ready to Begin?
+              </span>
             </div>
             <h2
               className="font-display text-white mb-6 text-balance"
@@ -481,15 +603,22 @@ export default function HomePage() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Ready to Build for{" "}
-              <span className="grad-text">the Kingdom?</span>
+              Ready to Build for <span className="grad-text">the Kingdom?</span>
             </h2>
             <p className="text-[#8892b0] text-lg max-w-lg mx-auto mb-12 leading-relaxed">
-              Are you a creative, tech-inclined young believer ready to align your gifts with God&apos;s purpose? There&apos;s a place for you in this movement.
+              Are you a creative, tech-inclined young believer ready to align
+              your gifts with God&apos;s purpose? There&apos;s a place for you
+              in this movement.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <a href="http://www.ahrenfoundation.org/training/apply" target="_blank" rel="noopener noreferrer">
-                <GlowButton>Apply as Creative Youth <ArrowRight size={16} /></GlowButton>
+              <a
+                href="/training/apply"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GlowButton>
+                  Apply as Creative Youth <ArrowRight size={16} />
+                </GlowButton>
               </a>
               <Link href="/citireach">
                 <GlowButton outline>Join CitiReach</GlowButton>

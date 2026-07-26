@@ -13,7 +13,7 @@ import {
   programModules,
   programs,
 } from "@/db/schema";
-import { sendResendEmail } from "@/lib/email";
+import { sendEmail } from "@/lib/email";
 import {
   AHREN_ONBOARDING_PROGRAM,
   type OnboardingModuleDefinition,
@@ -446,7 +446,7 @@ export async function sendModuleDeliveryNow(
   };
 
   try {
-    const result = await sendResendEmail(payload);
+    const result = await sendEmail(payload);
     const now = new Date();
     const status = result.sent ? "sent" : "skipped";
 

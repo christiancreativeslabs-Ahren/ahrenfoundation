@@ -2,6 +2,8 @@ import type { JoinParsedData } from "@/lib/validations/join";
 import { renderOnboardingWelcomeEmail } from "@/lib/onboarding/email-renderer";
 import { getAppBaseUrl } from "@/lib/onboarding/urls";
 
+type EmailProviderName = "resend" | "nodemailer" | "zeptomail";
+
 type EmailPayload = {
   to: string | string[];
   subject: string;
@@ -14,7 +16,50 @@ type EmailPayload = {
   attachments?: {
     filename: string;
     content: string;
+    contentType?: string;
   }[];
+};
+
+type EmailSendOptions = {
+  provider?: EmailProviderName;
+  fallbackProvider?: EmailProviderName;
+  retryOnFailure?: boolean;
+  queueOnFailure?: boolean;
+};
+
+type EmailSendResult = {
+  sent: boolean;
+  skipped: boolean;
+  templateKey: string;
+  provider?: EmailProviderName;
+  providerId?: string;
+  error?: string;
+  attempt?: number;
+};
+
+type ProviderConfig = {
+  defaultProvider: EmailProviderName;
+  fallbackProvider?: EmailProviderName;
+  retryAttempts: number;
+  retryDelayMs: number;
+  enableQueue: boolean;
+};
+
+type SmtpConfig = {
+  service?: string;
+  host?: string;
+  port?: number;
+  secure?: boolean;
+  auth?: {
+    user: string;
+    pass: string;
+  };
+  defaultFrom?: string;
+};
+
+type ResendConfig = {
+  apiKey?: string;
+  defaultFrom?: string;
 };
 
 function splitEmails(value: string | undefined) {
@@ -33,22 +78,154 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
-export async function sendResendEmail(payload: EmailPayload) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
+function normalizeProvider(
+  value: string | undefined
+): EmailProviderName | undefined {
+  const normalized = value?.trim().toLowerCase();
+  if (
+    normalized === "resend" ||
+    normalized === "nodemailer" ||
+    normalized === "zeptomail"
+  ) {
+    return normalized;
+  }
+  return undefined;
+}
 
-  if (!apiKey || !from) {
-    return { sent: false, skipped: true, templateKey: payload.templateKey };
+function parseNumber(value: string | undefined, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function parseBoolean(value: string | undefined, fallback = false) {
+  if (value == null || value.trim() === "") return fallback;
+  return ["1", "true", "yes", "on"].includes(value.trim().toLowerCase());
+}
+
+function getProviderConfig(): ProviderConfig {
+  const defaultProvider =
+    normalizeProvider(process.env.EMAIL_PROVIDER) ?? "nodemailer";
+  const fallbackProvider =
+    normalizeProvider(process.env.EMAIL_FALLBACK_PROVIDER) ??
+    (defaultProvider === "nodemailer" && process.env.RESEND_API_KEY
+      ? "resend"
+      : undefined);
+
+  return {
+    defaultProvider,
+    fallbackProvider,
+    retryAttempts: parseNumber(process.env.EMAIL_RETRY_ATTEMPTS, 2),
+    retryDelayMs: parseNumber(process.env.EMAIL_RETRY_DELAY_MS, 1000),
+    enableQueue: parseBoolean(process.env.EMAIL_ENABLE_QUEUE, false),
+  };
+}
+
+function getResendConfig(): ResendConfig {
+  return {
+    apiKey: process.env.RESEND_API_KEY,
+    defaultFrom: process.env.RESEND_FROM_EMAIL,
+  };
+}
+
+function getSmtpConfig(provider: "nodemailer" | "zeptomail"): SmtpConfig {
+  if (provider === "nodemailer") {
+    return {
+      service: process.env.SMTP_SERVICE || undefined,
+      host: process.env.SMTP_HOST || undefined,
+      port: process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined,
+      secure: parseBoolean(process.env.SMTP_SECURE, false),
+      auth:
+        process.env.SMTP_USER && process.env.SMTP_PASS
+          ? {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS,
+            }
+          : undefined,
+      defaultFrom:
+        process.env.SMTP_FROM ||
+        process.env.RESEND_FROM_EMAIL ||
+        "Ahren Foundation <noreply@ahrenfoundation.org>",
+    };
+  }
+
+  return {
+    host: process.env.ZEPTOMAIL_HOST || undefined,
+    port: process.env.ZEPTOMAIL_PORT
+      ? Number(process.env.ZEPTOMAIL_PORT)
+      : undefined,
+    secure: parseBoolean(process.env.ZEPTOMAIL_SECURE, false),
+    auth:
+      process.env.ZEPTOMAIL_USER && process.env.ZEPTOMAIL_PASS
+        ? {
+            user: process.env.ZEPTOMAIL_USER,
+            pass: process.env.ZEPTOMAIL_PASS,
+          }
+        : undefined,
+    defaultFrom:
+      process.env.ZEPTOMAIL_FROM ||
+      process.env.SMTP_FROM ||
+      process.env.RESEND_FROM_EMAIL ||
+      "Ahren Foundation <noreply@ahrenfoundation.org>",
+  };
+}
+
+function isProviderConfigured(provider: EmailProviderName) {
+  if (provider === "resend") {
+    const config = getResendConfig();
+    return Boolean(config.apiKey && config.defaultFrom);
+  }
+
+  const config = getSmtpConfig(provider);
+  return Boolean(
+    config.defaultFrom &&
+    config.auth &&
+    ((provider === "nodemailer" &&
+      (config.service || (config.host && config.port))) ||
+      (provider === "zeptomail" && config.host && config.port))
+  );
+}
+
+async function getNodemailerTransport(provider: "nodemailer" | "zeptomail") {
+  const { createTransport } = await import("nodemailer");
+  const config = getSmtpConfig(provider);
+
+  if (!config.auth || !config.defaultFrom) {
+    throw new Error(`${provider} is not configured.`);
+  }
+
+  if (provider === "nodemailer" && config.service) {
+    return createTransport({
+      service: config.service,
+      auth: config.auth,
+    });
+  }
+
+  if (!config.host || !config.port) {
+    throw new Error(`${provider} host and port are not configured.`);
+  }
+
+  return createTransport({
+    host: config.host,
+    port: config.port,
+    secure: config.secure,
+    auth: config.auth,
+  });
+}
+
+async function sendWithResend(payload: EmailPayload): Promise<EmailSendResult> {
+  const config = getResendConfig();
+  if (!config.apiKey || !config.defaultFrom) {
+    throw new Error("Resend is not configured.");
   }
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${config.apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from,
+      from: config.defaultFrom,
       to: payload.to,
       subject: payload.subject,
       html: payload.html,
@@ -64,12 +241,143 @@ export async function sendResendEmail(payload: EmailPayload) {
   const result = (await response.json().catch(() => null)) as {
     id?: string;
   } | null;
+
   return {
     sent: true,
     skipped: false,
     templateKey: payload.templateKey,
+    provider: "resend",
     providerId: result?.id,
   };
+}
+
+async function sendWithSmtp(
+  payload: EmailPayload,
+  provider: "nodemailer" | "zeptomail"
+): Promise<EmailSendResult> {
+  const config = getSmtpConfig(provider);
+  if (!config.auth || !config.defaultFrom) {
+    throw new Error(`${provider} is not configured.`);
+  }
+
+  const transport = await getNodemailerTransport(provider);
+  const result = await transport.sendMail({
+    from: config.defaultFrom,
+    to: payload.to,
+    subject: payload.subject,
+    html: payload.html,
+    replyTo: undefined,
+    attachments: payload.attachments?.map((attachment) => ({
+      filename: attachment.filename,
+      content: attachment.content,
+      contentType: attachment.contentType || "application/octet-stream",
+    })),
+  });
+
+  return {
+    sent: true,
+    skipped: false,
+    templateKey: payload.templateKey,
+    provider,
+    providerId: result.messageId,
+  };
+}
+
+async function sendWithProvider(
+  payload: EmailPayload,
+  provider: EmailProviderName
+): Promise<EmailSendResult> {
+  switch (provider) {
+    case "resend":
+      return sendWithResend(payload);
+    case "nodemailer":
+      return sendWithSmtp(payload, "nodemailer");
+    case "zeptomail":
+      return sendWithSmtp(payload, "zeptomail");
+    default:
+      throw new Error(`Unknown email provider: ${provider}`);
+  }
+}
+
+export async function sendEmail(
+  payload: EmailPayload,
+  options: EmailSendOptions = {}
+): Promise<EmailSendResult> {
+  const runtimeConfig = getProviderConfig();
+  const provider = options.provider ?? runtimeConfig.defaultProvider;
+  const maxAttempts =
+    options.retryOnFailure === false ? 1 : runtimeConfig.retryAttempts;
+  const fallbackProvider =
+    options.fallbackProvider ?? runtimeConfig.fallbackProvider;
+
+  if (!isProviderConfigured(provider)) {
+    if (
+      fallbackProvider &&
+      fallbackProvider !== provider &&
+      isProviderConfigured(fallbackProvider)
+    ) {
+      const fallbackResult = await sendWithProvider(payload, fallbackProvider);
+      return { ...fallbackResult, attempt: 1 };
+    }
+
+    return {
+      sent: false,
+      skipped: true,
+      templateKey: payload.templateKey,
+      provider,
+      error: `${provider} is not configured.`,
+    };
+  }
+
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const result = await sendWithProvider(payload, provider);
+      return { ...result, attempt };
+    } catch (error) {
+      lastError = error;
+
+      if (
+        attempt === maxAttempts &&
+        fallbackProvider &&
+        fallbackProvider !== provider &&
+        isProviderConfigured(fallbackProvider)
+      ) {
+        try {
+          const fallbackResult = await sendWithProvider(
+            payload,
+            fallbackProvider
+          );
+          return { ...fallbackResult, attempt: attempt + 1 };
+        } catch (fallbackError) {
+          throw fallbackError;
+        }
+      }
+
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, runtimeConfig.retryDelayMs)
+        );
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  if (lastError instanceof Error) {
+    throw lastError;
+  }
+
+  throw new Error("Email send failed.");
+}
+
+export async function sendResendEmail(
+  payload: EmailPayload,
+  options: EmailSendOptions = {}
+): Promise<EmailSendResult> {
+  return sendEmail(payload, options);
 }
 
 function frameEmail(title: string, body: string) {
@@ -163,6 +471,7 @@ export function certificateIssuedEmail(
           {
             filename: `${certificateNumber}.pdf`,
             content: pdfBase64,
+            contentType: "application/pdf",
           },
         ]
       : undefined,
@@ -180,7 +489,7 @@ export function verifiedAccessEmail(name: string, email: string): EmailPayload {
       `
         <p>Dear ${escapeHtml(name)},</p>
         <p>Congratulations. You are now a Verified Member of Ahren Foundation.</p>
-        <p><strong>Website:</strong> ${escapeHtml(`${baseUrl}/login`)}</p>
+        <p><strong>Website:</strong> ${escapeHtml(`${baseUrl}/hub/login`)}</p>
         <p><strong>Username:</strong> ${escapeHtml(email)}</p>
         <p>Use Google sign-in or your email/password to access the dashboard. If you need a password, use the password reset flow from the login page.</p>
         <p>Inside your dashboard, you can connect with verified members, access resources, view incubation opportunities, register for events, showcase projects, and browse partnership opportunities.</p>

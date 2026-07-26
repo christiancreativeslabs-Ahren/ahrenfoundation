@@ -30,7 +30,19 @@ function Field({
 const inputClass =
   "w-full rounded-xl border border-[rgba(0,201,255,0.14)] bg-[rgba(255,255,255,0.04)] px-4 py-3.5 text-sm text-white outline-none transition-all placeholder:text-[#8892b0] focus:border-[#00c9ff] focus:bg-[rgba(0,201,255,0.04)]";
 
-export default function LoginForm() {
+type LoginFormProps = {
+  callbackURL?: string;
+  newUserCallbackURL?: string;
+  newUserLabel?: string;
+  note?: string;
+};
+
+export default function LoginForm({
+  callbackURL = "/dashboard",
+  newUserCallbackURL = "/training/apply",
+  newUserLabel = "Join the community",
+  note = "Use your email and password, or continue with Google.",
+}: LoginFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,7 +61,7 @@ export default function LoginForm() {
       const result = await authClient.signIn.email({
         email,
         password,
-        callbackURL: "/dashboard",
+        callbackURL,
       });
 
       if (result.error) {
@@ -57,7 +69,7 @@ export default function LoginForm() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push(callbackURL);
       router.refresh();
     } catch (authError) {
       setError(
@@ -75,8 +87,8 @@ export default function LoginForm() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
-        newUserCallbackURL: "/join",
+        callbackURL,
+        newUserCallbackURL,
       });
     } catch (authError) {
       setError(
@@ -180,8 +192,10 @@ export default function LoginForm() {
 
         <div className="mt-6 rounded-2xl border border-[rgba(0,201,255,0.08)] bg-[rgba(255,255,255,0.03)] px-4 py-4">
           <p className="text-sm leading-relaxed text-[#8892b0]">
-            Use your email and password, or continue with Google. New Google
-            users will be sent to the join form automatically.
+            {note}
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-[#8892b0]">
+            New Google users will be routed to the next step automatically.
           </p>
         </div>
       </div>

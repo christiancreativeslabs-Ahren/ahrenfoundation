@@ -1,13 +1,21 @@
 import Link from "next/link";
 import {
+  cancelModuleDeliveryAction,
+  issueCompletionCertificate,
+  resendModuleDelivery,
+  rescheduleModuleDeliveryAction,
+  retryFailedModuleDelivery,
   grantVerifiedStatus,
   syncMemberDeliveriesAction,
+  updateMentorOnboardingMilestone,
+  updateMentorshipSession,
   updateJoinApplicationStatus,
 } from "@/actions/admin";
 import {
   formatAdminDate,
   getFaithPayload,
   getJoinApplicationDetail,
+  getProgramMemberJourneyData,
   getString,
   getStringArray,
 } from "@/lib/admin/onboarding";
@@ -23,6 +31,21 @@ import {
 import { HiddenInput } from "@/components/ui/input-fields";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import {
+  DateTimeInput,
+  Select,
+  Textarea,
+  UrlInput,
+} from "@/components/ui/input-fields";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ResendLessonEmailDialog } from "@/components/admin/resend-lesson-email-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +64,41 @@ async function syncDeliveriesAction(formData: FormData) {
 async function verifyMemberAction(formData: FormData) {
   "use server";
   await grantVerifiedStatus(initialActionState, formData);
+}
+
+async function issueCertificateAction(formData: FormData) {
+  "use server";
+  await issueCompletionCertificate(initialActionState, formData);
+}
+
+async function updateSessionAction(formData: FormData) {
+  "use server";
+  await updateMentorshipSession(initialActionState, formData);
+}
+
+async function updateMentorMilestoneAction(formData: FormData) {
+  "use server";
+  await updateMentorOnboardingMilestone(formData);
+}
+
+async function resendDeliveryAction(formData: FormData) {
+  "use server";
+  await resendModuleDelivery(initialActionState, formData);
+}
+
+async function retryDeliveryAction(formData: FormData) {
+  "use server";
+  await retryFailedModuleDelivery(initialActionState, formData);
+}
+
+async function cancelDeliveryAction(formData: FormData) {
+  "use server";
+  await cancelModuleDeliveryAction(initialActionState, formData);
+}
+
+async function rescheduleDeliveryAction(formData: FormData) {
+  "use server";
+  await rescheduleModuleDeliveryAction(initialActionState, formData);
 }
 
 function DetailItem({
@@ -89,6 +147,23 @@ function DetailList({
   );
 }
 
+function formatDate(value: Date | string | null | undefined) {
+  if (!value) return "-";
+  const date = value instanceof Date ? value : new Date(value);
+  return new Intl.DateTimeFormat("en-NG", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
+function toDateTimeLocal(value: Date | string | null | undefined) {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(value);
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
 export default async function JoinApplicationDetailPage({
   params,
 }: {
@@ -113,6 +188,20 @@ export default async function JoinApplicationDetailPage({
   const payload = (detail.application.payload ?? {}) as Record<string, unknown>;
   const faith = getFaithPayload(payload);
   const isYouth = detail.application.applicationType === "youth";
+  const member = detail.member;
+  const memberJourney = detail.member
+    ? await getProgramMemberJourneyData(detail.member.id)
+    : null;
+  const lessonDeliveries = memberJourney
+    ? memberJourney.moduleProgress.map((item) => ({
+        deliveryId: item.delivery.id,
+        label: `Week ${item.module.weekNumber} - Module ${item.module.moduleNumber}: ${item.module.title}`,
+        status: item.delivery.status,
+        scheduledFor: formatDate(item.delivery.scheduledFor),
+        sentAt: item.delivery.sentAt ? formatDate(item.delivery.sentAt) : null,
+        failedAt: item.delivery.failedAt ? formatDate(item.delivery.failedAt) : null,
+      }))
+    : [];
 
   return (
     <div className="space-y-6">
@@ -226,15 +315,12 @@ export default async function JoinApplicationDetailPage({
           {isYouth ? (
             <>
               <DetailItem label="Age range" value={getString(payload.ageRange)} />
+              <DetailItem label="Sex" value={getString(payload.sex)} />
               <DetailList label="Current skills and interests" values={getStringArray(payload.skills)} />
-              <DetailItem label="Other skill" value={getString(payload.otherSkill)} />
+              <DetailItem label="Other skill" value={getString(payload.skillsOther)} />
               <DetailItem label="Skills to learn" value={getString(payload.skillsToLearn)} />
-              <DetailItem label="Why they want to join" value={getString(payload.motivation)} />
-              <DetailItem label="Project experience" value={getString(payload.projectExperience)} />
-              <DetailList
-                label="Preferred participation formats"
-                values={getStringArray(payload.participationFormats)}
-              />
+              <DetailList label="Availability" values={getStringArray(payload.availability)} />
+              <DetailItem label="Why they want to join" value={getString(payload.whyJoin)} />
             </>
           ) : (
             <>
@@ -248,11 +334,21 @@ export default async function JoinApplicationDetailPage({
             </>
           )}
 
-          <DetailItem label="Born again response" value={faith.bornAgain} />
-          <DetailItem label="Holy Spirit response" value={faith.holySpirit} />
-          <DetailItem label="Dependence on the Holy Spirit" value={faith.dependency} />
-          <DetailItem label="Testimony" value={getString(payload.testimony)} />
-          <DetailItem label="Church or ministry" value={getString(payload.church)} />
+          {isYouth ? (
+            <>
+              <DetailItem label="Born again response" value={faith.bornAgain} />
+              <DetailItem label="Holy Spirit response" value={faith.holySpirit} />
+              <DetailItem label="Testimony" value={getString(payload.testimony)} />
+            </>
+          ) : (
+            <>
+              <DetailItem label="Born again response" value={faith.bornAgain} />
+              <DetailItem label="Holy Spirit response" value={faith.holySpirit} />
+              <DetailItem label="Dependence on the Holy Spirit" value={faith.dependency} />
+              <DetailItem label="Testimony" value={getString(payload.testimony)} />
+              <DetailItem label="Church or ministry" value={getString(payload.church)} />
+            </>
+          )}
         </CardContent>
       </Card>
 
@@ -292,13 +388,13 @@ export default async function JoinApplicationDetailPage({
               <Separator className="bg-white/10" />
               <div className="flex flex-wrap gap-3">
                 <Link
-                  href={`/admin/program-members/${detail.member.id}`}
+                  href="#member-journey"
                   className={cn(
                     buttonVariants(),
                     "bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e] hover:opacity-95",
                   )}
                 >
-                  Open member journey
+                  Jump to member journey
                 </Link>
                 {detail.member.role === "youth" ? (
                   <form action={syncDeliveriesAction}>
@@ -311,6 +407,20 @@ export default async function JoinApplicationDetailPage({
                     </Button>
                   </form>
                 ) : null}
+                <form action={issueCertificateAction}>
+                  <HiddenInput
+                    name="program_member_id"
+                    value={detail.member.id}
+                  />
+                  <Button type="submit" variant="secondary">
+                    Issue certificate
+                  </Button>
+                </form>
+                <ResendLessonEmailDialog
+                  deliveries={lessonDeliveries}
+                  resendAction={resendDeliveryAction}
+                  disabled={!lessonDeliveries.length}
+                />
                 <form action={verifyMemberAction}>
                   <HiddenInput
                     name="program_member_id"
@@ -334,6 +444,278 @@ export default async function JoinApplicationDetailPage({
           )}
         </CardContent>
       </Card>
+
+      {memberJourney && member ? (
+        <Card
+          id="member-journey"
+          className="border-white/10 bg-white/[0.03] text-white"
+        >
+          <CardHeader>
+            <CardTitle className="text-lg">Member journey</CardTitle>
+            <CardDescription className="text-slate-300">
+              Active onboarding progress, lesson deliveries, submissions, and follow-up actions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <DetailItem label="Role" value={member.role} />
+            <DetailItem label="Status" value={member.status?.replaceAll("_", " ")} />
+            <DetailItem label="Verified" value={member.verifiedAt ? formatDate(member.verifiedAt) : "No"} />
+            <DetailItem
+              label="Certificate"
+              value={member.certificateIssuedAt ? formatDate(member.certificateIssuedAt) : "Not issued"}
+            />
+            <DetailItem
+              label="Completion"
+              value={`${memberJourney.completionPercentage}% (${memberJourney.completedModules}/${memberJourney.moduleProgress.length})`}
+            />
+            <DetailItem
+              label="Current module"
+              value={
+                memberJourney.currentModule
+                  ? `M${memberJourney.currentModule.module.moduleNumber} ${memberJourney.currentModule.module.title}`
+                  : "Completed"
+              }
+            />
+            <DetailItem
+              label="Next scheduled"
+              value={memberJourney.nextScheduled ? formatDate(memberJourney.nextScheduled.delivery.scheduledFor) : "No pending send"}
+            />
+            <DetailItem
+              label="Enrollments"
+              value={detail.enrollments.length ? String(detail.enrollments.length) : "None"}
+            />
+            <DetailItem
+              label="Welcome emails"
+              value={detail.welcomeEmails.length ? `${detail.welcomeEmails.length} logged` : "No email events yet"}
+            />
+            <DetailItem
+              label="Latest welcome email"
+              value={formatAdminDate(detail.welcomeEmails[0]?.createdAt)}
+            />
+          </CardContent>
+
+          {member.role === "mentor" ? (
+            <>
+              <CardContent className="pt-0">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                  {[
+                    {
+                      label: "Executive meeting done",
+                      milestone: "executive_meeting_completed",
+                      detail: "Moves the mentor to agreement signing.",
+                    },
+                    {
+                      label: "Agreement signed",
+                      milestone: "mentor_agreement_signed",
+                      detail: member.mentorAgreementSignedAt
+                        ? `Signed ${formatDate(member.mentorAgreementSignedAt)}`
+                        : "Records the digital agreement date.",
+                    },
+                    {
+                      label: "Orientation completed",
+                      milestone: "mentor_orientation_completed",
+                      detail: member.orientationCompletedAt
+                        ? `Completed ${formatDate(member.orientationCompletedAt)}`
+                        : "Unlocks matching readiness.",
+                    },
+                    {
+                      label: "Post-assignment screening",
+                      milestone: "post_assignment_screening",
+                      detail: "Marks mentor ready for final verification review.",
+                    },
+                  ].map((item) => (
+                    <form
+                      key={item.milestone}
+                      action={updateMentorMilestoneAction}
+                      className="rounded-lg border border-white/10 bg-white/5 p-4"
+                    >
+                      <HiddenInput name="program_member_id" value={member.id} />
+                      <HiddenInput name="milestone" value={item.milestone} />
+                      <p className="text-sm font-semibold">{item.label}</p>
+                      <p className="mt-2 min-h-10 text-xs leading-relaxed text-slate-400">
+                        {item.detail}
+                      </p>
+                      <Button type="submit" size="sm" variant="secondary" className="mt-4">
+                        Save milestone
+                      </Button>
+                    </form>
+                  ))}
+                </div>
+              </CardContent>
+            </>
+          ) : null}
+
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-white/10">
+                  <TableHead className="text-slate-400">Module</TableHead>
+                  <TableHead className="text-slate-400">Delivery</TableHead>
+                  <TableHead className="text-slate-400">Engagement</TableHead>
+                  <TableHead className="min-w-[360px] text-slate-400">Latest assignment</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {memberJourney.moduleProgress.map((item) => {
+                  const latestSubmission = memberJourney.latestSubmissionByModule.get(item.module.id);
+                  const latestAnswers = latestSubmission
+                    ? memberJourney.answersBySubmission.get(latestSubmission.id) ?? []
+                    : [];
+
+                  return (
+                    <TableRow key={item.delivery.id} className="border-white/10 align-top">
+                      <TableCell>
+                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#00c9ff]">
+                          Week {item.module.weekNumber} - Module {item.module.moduleNumber}
+                        </p>
+                        <p className="mt-2 font-medium">{item.module.title}</p>
+                        <p className="mt-1 text-xs text-slate-400">
+                          {item.module.subtitle || item.module.sendDayLabel}
+                        </p>
+                      </TableCell>
+                      <TableCell className="space-y-2 text-sm text-slate-300">
+                        <Badge variant="outline" className="border-white/15 text-cyan-200">
+                          {item.delivery.status}
+                        </Badge>
+                        <p>Scheduled: {formatDate(item.delivery.scheduledFor)}</p>
+                        <p>Sent: {formatDate(item.delivery.sentAt)}</p>
+                        <p>Failed: {formatDate(item.delivery.failedAt)}</p>
+                        <p>Email status: {memberJourney.latestEmailEventByDelivery.get(item.delivery.id)?.status || "-"}</p>
+                      </TableCell>
+                      <TableCell className="space-y-2 text-sm text-slate-300">
+                        <p>Opened: {item.delivery.openedAt ? formatDate(item.delivery.openedAt) : "No"}</p>
+                        <p>Clicked: {item.delivery.clickedAt ? formatDate(item.delivery.clickedAt) : "No"}</p>
+                        <p>Started: {item.delivery.assignmentStartedAt ? formatDate(item.delivery.assignmentStartedAt) : "No"}</p>
+                        <p>Submitted: {item.delivery.assignmentSubmittedAt ? formatDate(item.delivery.assignmentSubmittedAt) : "No"}</p>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-3">
+                          <div className="flex flex-wrap gap-2">
+                            <form action={retryDeliveryAction}>
+                              <HiddenInput name="delivery_id" value={item.delivery.id} />
+                              <Button type="submit" size="sm" variant="outline" className="border-white/15 bg-transparent text-white hover:bg-white/10">
+                                Retry
+                              </Button>
+                            </form>
+                            <form action={cancelDeliveryAction}>
+                              <HiddenInput name="delivery_id" value={item.delivery.id} />
+                              <Button type="submit" size="sm" variant="outline" className="border-white/15 bg-transparent text-white hover:bg-white/10">
+                                Cancel
+                              </Button>
+                            </form>
+                          </div>
+                          <form action={rescheduleDeliveryAction} className="flex flex-wrap gap-2">
+                            <HiddenInput name="delivery_id" value={item.delivery.id} />
+                            <DateTimeInput
+                              name="scheduled_for"
+                              defaultValue={toDateTimeLocal(item.delivery.scheduledFor)}
+                              className="h-8 rounded-md text-xs"
+                            />
+                            <Button type="submit" size="sm" variant="secondary">
+                              Reschedule
+                            </Button>
+                          </form>
+                          {latestSubmission ? (
+                            <div className="space-y-3">
+                              <p className="text-xs font-semibold text-[#00ff9d]">
+                                Submitted {formatDate(latestSubmission.submittedAt)}
+                              </p>
+                              <div className="space-y-3">
+                                {latestAnswers.map((answer) => (
+                                  <div
+                                    key={`${answer.submissionId}-${answer.questionNumber}`}
+                                    className="rounded-md border border-white/10 bg-[#080d2e] p-3"
+                                  >
+                                    <p className="text-xs font-semibold leading-5 text-slate-300">
+                                      {answer.questionNumber}. {answer.prompt}
+                                    </p>
+                                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-white">
+                                      {answer.answer}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-slate-400">No assignment submitted yet.</p>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {!memberJourney.moduleProgress.length ? (
+                  <TableRow className="border-white/10">
+                    <TableCell colSpan={4} className="py-8 text-center text-sm text-slate-400">
+                      No onboarding modules have been scheduled for this member.
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {memberJourney && member && member.role === "mentor" ? (
+        <Card className="border-white/10 bg-white/[0.03] text-white">
+          <CardHeader>
+            <CardTitle className="text-lg">Monthly virtual sessions</CardTitle>
+            <CardDescription className="text-slate-300">
+              Track the 3 monthly mentor sessions without leaving this applicant record.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {memberJourney.sessions.map((session) => (
+              <form
+                key={session.id}
+                action={updateSessionAction}
+                className="grid gap-3 rounded-lg border border-white/10 bg-white/5 p-4 md:grid-cols-[80px_1fr_1fr_1fr_auto]"
+              >
+                <HiddenInput name="session_id" value={session.id} />
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">
+                    Session
+                  </p>
+                  <p className="mt-1 font-semibold">{session.sessionNumber}</p>
+                </div>
+                <DateTimeInput name="scheduled_at" className="h-9 rounded-md" />
+                <UrlInput
+                  name="meeting_url"
+                  defaultValue={session.meetingUrl ?? ""}
+                  className="h-9 rounded-md"
+                  placeholder="Meeting URL"
+                />
+                <Select
+                  name="status"
+                  defaultValue={session.status}
+                  triggerClassName="h-9 rounded-md"
+                  options={[
+                    { value: "scheduled", label: "Scheduled" },
+                    { value: "completed", label: "Completed" },
+                    { value: "missed", label: "Missed" },
+                    { value: "rescheduled", label: "Rescheduled" },
+                  ]}
+                />
+                <Button type="submit" size="sm" variant="secondary">
+                  Save
+                </Button>
+                <Textarea
+                  name="notes"
+                  defaultValue={session.notes ?? ""}
+                  className="min-h-20 rounded-md md:col-span-5"
+                  placeholder="Check-in, lesson discussion, project refinement, prayer, and next steps"
+                />
+              </form>
+            ))}
+            {!memberJourney.sessions.length ? (
+              <div className="rounded-lg border border-white/10 bg-white/5 p-5 text-sm text-slate-400">
+                No mentor sessions have been created yet.
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card className="border-white/10 bg-white/[0.03] text-white">
         <CardHeader>

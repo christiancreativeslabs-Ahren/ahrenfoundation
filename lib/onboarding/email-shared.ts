@@ -2,31 +2,7 @@ import {
   AHREN_ONBOARDING_PROGRAM,
   type OnboardingModuleDefinition,
 } from "@/lib/onboarding/content";
-
-export function getOnboardingPreviewTemplates() {
-  return [
-    {
-      templateKey: "mentee-welcome",
-      title: "Mentee Welcome",
-      description: "Welcome email for accepted creative youth.",
-    },
-    {
-      templateKey: "mentor-welcome",
-      title: "Mentor Welcome",
-      description: "Welcome email for mentors beginning onboarding.",
-    },
-    {
-      templateKey: "completion-letter",
-      title: "Completion Letter",
-      description: "Closing letter to the creative cohort.",
-    },
-    ...AHREN_ONBOARDING_PROGRAM.modules.map((module) => ({
-      templateKey: module.moduleKey,
-      title: `Module ${module.moduleNumber}: ${module.title}`,
-      description: module.subtitle ?? module.previewText,
-    })),
-  ];
-}
+export { getOnboardingPreviewTemplates } from "@/lib/onboarding/email-preview-catalog";
 
 export function moduleDefinitionFromPayload(module: {
   moduleKey: string;

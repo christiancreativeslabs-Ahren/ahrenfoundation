@@ -113,6 +113,16 @@ export const joinApplications = pgTable(
     email: text("email").notNull(),
     phoneNumber: text("phone_number").notNull(),
     location: text("location").notNull(),
+    ageRange: text("age_range"),
+    sex: text("sex"),
+    skills: jsonb("skills").$type<string[]>(),
+    skillsOther: text("skills_other"),
+    skillsToLearn: text("skills_to_learn"),
+    availability: jsonb("availability").$type<string[]>(),
+    whyJoin: text("why_join"),
+    faithBornAgain: text("faith_born_again"),
+    faithHolySpirit: text("faith_holy_spirit"),
+    testimony: text("testimony"),
     status: text("status").notNull().default("pending"),
     consent: boolean("consent").notNull().default(false),
     payload: jsonb("payload").$type<Record<string, unknown>>(),
@@ -121,6 +131,43 @@ export const joinApplications = pgTable(
     index("join_application_type_idx").on(table.applicationType),
     index("join_application_email_idx").on(table.email),
     index("join_application_status_idx").on(table.status),
+  ]
+);
+
+export const joinApplicationListItems = pgTable(
+  "join_application_list_item",
+  {
+    joinApplicationId: text("join_application_id")
+      .primaryKey()
+      .references(() => joinApplications.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    applicationType: text("application_type").notNull(),
+    fullName: text("full_name").notNull(),
+    email: text("email").notNull(),
+    phoneNumber: text("phone_number").notNull(),
+    location: text("location").notNull(),
+    status: text("status").notNull(),
+    consent: boolean("consent").notNull().default(false),
+    programMemberId: text("program_member_id").references(
+      () => programMembers.id,
+      { onDelete: "set null" },
+    ),
+    memberRole: text("member_role"),
+    memberStatus: text("member_status"),
+    memberCurrentStep: text("member_current_step"),
+    userId: text("user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    searchText: text("search_text").notNull(),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    index("join_application_list_created_idx").on(table.createdAt),
+    index("join_application_list_status_idx").on(table.status),
+    index("join_application_list_type_idx").on(table.applicationType),
+    index("join_application_list_member_idx").on(table.programMemberId),
+    index("join_application_list_user_idx").on(table.userId),
   ]
 );
 

@@ -1,4 +1,13 @@
-export const MENTORS = [
+type MentorCard = {
+  name: string;
+  photo: string;
+  bio: string;
+  role?: string;
+  label?: string;
+  featured?: boolean;
+};
+
+export const MENTORS: MentorCard[] = [
   {
     name: "Caleb Adamu",
     photo: "/mentors/caleb-adamu.jpg",

@@ -10,12 +10,12 @@ const ADMIN_LAST_NAME = "Labs";
 const DEV_FALLBACK_PASSWORD = "AhrenAdmin123!";
 
 function getSeedPassword() {
-  const password = process.env.ADMIN_SEED_PASSWORD?.trim();
-  if (password) return password;
+  // const password = process.env.ADMIN_SEED_PASSWORD?.trim();
+  // if (password) return password;
 
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("ADMIN_SEED_PASSWORD is required when NODE_ENV=production.");
-  }
+  // if (process.env.NODE_ENV === "production") {
+  //   throw new Error("ADMIN_SEED_PASSWORD is required when NODE_ENV=production.");
+  // }
 
   return DEV_FALLBACK_PASSWORD;
 }
@@ -63,7 +63,7 @@ async function ensureAdminAuthUser() {
   } else {
     console.log(`Admin auth user already exists: ${user.email}`);
     console.log(
-      "Existing password was not changed because this seed follows the HOTR signUpEmail pattern.",
+      "Existing password was not changed because this seed follows the HOTR signUpEmail pattern."
     );
   }
 
@@ -80,12 +80,14 @@ async function ensureAdminAuthUser() {
 
   if (!adminEmailsIncludesSeedUser()) {
     console.warn(
-      `ADMIN_EMAILS does not include ${ADMIN_EMAIL}. Add it before logging into /admin.`,
+      `ADMIN_EMAILS does not include ${ADMIN_EMAIL}. Add it before logging into /admin.`
     );
   }
 
   if (!process.env.ADMIN_SEED_PASSWORD) {
-    console.warn(`Using development fallback password: ${DEV_FALLBACK_PASSWORD}`);
+    console.warn(
+      `Using development fallback password: ${DEV_FALLBACK_PASSWORD}`
+    );
   }
 }
 

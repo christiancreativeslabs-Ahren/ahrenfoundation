@@ -38,7 +38,7 @@ export default async function MemberDashboardPage() {
   });
 
   if (!session?.user?.email) {
-    redirect("/login");
+    redirect("/hub/login");
   }
 
   const [member] = await db
@@ -208,7 +208,7 @@ export default async function MemberDashboardPage() {
                   events, project showcase, and mentor directory will unlock here.
                 </p>
                 <Link
-                  href="/join"
+                  href="/training/apply"
                   className="mt-4 inline-flex rounded-md border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
                 >
                   Return to join form

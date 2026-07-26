@@ -6,6 +6,7 @@ import {
   programMembers,
   users,
 } from "@/db/schema";
+import { syncJoinApplicationProjection } from "@/lib/admin/join-applications";
 import {
   parseJoinApplication,
   sendJoinNotificationEmails,
@@ -55,6 +56,16 @@ export async function submitJoinApplication(
         email: parsed.data.email,
         phoneNumber: parsed.data.phoneNumber,
         location: parsed.data.location,
+        ageRange: parsed.data.ageRange,
+        sex: parsed.data.sex,
+        skills: parsed.data.skills,
+        skillsOther: parsed.data.skillsOther,
+        skillsToLearn: parsed.data.skillsToLearn,
+        availability: parsed.data.availability,
+        whyJoin: parsed.data.whyJoin,
+        faithBornAgain: parsed.data.faithBornAgain,
+        faithHolySpirit: parsed.data.faithHolySpirit,
+        testimony: parsed.data.testimony,
         status: "pending",
         consent: parsed.data.consent,
         payload: parsed.data.payload,
@@ -106,6 +117,8 @@ export async function submitJoinApplication(
     if (parsed.data.applicationType === "youth" && member?.id) {
       await enrollMemberInAhrenOnboarding(member.id);
     }
+
+    await syncJoinApplicationProjection(record.id);
 
     let emailSent = false;
     try {

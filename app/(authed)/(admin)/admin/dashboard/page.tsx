@@ -20,7 +20,7 @@ export default async function AdminDashboardPage() {
   ]);
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/hub/login");
   }
 
   const user = session.user;
