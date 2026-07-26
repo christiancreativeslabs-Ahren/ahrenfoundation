@@ -5,7 +5,7 @@ import PageTransition from "@/components/PageTransition";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About — Ahren Foundation",
+  title: "About Us — Ahren Foundation",
   description: "Who we are, our vision, mission, and anchor. Building the global network of Holy Spirit-led innovators.",
 };
 

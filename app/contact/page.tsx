@@ -5,7 +5,7 @@ import PageTransition from "@/components/PageTransition";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact — Ahren Foundation",
+  title: "Contact Us — Ahren Foundation",
   description: "Get in touch with the Ahren Foundation team. We'd love to hear from you.",
 };
 

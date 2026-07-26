@@ -1,62 +1,24 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import {
-  SectionLabel,
-  GlowButton,
-  FadeUp,
-  StaggerParent,
-  StaggerChild,
-  GradientOrb,
-} from "@/components/ui/custom";
+import { SectionLabel, GlowButton, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 import ScripturesSection from "@/components/ScripturesSection";
+import { WHAT_WE_DO } from "@/lib/data";
 
 export default function AboutPage() {
-  const pillars = [
-    {
-      icon: "🔭",
-      label: "Our Vision",
-      color: "#00c9ff",
-      content:
-        "We envision a generation where young believers align their use of tech skills, tools and creativity with God's purpose — partnering with the Holy Spirit to use them for creating value that impacts lives and reveals Jesus Christ to the world.",
-    },
-    {
-      icon: "🎯",
-      label: "Our Mission",
-      color: "#00ff9d",
-      content:
-        "To build a global community of believers in tech who are using their tech skills, gifts and creativity in line with God's plans and purposes on earth — from mission fields to marketplaces, equipping every believer to build what matters.",
-    },
-    {
-      icon: "🕊️",
-      label: "Our Anchor",
-      color: "#00c9ff",
-      content:
-        "We believe our best work happens not in our own strength, but in genuine dependence on the Holy Spirit. He is our ultimate Creative Director. We collaborate with Him to steward every skill, every spark of creativity, and every technology at our disposal.",
-    },
-  ];
-
   return (
     <main className="bg-[#080d2e] overflow-hidden">
       {/* Page Header */}
       <section className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-50" />
-        <GradientOrb
-          className="top-[-20%] right-[-10%]"
-          size={700}
-          color="cyan"
-        />
-        <GradientOrb
-          className="bottom-[-10%] left-[-10%]"
-          size={500}
-          color="mint"
-        />
+        <GradientOrb className="top-[-20%] right-[-10%]" size={700} color="cyan" />
+        <GradientOrb className="bottom-[-10%] left-[-10%]" size={500} color="mint" />
 
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <FadeUp>
-            <SectionLabel>Our Story</SectionLabel>
+            <SectionLabel>About Us</SectionLabel>
             <h1
               className="font-display text-white leading-[1.02] mb-6 text-balance"
               style={{
@@ -74,26 +36,68 @@ export default function AboutPage() {
               className="text-[#8892b0] leading-relaxed max-w-3xl"
               style={{ fontSize: "clamp(16px, 2vw, 20px)" }}
             >
-              Ahren Foundation is a platform that empowers youths for societal
-              impact and purposeful living through tech programs, mentorship,
-              and strategic collaborations — helping them align their tech
-              skills and creativity with God&apos;s purpose. From mission fields
-              to marketplaces, from code to creativity, we are building a global
-              network of believers in tech who hone their skills to create value
-              and reach the world for Jesus Christ.
+              Ahren Foundation is a youth development platform, where Christian creatives find
+              purpose, community, and opportunity. We are building a global network of believers
+              in tech who create value, serve their generation, and advance the Kingdom of God.
             </p>
           </FadeUp>
         </div>
       </section>
 
-      {/* Pillars */}
-      <section
-        className="py-24 relative"
-        style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
-      >
+      {/* Vision & Mission */}
+      <section className="py-24 relative" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
         <div className="max-w-7xl mx-auto px-6">
+          <StaggerParent className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StaggerChild>
+              <motion.div
+                whileHover={{ y: -8 }}
+                className="card p-10 h-full flex flex-col transition-all duration-300"
+                style={{ borderRadius: 28, borderTop: "3px solid #00c9ff" }}
+              >
+                <div className="text-5xl mb-6">🔭</div>
+                <div className="text-xs font-bold tracking-[0.15em] uppercase mb-4" style={{ color: "#00c9ff" }}>
+                  Our Vision
+                </div>
+                <p className="text-[#8892b0] text-[15px] leading-relaxed flex-1">
+                  We envision a global network of Christian creatives using their tech skills and
+                  creativity to solve problems, build value, and glorify Jesus Christ — transforming
+                  industries and communities for God&apos;s glory.
+                </p>
+              </motion.div>
+            </StaggerChild>
+            <StaggerChild>
+              <motion.div
+                whileHover={{ y: -8 }}
+                className="card p-10 h-full flex flex-col transition-all duration-300"
+                style={{ borderRadius: 28, borderTop: "3px solid #00ff9d" }}
+              >
+                <div className="text-5xl mb-6">🎯</div>
+                <div className="text-xs font-bold tracking-[0.15em] uppercase mb-4" style={{ color: "#00ff9d" }}>
+                  Our Mission
+                </div>
+                <p className="text-[#8892b0] text-[15px] leading-relaxed flex-1">
+                  To equip Christian creatives with tech skills, mentorship, and collaborative
+                  opportunities — helping them align their skills and creativity with God&apos;s
+                  purpose, build valuable products, and serve their generation for Kingdom impact.
+                </p>
+              </motion.div>
+            </StaggerChild>
+          </StaggerParent>
+        </div>
+      </section>
+
+      {/* What We Do — Initiatives */}
+      <section
+        className="py-24 relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)", borderTop: "1px solid rgba(0,201,255,0.08)" }}
+      >
+        <GradientOrb className="right-[-5%] top-1/3" size={500} color="mint" />
+        <GradientOrb className="left-[-5%] bottom-1/4" size={400} color="cyan" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <FadeUp className="text-center mb-16">
-            <SectionLabel>Foundation Pillars</SectionLabel>
+            <div className="flex justify-center">
+              <SectionLabel>What We Do</SectionLabel>
+            </div>
             <h2
               className="font-display text-white"
               style={{
@@ -103,140 +107,40 @@ export default function AboutPage() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Vision, Mission &amp; Anchor
+              Our <span className="grad-text">Initiatives</span>
             </h2>
+            <p className="text-[#8892b0] mt-4 max-w-lg mx-auto text-base leading-relaxed">
+              Four focused initiatives, all designed to align tech skills and creativity with
+              God&apos;s eternal purpose.
+            </p>
           </FadeUp>
 
-          <StaggerParent className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {pillars.map((p, i) => (
+          <StaggerParent className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {WHAT_WE_DO.map((item, i) => (
               <StaggerChild key={i}>
                 <motion.div
-                  whileHover={{ y: -8 }}
-                  className="card p-10 h-full flex flex-col transition-all duration-300"
+                  whileHover={{ y: -6, borderColor: item.color + "44" }}
+                  className="p-8 h-full flex flex-col transition-all duration-300 group"
                   style={{
-                    borderRadius: 28,
-                    borderTop: `3px solid ${p.color}`,
-                  }}
-                >
-                  <div className="text-5xl mb-6">{p.icon}</div>
-                  <div
-                    className="text-xs font-bold tracking-[0.15em] uppercase mb-4"
-                    style={{ color: p.color }}
-                  >
-                    {p.label}
-                  </div>
-                  <p className="text-[#8892b0] text-[15px] leading-relaxed flex-1">
-                    {p.content}
-                  </p>
-                </motion.div>
-              </StaggerChild>
-            ))}
-          </StaggerParent>
-        </div>
-      </section>
-
-      {/* Taglines */}
-      <section
-        className="py-24 relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)",
-          borderTop: "1px solid rgba(0,201,255,0.08)",
-        }}
-      >
-        <GradientOrb
-          className="left-1/2 -translate-x-1/2 top-0"
-          size={600}
-          color="cyan"
-        />
-        <div className="max-w-5xl mx-auto px-6 relative z-10">
-          <StaggerParent className="space-y-5">
-            {[
-              "We don't just code. We create for a Kingdom.",
-              "Your skills have a purpose. Let's find it together.",
-              "The Holy Spirit is our ultimate Creative Director.",
-              "Building value. Revealing Jesus. Changing lives.",
-              "You were created to create.",
-            ].map((tagline, i) => (
-              <StaggerChild key={i}>
-                <motion.div
-                  whileHover={{ x: 8 }}
-                  className="flex items-center gap-6 p-8 rounded-2xl transition-all duration-300"
-                  style={{
-                    background: "rgba(17,24,80,0.6)",
+                    background: "#111850",
                     border: "1px solid rgba(0,201,255,0.1)",
-                  }}
-                >
-                  <div className="w-10 h-10 rounded-full flex-shrink-0 grad-bg flex items-center justify-center text-[#080d2e] font-bold text-sm">
-                    {i + 1}
-                  </div>
-                  <p
-                    className="text-white font-semibold italic"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "clamp(16px, 2.2vw, 22px)",
-                    }}
-                  >
-                    &ldquo;{tagline}&rdquo;
-                  </p>
-                </motion.div>
-              </StaggerChild>
-            ))}
-          </StaggerParent>
-        </div>
-      </section>
-
-      {/* Inspiring Questions */}
-      <section
-        className="py-24 relative overflow-hidden"
-        style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}
-      >
-        <GradientOrb className="left-[-10%] top-1/2" size={500} color="mint" />
-        <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
-          <FadeUp>
-            <SectionLabel>A Moment to Reflect</SectionLabel>
-            <h2
-              className="font-display text-white mb-16"
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(26px, 3.5vw, 42px)",
-                fontWeight: 800,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Questions Worth Sitting With
-            </h2>
-          </FadeUp>
-          <StaggerParent className="space-y-6">
-            {[
-              "What if your skills could serve God's Kingdom?",
-              "What if your next project could reveal Jesus Christ to the world?",
-              "What if your creativity had eternal impact?",
-            ].map((q, i) => (
-              <StaggerChild key={i}>
-                <motion.div
-                  whileHover={{ scale: 1.015 }}
-                  className="p-8 rounded-2xl transition-all duration-300 relative overflow-hidden"
-                  style={{
-                    background: "rgba(17,24,80,0.7)",
-                    border: "1px solid rgba(0,255,157,0.12)",
+                    borderRadius: 24,
+                    borderLeft: `4px solid ${item.color}`,
                   }}
                 >
                   <div
-                    className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, #00c9ff, #00ff9d)",
-                    }}
-                  />
-                  <p
-                    className="text-white font-semibold italic leading-relaxed"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "clamp(17px, 2.2vw, 22px)",
-                    }}
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 flex-shrink-0"
+                    style={{ background: item.color + "15", border: `1px solid ${item.color}25` }}
                   >
-                    {q}
-                  </p>
+                    {item.icon}
+                  </div>
+                  <h3
+                    className="text-white font-bold text-lg mb-3 leading-snug group-hover:grad-text transition-all"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="text-[#8892b0] text-sm leading-relaxed flex-1">{item.desc}</p>
                 </motion.div>
               </StaggerChild>
             ))}
@@ -244,9 +148,34 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <ScripturesSection />
+      {/* Image band */}
+      <section className="relative overflow-hidden" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+          {[
+            { src: "/showcase/collaborate-whiteboard.jpg", alt: "Christian creatives collaborating", label: "Collaborate" },
+            { src: "/showcase/tech-community.jpg", alt: "Believers in Tech community", label: "Community" },
+            { src: "/showcase/prayer-gathering.jpg", alt: "Believers gathered in prayer", label: "Spirit-Led" },
+          ].map((img, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: i * 0.12 }}
+              className="relative group overflow-hidden"
+              style={{ height: 280 }}
+            >
+              <Image src={img.src} alt={img.alt} fill className="object-cover transition-transform duration-700 group-hover:scale-105" sizes="(max-width: 768px) 100vw, 33vw" />
+              <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(8,13,46,0.92) 0%, rgba(8,13,46,0.3) 60%, rgba(8,13,46,0.5) 100%)" }} />
+              <div className="absolute bottom-6 left-6">
+                <span className="grad-text text-lg font-bold" style={{ fontFamily: "var(--font-display)" }}>{img.label}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-      {/* What makes us different */}
+      {/* Our Anchor / Belief */}
       <section className="py-24 relative">
         <GradientOrb className="right-[-10%] top-1/2" size={500} color="mint" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -266,72 +195,43 @@ export default function AboutPage() {
                 <span className="grad-text">Ultimate Creative Director</span>
               </h2>
               <p className="text-[#8892b0] text-base leading-relaxed mb-6">
-                We don&apos;t just build software — we build with the Spirit.
-                Every program, every product, every mentorship session is
-                saturated with prayer and dependence on the Holy Spirit&apos;s
-                guidance.
+                We believe our best work happens not in our own strength, but in genuine dependence
+                on the Holy Spirit. He is our ultimate Creative Director. We collaborate with Him to
+                steward every skill, every spark of creativity, and every technology at our disposal.
               </p>
               <p className="text-[#8892b0] text-base leading-relaxed mb-10">
-                We believe when believers consecrate their tech skills to God,
-                they become instruments through which He builds His Kingdom on
-                earth — one line of code, one design, one conversation at a
-                time.
+                We believe when believers consecrate their tech skills to God, they become
+                instruments through which He builds His Kingdom on earth — one line of code, one
+                design, one conversation at a time.
               </p>
-              <Link href="/what-we-do">
+              <a href="http://www.ahrenfoundation.org/training/apply" target="_blank" rel="noopener noreferrer">
                 <GlowButton>
-                  See What We Build <ArrowRight size={16} />
+                  Apply as Creative Youth <ArrowRight size={16} />
                 </GlowButton>
-              </Link>
+              </a>
             </FadeUp>
 
             <StaggerParent className="space-y-4">
               {[
-                {
-                  num: "01",
-                  title: "Prayer before code",
-                  body: "Every project, workshop, and fellowship starts with prayer. We build on the altar, not just the terminal.",
-                },
-                {
-                  num: "02",
-                  title: "Community over competition",
-                  body: "We celebrate each other's wins. In the Kingdom, your growth is our growth.",
-                },
-                {
-                  num: "03",
-                  title: "Excellence for the King",
-                  body: "We pursue the highest quality in everything — because the King deserves our best work.",
-                },
-                {
-                  num: "04",
-                  title: "Missions through tech",
-                  body: "Technology is our language to preach the Gospel to the digital generation.",
-                },
+                { num: "01", title: "Prayer before code", body: "Every project, workshop, and fellowship starts with prayer. We build on the altar, not just the terminal." },
+                { num: "02", title: "Community over competition", body: "We celebrate each other's wins. In the Kingdom, your growth is our growth." },
+                { num: "03", title: "Excellence for the King", body: "We pursue the highest quality in everything — because the King deserves our best work." },
+                { num: "04", title: "Missions through tech", body: "Technology is our language to preach the Gospel to the digital generation." },
               ].map((item, i) => (
                 <StaggerChild key={i}>
                   <motion.div
                     whileHover={{ x: 6 }}
                     className="flex gap-5 p-6 rounded-xl transition-all duration-300"
-                    style={{
-                      background: "rgba(17,24,80,0.6)",
-                      border: "1px solid rgba(0,201,255,0.08)",
-                    }}
+                    style={{ background: "rgba(17,24,80,0.6)", border: "1px solid rgba(0,201,255,0.08)" }}
                   >
-                    <span
-                      className="grad-text text-lg font-bold flex-shrink-0"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
+                    <span className="grad-text text-lg font-bold flex-shrink-0" style={{ fontFamily: "var(--font-display)" }}>
                       {item.num}
                     </span>
                     <div>
-                      <h4
-                        className="text-white font-bold text-sm mb-1"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
+                      <h4 className="text-white font-bold text-sm mb-1" style={{ fontFamily: "var(--font-display)" }}>
                         {item.title}
                       </h4>
-                      <p className="text-[#8892b0] text-sm leading-relaxed">
-                        {item.body}
-                      </p>
+                      <p className="text-[#8892b0] text-sm leading-relaxed">{item.body}</p>
                     </div>
                   </motion.div>
                 </StaggerChild>
@@ -340,6 +240,82 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Taglines */}
+      <section
+        className="py-24 relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #0d1340 0%, #080d2e 100%)", borderTop: "1px solid rgba(0,201,255,0.08)" }}
+      >
+        <GradientOrb className="left-1/2 -translate-x-1/2 top-0" size={600} color="cyan" />
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
+          <StaggerParent className="space-y-5">
+            {[
+              "We don't just code. We create for a Kingdom.",
+              "Your skills have a purpose. Let's find it together.",
+              "The Holy Spirit is our ultimate Creative Director.",
+              "Building value. Revealing Jesus. Changing lives.",
+              "You were created to create.",
+            ].map((tagline, i) => (
+              <StaggerChild key={i}>
+                <motion.div
+                  whileHover={{ x: 8 }}
+                  className="flex items-center gap-6 p-8 rounded-2xl transition-all duration-300"
+                  style={{ background: "rgba(17,24,80,0.6)", border: "1px solid rgba(0,201,255,0.1)" }}
+                >
+                  <div className="w-10 h-10 rounded-full flex-shrink-0 grad-bg flex items-center justify-center text-[#080d2e] font-bold text-sm">
+                    {i + 1}
+                  </div>
+                  <p
+                    className="text-white font-semibold italic"
+                    style={{ fontFamily: "var(--font-display)", fontSize: "clamp(16px, 2.2vw, 22px)" }}
+                  >
+                    &ldquo;{tagline}&rdquo;
+                  </p>
+                </motion.div>
+              </StaggerChild>
+            ))}
+          </StaggerParent>
+        </div>
+      </section>
+
+      {/* Inspiring Questions */}
+      <section className="py-24 relative">
+        <GradientOrb className="right-[-5%] top-1/4" size={500} color="mint" />
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <FadeUp className="text-center mb-12">
+            <div className="flex justify-center">
+              <SectionLabel>A Moment to Reflect</SectionLabel>
+            </div>
+          </FadeUp>
+          <StaggerParent className="space-y-5">
+            {[
+              "What if your skills could serve God's Kingdom?",
+              "What if your next project could reveal Jesus Christ to the world?",
+              "What if your creativity had eternal impact?",
+            ].map((q, i) => (
+              <StaggerChild key={i}>
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="p-8 rounded-2xl text-center relative overflow-hidden"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(0,201,255,0.06), rgba(0,255,157,0.04))",
+                    border: "1px solid rgba(0,201,255,0.15)",
+                  }}
+                >
+                  <p
+                    className="text-white font-semibold italic"
+                    style={{ fontFamily: "var(--font-display)", fontSize: "clamp(18px, 2.5vw, 26px)" }}
+                  >
+                    {q}
+                  </p>
+                </motion.div>
+              </StaggerChild>
+            ))}
+          </StaggerParent>
+        </div>
+      </section>
+
+      <ScripturesSection />
     </main>
   );
 }

@@ -1,20 +1,21 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ObjectivesPage from "@/components/sections/ObjectivesPage";
+import BecomeMentorPage from "@/components/sections/BecomeMentorPage";
 import PageTransition from "@/components/PageTransition";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Objectives — Ahren Foundation",
-  description: "Eight Spirit-led objectives that define how we move from vision to Kingdom impact.",
+  title: "Become a Mentor — Ahren Foundation",
+  description: "Mentor young Christian creatives. Your skills. Their future. Kingdom impact.",
+  robots: { index: false, follow: false },
 };
 
-export default function Objectives() {
+export default function BecomeMentor() {
   return (
     <PageTransition>
       <>
         <Navbar />
-        <ObjectivesPage />
+        <BecomeMentorPage />
         <Footer />
       </>
     </PageTransition>
