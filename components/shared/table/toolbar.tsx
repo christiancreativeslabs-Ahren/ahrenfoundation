@@ -108,7 +108,7 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_18px_60px_rgba(0,0,0,0.18)] backdrop-blur md:p-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="shrink-0">{title}</div>
       <div className="flex flex-1 flex-wrap items-center justify-end gap-2">
         {showSearch ? (
@@ -124,7 +124,7 @@ export function DataTableToolbar<TData>({
               }
               table.setGlobalFilter(event.target.value);
             }}
-            className="h-9 w-full max-w-xs bg-background"
+            className="h-11 w-full max-w-xs border-white/10 bg-[#080d2e] text-white placeholder:text-[#8892b0] focus:border-[#00c9ff] focus:ring-2 focus:ring-[#00c9ff]/20"
             disabled={disabled}
           />
         ) : null}
@@ -134,7 +134,7 @@ export function DataTableToolbar<TData>({
             placeholder={secondarySearchPlaceholder}
             value={localSecondarySearchValue}
             onChange={(event) => setLocalSecondarySearchValue(event.target.value)}
-            className="h-9 w-full max-w-[180px] bg-background"
+            className="h-11 w-full max-w-[180px] border-white/10 bg-[#080d2e] text-white placeholder:text-[#8892b0] focus:border-[#00c9ff] focus:ring-2 focus:ring-[#00c9ff]/20"
             disabled={disabled}
           />
         ) : null}
@@ -145,12 +145,12 @@ export function DataTableToolbar<TData>({
             size="sm"
             onClick={onFilterClick}
             disabled={disabled}
-            className="h-9 border-border bg-background"
+            className="h-11 border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
           >
             <Filter className="mr-2 h-4 w-4" />
             Filter
             {(isFiltered || filterTagsCount > 0) ? (
-              <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
+              <span className="ml-2 rounded-full bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] px-2 py-0.5 text-xs font-bold text-[#080d2e]">
                 {filterTagsCount || table.getState().columnFilters.length}
               </span>
             ) : null}
@@ -163,7 +163,7 @@ export function DataTableToolbar<TData>({
             size="sm"
             onClick={onRefreshClick}
             disabled={disabled || isRefreshing}
-            className="h-9 border-border bg-background"
+            className="h-11 border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
           >
             <RefreshCw className={cn("mr-2 h-4 w-4", isRefreshing && "animate-spin")} />
             {refreshButtonText}
@@ -178,7 +178,7 @@ export function DataTableToolbar<TData>({
             size="sm"
             onClick={onExportClick}
             disabled={disabled}
-            className="h-9 border-border bg-background"
+            className="h-11 border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
           >
             <Download className="mr-2 h-4 w-4" />
             {exportButtonText}

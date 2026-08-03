@@ -21,12 +21,10 @@ export const auth = betterAuth({
       firstName: {
         type: "string",
         required: false,
-        fieldName: "first_name",
       },
       lastName: {
         type: "string",
         required: false,
-        fieldName: "last_name",
       },
     },
   },

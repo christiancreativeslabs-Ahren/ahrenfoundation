@@ -5,7 +5,7 @@ import { emailEvents } from "@/db/schema";
 import {
   adminJoinNotificationEmail,
   mentorWelcomeEmail,
-  sendEmail,
+  sendResendEmail,
   youthWelcomeEmail,
 } from "@/lib/email";
 
@@ -222,7 +222,8 @@ async function sendAndLogJoinEmail(
   context: { programMemberId?: string } = {},
 ) {
   try {
-    const result = await sendEmail(payload);
+    // Join-form emails should use Resend for now while we keep Nodemailer disabled on this path.
+    const result = await sendResendEmail(payload, { provider: "resend" });
     await db.insert(emailEvents).values({
       programMemberId: context.programMemberId ?? null,
       recipientEmail: Array.isArray(payload.to) ? payload.to.join(",") : payload.to,
@@ -272,5 +273,10 @@ export async function sendJoinNotificationEmails(
 }
 
 export function getAdminEmails() {
-  return splitAdminEmails(process.env.ADMIN_EMAILS);
+  return Array.from(
+    new Set([
+      "christiancreativeslabs@gmail.com",
+      ...splitAdminEmails(process.env.ADMIN_EMAILS),
+    ]),
+  );
 }

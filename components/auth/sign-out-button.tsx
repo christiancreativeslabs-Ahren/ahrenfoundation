@@ -7,8 +7,10 @@ import { authClient } from "@/lib/auth/auth-client";
 
 export default function SignOutButton({
   className = "",
+  redirectTo = "/hub/login",
 }: {
   className?: string;
+  redirectTo?: string;
 }) {
   const router = useRouter();
 
@@ -16,7 +18,7 @@ export default function SignOutButton({
     await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-          router.push("/hub/login");
+          router.push(redirectTo);
           router.refresh();
         },
       },

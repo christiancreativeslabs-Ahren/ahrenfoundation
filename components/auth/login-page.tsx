@@ -20,6 +20,8 @@ type LoginPageProps = {
   newUserCallbackURL?: string;
   signedInRedirect?: string;
   note?: string;
+  defaultEmail?: string;
+  defaultPassword?: string;
 };
 
 export default async function LoginPage({
@@ -33,6 +35,8 @@ export default async function LoginPage({
   newUserCallbackURL = "/training/apply",
   signedInRedirect = "/dashboard",
   note,
+  defaultEmail,
+  defaultPassword,
 }: LoginPageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -145,6 +149,8 @@ export default async function LoginPage({
                   newUserCallbackURL={newUserCallbackURL}
                   newUserLabel={newUserLabel}
                   note={note}
+                  defaultEmail={defaultEmail}
+                  defaultPassword={defaultPassword}
                 />
                 <div className="mt-4 rounded-2xl border border-[rgba(0,201,255,0.08)] bg-[rgba(17,24,80,0.55)] px-4 py-3 text-xs text-[#8892b0]">
                   By signing in you agree to keep the community space respectful

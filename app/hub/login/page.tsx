@@ -15,9 +15,9 @@ export default function MemberLoginPage() {
       homeHref="/"
       newUserHref="/training/apply"
       newUserLabel="Join the community"
-      callbackURL="/hub/welcome"
+      callbackURL="/dashboard"
       newUserCallbackURL="/training/apply"
-      signedInRedirect="/hub/welcome"
+      signedInRedirect="/dashboard"
       note="Use your email and password, or continue with Google."
     />
   );

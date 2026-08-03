@@ -15,12 +15,12 @@ export default async function AdminLayout({
   });
 
   if (!session?.user) {
-    redirect("/hub/login");
+    redirect("/admin/login");
   }
 
   const adminEmails = getAdminEmails();
   if (!session.user.email || !adminEmails.includes(session.user.email)) {
-    redirect("/dashboard");
+    redirect("/admin/login");
   }
 
   return (

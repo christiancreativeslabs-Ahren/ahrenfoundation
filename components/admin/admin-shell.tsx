@@ -183,7 +183,10 @@ export default function AdminShell({
                 {email ?? "Admin"}
               </p>
             </div>
-            <SignOutButton className="w-full justify-center rounded-2xl" />
+            <SignOutButton
+              className="w-full justify-center rounded-2xl"
+              redirectTo="/admin/login"
+            />
           </div>
         </SidebarFooter>
         <SidebarRail />

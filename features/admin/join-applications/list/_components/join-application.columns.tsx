@@ -35,7 +35,11 @@ export function buildJoinApplicationColumns(input: {
       header: "S/N",
       cell: ({ row }) => {
         const offset = (input.page - 1) * input.limit;
-        return <div className="w-12">{offset + row.index + 1}</div>;
+        return (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-xs font-bold text-[#00c9ff]">
+            {offset + row.index + 1}
+          </div>
+        );
       },
     },
     {
@@ -44,11 +48,13 @@ export function buildJoinApplicationColumns(input: {
       cell: ({ row }) => (
         <button
           type="button"
-          className="w-full text-left"
+          className="group w-full text-left"
           onClick={() => input.onViewDetails(row.original.joinApplicationId)}
         >
-          <div className="font-semibold text-foreground">{row.original.fullName}</div>
-          <div className="mt-1 text-xs text-muted-foreground">{row.original.email}</div>
+          <div className="font-semibold tracking-tight text-white transition-colors group-hover:text-[#00ff9d]">
+            {row.original.fullName}
+          </div>
+          <div className="mt-1 text-xs text-[#8892b0]">{row.original.email}</div>
         </button>
       ),
     },
@@ -56,8 +62,11 @@ export function buildJoinApplicationColumns(input: {
       accessorKey: "applicationType",
       header: "Type",
       cell: ({ row }) => (
-        <Badge variant="outline" className="capitalize">
-          {row.original.applicationType}
+        <Badge
+          variant="outline"
+          className="border-cyan-400/15 bg-[#00c9ff]/10 capitalize text-[#00c9ff]"
+        >
+          {row.original.applicationType === "youth" ? "Prospective mentee" : "Mentor"}
         </Badge>
       ),
     },
@@ -65,7 +74,18 @@ export function buildJoinApplicationColumns(input: {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <Badge variant={statusVariant(row.original.status)}>
+        <Badge
+          variant={statusVariant(row.original.status)}
+          className={
+            row.original.status === "approved"
+              ? "bg-[#00ff9d]/15 text-[#00ff9d]"
+              : row.original.status === "rejected"
+                ? "bg-rose-500/15 text-rose-200"
+                : row.original.status === "reviewing"
+                  ? "bg-[#00c9ff]/15 text-[#00c9ff]"
+                  : "border-white/10 bg-white/[0.04] text-[#e8eeff]"
+          }
+        >
           {formatStatus(row.original.status)}
         </Badge>
       ),
@@ -74,7 +94,13 @@ export function buildJoinApplicationColumns(input: {
       accessorKey: "memberStatus",
       header: "Member",
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
+        <span
+          className={
+            row.original.memberStatus
+              ? "inline-flex rounded-full border border-[#00ff9d]/15 bg-[#00ff9d]/10 px-3 py-1 text-sm font-medium text-[#00ff9d]"
+              : "inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-sm font-medium text-[#8892b0]"
+          }
+        >
           {row.original.memberStatus ? formatStatus(row.original.memberStatus) : "Not created"}
         </span>
       ),
@@ -83,7 +109,7 @@ export function buildJoinApplicationColumns(input: {
       accessorKey: "memberCurrentStep",
       header: "Current Step",
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm font-medium text-[#e8eeff]">
           {row.original.memberCurrentStep ? formatStatus(row.original.memberCurrentStep) : "-"}
         </span>
       ),
@@ -92,7 +118,7 @@ export function buildJoinApplicationColumns(input: {
       accessorKey: "createdAt",
       header: "Submitted",
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-[#8892b0]">
           {new Intl.DateTimeFormat("en-NG", {
             dateStyle: "medium",
             timeStyle: "short",

@@ -35,6 +35,8 @@ type LoginFormProps = {
   newUserCallbackURL?: string;
   newUserLabel?: string;
   note?: string;
+  defaultEmail?: string;
+  defaultPassword?: string;
 };
 
 export default function LoginForm({
@@ -42,10 +44,12 @@ export default function LoginForm({
   newUserCallbackURL = "/training/apply",
   newUserLabel = "Join the community",
   note = "Use your email and password, or continue with Google.",
+  defaultEmail = "",
+  defaultPassword = "",
 }: LoginFormProps) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(defaultEmail);
+  const [password, setPassword] = useState(defaultPassword);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

@@ -235,6 +235,13 @@ async function sendWithResend(payload: EmailPayload): Promise<EmailSendResult> {
 
   if (!response.ok) {
     const text = await response.text();
+    console.error("[email][resend] send failed", {
+      status: response.status,
+      statusText: response.statusText,
+      templateKey: payload.templateKey,
+      to: payload.to,
+      error: text,
+    });
     throw new Error(text || "Resend email request failed.");
   }
 
@@ -337,6 +344,13 @@ export async function sendEmail(
       return { ...result, attempt };
     } catch (error) {
       lastError = error;
+      console.error("[email][send] attempt failed", {
+        attempt,
+        provider,
+        templateKey: payload.templateKey,
+        to: payload.to,
+        error: error instanceof Error ? error.message : error,
+      });
 
       if (
         attempt === maxAttempts &&

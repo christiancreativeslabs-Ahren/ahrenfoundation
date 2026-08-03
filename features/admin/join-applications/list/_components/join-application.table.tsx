@@ -122,7 +122,8 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
 
   return (
     <div className="space-y-6">
-      <Card className="border-white/10 bg-white/[0.03] text-white">
+      <Card className="overflow-hidden border-white/10 bg-white/[0.03] text-white shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+        <div className="h-1 bg-gradient-to-r from-[#00c9ff] via-[#00ff9d] to-[#00c9ff]" />
         <CardHeader className="space-y-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-2">
@@ -167,7 +168,10 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
             { label: "Reviewing", value: summary?.reviewing ?? 0 },
             { label: "Prospective mentees", value: summary?.youth ?? 0 },
           ].map((item) => (
-            <div key={item.label} className="rounded-lg border border-white/10 bg-[#0d1538] p-4">
+            <div
+              key={item.label}
+              className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+            >
               <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
                 {item.label}
               </div>
@@ -177,9 +181,10 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
         </CardContent>
       </Card>
 
-      <Card className="border-white/10 bg-white/[0.03] text-white">
+      <Card className="overflow-hidden border-white/10 bg-white/[0.03] text-white shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-semibold">Applicant queue</CardTitle>
+          <CardTitle className="text-lg font-semibold text-white">Applicant queue</CardTitle>
           <CardDescription className="text-slate-300">
             Showing the current applicant queue with cursor pagination and URL-backed filters.
           </CardDescription>
@@ -189,10 +194,10 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
             table={table}
             title={
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-1.5">
-                  <Users size={20} className="text-primary" />
+                <div className="rounded-2xl border border-cyan-400/15 bg-[#00c9ff]/10 p-2 text-[#00c9ff]">
+                  <Users size={20} />
                 </div>
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-2xl font-bold tracking-tight text-white">
                   Applicants [{formatCount(data?.totalCount ?? initialData.totalCount)}]
                 </h2>
               </div>
@@ -217,13 +222,18 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
             }
           />
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center rounded-md border p-1">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center rounded-full border border-white/10 bg-white/[0.04] p-1">
               <Button
                 type="button"
                 variant={view === "table" ? "default" : "ghost"}
                 size="sm"
-                className="h-8 w-8 p-0"
+                className={cn(
+                  "h-9 w-9 rounded-full p-0",
+                  view === "table"
+                    ? "bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e] hover:opacity-95"
+                    : "text-white hover:bg-white/[0.08]",
+                )}
                 onClick={() => setView("table")}
                 aria-label="Table view"
               >
@@ -233,7 +243,12 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
                 type="button"
                 variant={view === "grid" ? "default" : "ghost"}
                 size="sm"
-                className="h-8 w-8 p-0"
+                className={cn(
+                  "h-9 w-9 rounded-full p-0",
+                  view === "grid"
+                    ? "bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e] hover:opacity-95"
+                    : "text-white hover:bg-white/[0.08]",
+                )}
                 onClick={() => setView("grid")}
                 aria-label="Grid view"
               >
@@ -241,25 +256,30 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
               </Button>
             </div>
 
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-[#8892b0]">
               {isFetching ? "Refreshing..." : "Up to date"}
             </div>
           </div>
 
           <div className={cn("hidden", view === "table" && "md:block")}>
-            <div className="relative w-full overflow-x-auto rounded-md border">
+            <div className="relative w-full overflow-x-auto rounded-3xl border border-white/10 bg-[#07102c]">
               {isFetching ? (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/80">
-                  <div className="text-sm text-muted-foreground">Loading...</div>
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#07102c]/80 backdrop-blur-sm">
+                  <div className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm text-white">
+                    Loading...
+                  </div>
                 </div>
               ) : null}
 
               <Table>
-                <TableHeader>
+                <TableHeader className="[&_tr]:border-b-white/10">
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
+                    <TableRow key={headerGroup.id} className="border-white/10">
                       {headerGroup.headers.map((header) => (
-                        <TableHead key={header.id}>
+                        <TableHead
+                          key={header.id}
+                          className="h-12 bg-[#091033] px-4 text-[11px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]"
+                        >
                           {header.isPlaceholder
                             ? null
                             : flexRender(header.column.columnDef.header, header.getContext())}
@@ -273,13 +293,16 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
                     table.getRowModel().rows.map((row) => (
                       <TableRow
                         key={row.id}
-                        className="cursor-pointer hover:bg-muted/50"
+                        className="cursor-pointer border-white/10 transition-colors hover:bg-white/[0.05]"
                         onClick={() => handleViewDetails(row.original.joinApplicationId)}
                         onMouseEnter={() => prefetchDetail(row.original.joinApplicationId)}
                         onFocus={() => prefetchDetail(row.original.joinApplicationId)}
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <TableCell
+                            key={cell.id}
+                            className="border-white/10 px-4 py-4 align-top text-sm text-white"
+                          >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </TableCell>
                         ))}
@@ -287,7 +310,10 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={columns.length} className="h-24 text-center">
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center text-[#8892b0]"
+                      >
                         No join applications found.
                       </TableCell>
                     </TableRow>
@@ -320,7 +346,7 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
               />
             ))}
             {!isFetching && records.length === 0 ? (
-              <div className="col-span-full rounded-md border border-dashed p-8 text-center text-muted-foreground">
+              <div className="col-span-full rounded-2xl border border-dashed border-white/10 bg-white/[0.03] p-8 text-center text-[#8892b0]">
                 No join applications found.
               </div>
             ) : null}

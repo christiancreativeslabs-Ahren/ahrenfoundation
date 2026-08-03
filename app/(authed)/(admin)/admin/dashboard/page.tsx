@@ -5,7 +5,13 @@ import { ArrowRight, ShieldCheck, UserCircle2, WandSparkles } from "lucide-react
 import { auth } from "@/lib/auth/auth";
 import { getAdminDashboardMetrics } from "@/lib/admin/onboarding";
 import SignOutButton from "@/components/auth/sign-out-button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +26,7 @@ export default async function AdminDashboardPage() {
   ]);
 
   if (!session?.user) {
-    redirect("/hub/login");
+    redirect("/admin/login");
   }
 
   const user = session.user;
@@ -40,7 +46,8 @@ export default async function AdminDashboardPage() {
               Admin dashboard
             </p>
             <CardTitle className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Welcome back, <span className="text-[#00ff9d]">{user.name || "admin"}</span>
+              Welcome back,{" "}
+              <span className="text-[#00ff9d]">{user.name || "admin"}</span>
             </CardTitle>
             <CardDescription className="max-w-2xl text-sm leading-relaxed text-slate-300">
               Review applications, track onboarding, and keep delivery, engagement,
@@ -52,7 +59,7 @@ export default async function AdminDashboardPage() {
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#00c9ff] to-[#00ff9d] text-[#080d2e]">
                 <UserCircle2 size={20} />
               </div>
-              <SignOutButton />
+              <SignOutButton redirectTo="/admin/login" />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">

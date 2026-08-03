@@ -54,17 +54,17 @@ export function ResendLessonEmailDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
-        asChild
+        render={
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={disabled}
+            className="gap-2"
+          />
+        }
       >
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={disabled}
-          className="gap-2"
-        >
-          <Mail className="h-4 w-4" />
-          Resend lesson email
-        </Button>
+        <Mail className="h-4 w-4" />
+        Resend lesson email
       </DialogTrigger>
 
       <DialogContent className="max-w-3xl">
