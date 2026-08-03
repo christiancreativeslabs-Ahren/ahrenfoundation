@@ -20,44 +20,48 @@ const loadEnvConfig = () => {
 // Load environment configuration
 loadEnvConfig();
 
-// Environment type definition
-type Environment = "development" | "staging" | "production";
+type Environment = "development" | "preview" | "staging" | "production";
 
-// Get current environment
-const getCurrentEnv = (): Environment => {
-  const env = process.env.NODE_ENV?.toLowerCase() || "development";
-  if (!["development", "staging", "production"].includes(env)) {
+function getCurrentEnv(): Environment {
+  const env =
+    process.env.VERCEL_ENV?.toLowerCase() ??
+    process.env.NODE_ENV?.toLowerCase() ??
+    "development";
+
+  if (!["development", "preview", "staging", "production"].includes(env)) {
     throw new Error(`Invalid environment: ${env}`);
   }
+
   return env as Environment;
-};
+}
 
-// Database URL configuration
-const getDatabaseUrls = () => {
-  const env = getCurrentEnv();
+function getDatabaseUrl(env: Environment) {
+  const directUrl = process.env.DATABASE_URL?.trim();
+  if (directUrl) return directUrl;
 
-  // Get appropriate database URLs based on environment
-  const dbUrl = process.env[`DATABASE_URL_${env.toUpperCase()}`];
+  const envUrl = process.env[`DATABASE_URL_${env.toUpperCase()}`]?.trim();
+  if (envUrl) return envUrl;
 
-  if (!dbUrl) {
-    throw new Error(`DATABASE_URL_${env.toUpperCase()} is not set`);
+  if (env === "preview") {
+    const previewUrl = process.env.DATABASE_URL_PREVIEW?.trim();
+    if (previewUrl) return previewUrl;
   }
 
-  return {
-    dbUrl,
-  };
-};
+  throw new Error(
+    `No database URL configured. Set DATABASE_URL or DATABASE_URL_${env.toUpperCase()}.`,
+  );
+}
 
 // Database connections with logging based on environment
 const createDatabaseConnections = () => {
   const env = getCurrentEnv();
-  const urls = getDatabaseUrls();
+  const dbUrl = getDatabaseUrl(env);
 
   // Enable logging only in development
   const enableLogging = env === "development";
 
   // Create database connections
-  const sql: NeonQueryFunction<boolean, boolean> = neon(urls.dbUrl);
+  const sql: NeonQueryFunction<boolean, boolean> = neon(dbUrl);
 
   const database = drizzle(sql, {
     schema,
