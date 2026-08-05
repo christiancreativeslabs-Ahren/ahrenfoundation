@@ -33,6 +33,8 @@ export {
   getAppBaseUrl,
 } from "@/lib/onboarding/urls";
 
+const AHREN_COHORT_START_DATE = new Date(Date.UTC(2026, 8, 1, 0, 0, 0));
+
 export type EngagementEventType =
   | "email_sent"
   | "email_skipped"
@@ -51,6 +53,10 @@ function addDays(date: Date, days: number) {
   const next = new Date(date);
   next.setDate(next.getDate() + days);
   return next;
+}
+
+function getAhrenCohortStartDate() {
+  return new Date(AHREN_COHORT_START_DATE);
 }
 
 function moduleScriptureText(module: OnboardingModuleDefinition) {
@@ -76,6 +82,7 @@ export async function ensureAhrenOnboardingProgram() {
       payload: {
         source: "ahren-foundation-complete-email-copy",
         moduleCount: definition.modules.length,
+        cohortStartDate: AHREN_COHORT_START_DATE.toISOString(),
       },
     })
     .onConflictDoUpdate({
@@ -90,6 +97,7 @@ export async function ensureAhrenOnboardingProgram() {
         payload: {
           source: "ahren-foundation-complete-email-copy",
           moduleCount: definition.modules.length,
+          cohortStartDate: AHREN_COHORT_START_DATE.toISOString(),
         },
       },
     })
@@ -182,7 +190,7 @@ export async function enrollMemberInAhrenOnboarding(
   signedUpAt = new Date()
 ) {
   const { program, modules } = await ensureAhrenOnboardingProgram();
-  const startsAt = addDays(signedUpAt, program.startsAfterDays);
+  const startsAt = getAhrenCohortStartDate();
 
   const [member] = await db
     .select()
@@ -210,6 +218,8 @@ export async function enrollMemberInAhrenOnboarding(
       startsAt,
       payload: {
         generatedFromProgramSlug: program.slug,
+        signedUpAt: signedUpAt.toISOString(),
+        cohortStartDate: startsAt.toISOString(),
       },
     })
     .onConflictDoUpdate({

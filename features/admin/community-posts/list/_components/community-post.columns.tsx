@@ -32,7 +32,11 @@ export function buildCommunityPostColumns(input: {
       header: "S/N",
       cell: ({ row }) => {
         const offset = (input.page - 1) * input.limit;
-        return <div className="w-12">{offset + row.index + 1}</div>;
+        return (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-xs font-bold text-[#00c9ff]">
+            {offset + row.index + 1}
+          </div>
+        );
       },
     },
     {
@@ -40,8 +44,8 @@ export function buildCommunityPostColumns(input: {
       header: "Post",
       cell: ({ row }) => (
         <div className="space-y-1">
-          <div className="line-clamp-2 font-semibold text-foreground">{row.original.body}</div>
-          <div className="text-xs text-muted-foreground">
+          <div className="line-clamp-2 font-semibold tracking-tight text-white">{row.original.body}</div>
+          <div className="text-xs text-[#8892b0]">
             {row.original.authorName || row.original.memberName || "Anonymous"}
           </div>
         </div>
@@ -50,22 +54,34 @@ export function buildCommunityPostColumns(input: {
     {
       accessorKey: "channel",
       header: "Channel",
-      cell: ({ row }) => row.original.channel,
+      cell: ({ row }) => <span className="text-sm text-white">{row.original.channel}</span>,
     },
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <Badge variant={communityPostStatusVariant(row.original.status)}>
-          {formatCommunityPostStatus(row.original.status)}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <Badge
+            variant={communityPostStatusVariant(status)}
+            className={
+              status === "published"
+                ? "bg-[#00ff9d]/15 text-[#00ff9d]"
+                : status === "hidden"
+                  ? "bg-[#00c9ff]/15 text-[#00c9ff]"
+                  : "border-white/10 bg-white/[0.04] text-[#e8eeff]"
+            }
+          >
+            {formatCommunityPostStatus(status)}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: "createdAt",
       header: "Created",
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-[#8892b0]">
           {new Intl.DateTimeFormat("en-NG", {
             dateStyle: "medium",
             timeStyle: "short",

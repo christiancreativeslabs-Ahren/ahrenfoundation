@@ -22,7 +22,11 @@ export function buildResourceColumns(input: {
       header: "S/N",
       cell: ({ row }) => {
         const offset = (input.page - 1) * input.limit;
-        return <div className="w-12">{offset + row.index + 1}</div>;
+        return (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-xs font-bold text-[#00c9ff]">
+            {offset + row.index + 1}
+          </div>
+        );
       },
     },
     {
@@ -30,8 +34,8 @@ export function buildResourceColumns(input: {
       header: "Resource",
       cell: ({ row }) => (
         <div className="space-y-1">
-          <div className="font-semibold text-foreground">{row.original.title}</div>
-          <div className="max-w-[32rem] text-xs text-muted-foreground">
+          <div className="font-semibold tracking-tight text-white">{row.original.title}</div>
+          <div className="max-w-[32rem] text-xs leading-5 text-[#8892b0]">
             {row.original.summary || "No summary provided"}
           </div>
         </div>
@@ -41,7 +45,7 @@ export function buildResourceColumns(input: {
       accessorKey: "audience",
       header: "Audience",
       cell: ({ row }) => (
-        <Badge variant="outline" className="capitalize">
+        <Badge variant="outline" className="border-cyan-400/15 bg-[#00c9ff]/10 capitalize text-[#00c9ff]">
           {row.original.audience}
         </Badge>
       ),
@@ -49,22 +53,32 @@ export function buildResourceColumns(input: {
     {
       accessorKey: "category",
       header: "Category",
-      cell: ({ row }) => row.original.category,
+      cell: ({ row }) => <span className="text-sm text-white">{row.original.category}</span>,
     },
     {
       accessorKey: "isPublished",
       header: "Visibility",
-      cell: ({ row }) => (
-        <Badge variant={resourceStatusVariant(row.original.isPublished)}>
-          {formatResourceStatus(row.original.isPublished)}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const published = row.original.isPublished;
+        return (
+          <Badge
+            variant={resourceStatusVariant(published)}
+            className={
+              published
+                ? "border-[#00ff9d]/15 bg-[#00ff9d]/10 text-[#00ff9d]"
+                : "border-white/10 bg-white/[0.04] text-[#e8eeff]"
+            }
+          >
+            {formatResourceStatus(published)}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: "createdAt",
       header: "Created",
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-[#8892b0]">
           {new Intl.DateTimeFormat("en-NG", {
             dateStyle: "medium",
             timeStyle: "short",

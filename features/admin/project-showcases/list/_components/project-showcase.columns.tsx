@@ -32,7 +32,11 @@ export function buildProjectShowcaseColumns(input: { page: number; limit: number
       header: "S/N",
       cell: ({ row }) => {
         const offset = (input.page - 1) * input.limit;
-        return <div className="w-12">{offset + row.index + 1}</div>;
+        return (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-xs font-bold text-[#00c9ff]">
+            {offset + row.index + 1}
+          </div>
+        );
       },
     },
     {
@@ -40,8 +44,8 @@ export function buildProjectShowcaseColumns(input: { page: number; limit: number
       header: "Project",
       cell: ({ row }) => (
         <div className="space-y-1">
-          <div className="font-semibold text-foreground">{row.original.title}</div>
-          <div className="max-w-[32rem] text-xs text-muted-foreground">
+          <div className="font-semibold tracking-tight text-white">{row.original.title}</div>
+          <div className="max-w-[32rem] text-xs leading-5 text-[#8892b0]">
             {row.original.summary}
           </div>
         </div>
@@ -50,22 +54,38 @@ export function buildProjectShowcaseColumns(input: { page: number; limit: number
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <Badge variant={projectShowcaseStatusVariant(row.original.status)}>
-          {formatProjectShowcaseStatus(row.original.status)}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <Badge
+            variant={projectShowcaseStatusVariant(status)}
+            className={
+              status === "published"
+                ? "bg-[#00ff9d]/15 text-[#00ff9d]"
+                : status === "submitted"
+                  ? "bg-[#00c9ff]/15 text-[#00c9ff]"
+                  : "border-white/10 bg-white/[0.04] text-[#e8eeff]"
+            }
+          >
+            {formatProjectShowcaseStatus(status)}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: "memberName",
       header: "Member",
-      cell: ({ row }) => row.original.memberName || row.original.authorName || "Unknown",
+      cell: ({ row }) => (
+        <span className="text-sm text-white">
+          {row.original.memberName || row.original.authorName || "Unknown"}
+        </span>
+      ),
     },
     {
       accessorKey: "createdAt",
       header: "Created",
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-[#8892b0]">
           {new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(row.original.createdAt))}
         </span>
       ),
