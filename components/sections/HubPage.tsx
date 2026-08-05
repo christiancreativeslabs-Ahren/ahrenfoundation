@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, ArrowRight, Sparkles, Lock, LogIn } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Lock, LogIn, Megaphone, GraduationCap } from "lucide-react";
 import { SectionLabel, FadeUp, GradientOrb } from "@/components/ui";
 
 const APPLY_URL = "/training/apply";
@@ -252,6 +252,97 @@ export default function HubPage() {
                 gifts &amp; skills are valuable to God&apos;s purpose on earth.
               </p>
             </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ── UPCOMING ACTIVITIES ── */}
+      <section className="py-24 relative overflow-hidden" style={{ borderTop: "1px solid rgba(0,201,255,0.08)" }}>
+        <GradientOrb className="right-[-5%] top-1/4" size={500} color="mint" />
+        <GradientOrb className="left-[-5%] bottom-1/4" size={500} color="cyan" />
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
+          <FadeUp className="text-center mb-14">
+            <div className="flex justify-center">
+              <SectionLabel>What&apos;s Coming</SectionLabel>
+            </div>
+            <h2
+              className="font-display text-white"
+              style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 800, letterSpacing: "-0.02em" }}
+            >
+              Our Upcoming <span className="grad-text">Activities</span>
+            </h2>
+            <p className="text-[#8892b0] mt-4 max-w-xl mx-auto text-base leading-relaxed">
+              We have exciting activities lined up — opportunities to grow, connect, and make a
+              lasting impact!
+            </p>
+          </FadeUp>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Outreach */}
+            <FadeUp>
+              <div className="card p-8 h-full" style={{ borderRadius: 24, borderTop: "3px solid #00ff9d" }}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-[#00ff9d]" style={{ background: "rgba(0,255,157,0.12)" }}>
+                    <Megaphone size={20} />
+                  </div>
+                  <h3 className="text-white font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>Outreach</h3>
+                </div>
+                <div className="space-y-5">
+                  {[
+                    { name: "Believers in Tech Meet-up (Abuja)", desc: "Come ready to fellowship, connect, network, and collaborate on Kingdom-impacting projects." },
+                    { name: "CitiReach Evangelism", desc: "Our quarterly street evangelism movement. United youths from different churches, boldly preaching Jesus Christ and revealing His love to every corner of the city." },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-2" style={{ background: "#00ff9d" }} />
+                      <div>
+                        <h4 className="text-white font-semibold text-[15px] mb-1">{item.name}</h4>
+                        <p className="text-[#8892b0] text-sm leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeUp>
+
+            {/* Live Trainings */}
+            <FadeUp delay={0.1}>
+              <div className="card p-8 h-full" style={{ borderRadius: 24, borderTop: "3px solid #00c9ff" }}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-[#00c9ff]" style={{ background: "rgba(0,201,255,0.12)" }}>
+                    <GraduationCap size={20} />
+                  </div>
+                  <h3 className="text-white font-bold text-xl" style={{ fontFamily: "var(--font-display)" }}>Live Trainings</h3>
+                </div>
+                <p className="text-[#8892b0] text-sm leading-relaxed mb-5">
+                  Equip yourself with practical, in-demand skills through our upcoming community trainings:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {[
+                    "AI Website/App Development",
+                    "AI Animation for Creatives",
+                    "Advanced Digital Content Creation",
+                    "Data Analysis",
+                    "Cloud Computing for Creatives",
+                    "Automation",
+                  ].map((skill, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2.5 p-3 rounded-xl"
+                      style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.1)" }}
+                    >
+                      <Check size={13} className="text-[#00c9ff] flex-shrink-0" />
+                      <span className="text-[#e8eeff] text-[13px] leading-snug">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeUp>
+          </div>
+
+          <FadeUp delay={0.15}>
+            <p className="text-center text-[#8892b0] text-sm mt-10 italic">
+              Stay tuned for dates and registration links! We can&apos;t wait to grow with you.
+            </p>
           </FadeUp>
         </div>
       </section>

@@ -89,6 +89,11 @@ export const MENTORS: MentorCard[] = [
     bio: "Joshua is a Lead Software Engineer with over eight years of experience designing scalable systems that directly drive high ROI for business operations. Beyond technical strategy, he thrives on cross-functional collaboration, working closely with teams and stakeholders to maximize the value of every project. His commitment to excellence is reflected in his contributions to technical documentation, seamless system integrations, and leveraging external services for business growth. Skilled in both software development and data operations, Joshua is passionate about fostering innovation and efficiency to deliver impactful, results-driven solutions.",
   },
   {
+    name: "Miracle Mike-Ndubueze",
+    photo: "/mentors/miracle-mike-ndubueze.jpg",
+    bio: "Miracle Mike-Ndubueze is a multidisciplinary creative passionate about visual communication and storytelling. He works across illustration, design, content creation, animation and creative entrepreneurship. His journey has been one of both giving and gaining value — creating, learning, and growing alongside others who are building their own personal brands. He believes in the power of Christ, creativity, human experiences and questioning the norm.",
+  },
+  {
     name: "Olamide Joseph",
     photo: "/mentors/olamide-joseph.jpg",
     bio: "Olamide Joseph is a digital entrepreneur, creative strategist, and Human Resources/Talent Manager at Tektribe, where she plays a key role in nurturing and managing talent across programs and communities. With a background in accounting and a deep passion for impact, Olamide has built a brand Thrivingdigitalmoms centered on helping women, especially busy and working moms, create sustainable income streams through digital products and faceless content. She is the founder of a growing platform that equips women with the tools and strategies to build online businesses without burnout. Through her work, Olamide is committed to bridging the gap between financial independence and purposeful living, empowering women to thrive both at home and in their careers.",
@@ -210,7 +215,7 @@ export const BLOGS = [
 ];
 
 export const STATS = [
-  { value: "25+", label: "Mentors & Facilitators" },
+  { value: "26+", label: "Mentors & Facilitators" },
   { value: "6", label: "Week Masterclass" },
   { value: "4", label: "Core Initiatives" },
   { value: "\u221e", label: "Kingdom Impact" },

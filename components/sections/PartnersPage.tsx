@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Check, Mail, Phone, ArrowRight, Handshake } from "lucide-react";
+import { Check, Mail, Phone, ArrowRight, Handshake, Landmark } from "lucide-react";
 import { SectionLabel, FadeUp, StaggerParent, StaggerChild, GradientOrb } from "@/components/ui";
 
 const REASONS = [
@@ -263,6 +263,44 @@ export default function PartnersPage() {
                   partners@ahrenfoundation.org
                 </span>
               </motion.a>
+            </div>
+
+            {/* Bank / Giving details */}
+            <div className="mt-6 max-w-2xl mx-auto">
+              <div
+                className="rounded-2xl p-7 text-left"
+                style={{ background: "#111850", border: "1px solid rgba(0,255,157,0.18)" }}
+              >
+                <div className="flex items-center gap-3 mb-5 justify-center">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-[#00ff9d]"
+                    style={{ background: "rgba(0,255,157,0.12)" }}
+                  >
+                    <Landmark size={18} />
+                  </div>
+                  <h3 className="text-white font-bold text-base" style={{ fontFamily: "var(--font-display)" }}>
+                    Give / Sow Your Seed
+                  </h3>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { label: "Bank", value: "Kuda MFB" },
+                    { label: "Account Name", value: "Ahren Foundation For Social Development" },
+                    { label: "Account No", value: "3004139699" },
+                  ].map((row, i) => (
+                    <div
+                      key={i}
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 p-3.5 rounded-xl"
+                      style={{ background: "rgba(0,201,255,0.04)", border: "1px solid rgba(0,201,255,0.08)" }}
+                    >
+                      <span className="text-[#8892b0] text-xs font-semibold tracking-wide uppercase">{row.label}</span>
+                      <span className="text-white text-sm font-bold" style={{ fontFamily: "var(--font-display)" }}>
+                        {row.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="mt-12">
