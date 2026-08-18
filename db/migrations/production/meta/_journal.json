@@ -8,6 +8,13 @@
       "when": 1785914307460,
       "tag": "0000_rare_black_panther",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787047217543,
+      "tag": "0001_flashy_rafael_vega",
+      "breakpoints": true
     }
   ]
 }

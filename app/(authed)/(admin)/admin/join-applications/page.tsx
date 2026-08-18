@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getJoinApplicationListData } from "@/lib/admin/join-applications";
+import { getTrainingApplicationSettings } from "@/lib/application-settings";
 import {
   parseJoinApplicationListInput,
   type RawJoinApplicationListParams,
@@ -20,13 +21,17 @@ export default async function JoinApplicationsAdminPage({
 }) {
   const params = await searchParams;
   const initialFilters = parseJoinApplicationListInput(params);
-  const initialData = await getJoinApplicationListData(initialFilters);
+  const [initialData, applicationSettings] = await Promise.all([
+    getJoinApplicationListData(initialFilters),
+    getTrainingApplicationSettings(),
+  ]);
 
   return (
     <div className="w-full min-h-full -mt-5 pb-6 pt-0">
       <JoinApplicationTable
         initialData={initialData}
         initialFilters={initialFilters}
+        applicationSettings={applicationSettings}
       />
     </div>
   );

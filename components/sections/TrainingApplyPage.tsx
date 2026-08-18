@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useActionState, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, LockKeyhole, CalendarRange } from "lucide-react";
 import { SectionLabel, FadeUp, GradientOrb } from "@/components/ui/custom";
 import { EXPERTISE_OPTIONS } from "@/lib/data";
 import { submitJoinApplication, type JoinActionState } from "@/actions/join";
@@ -198,6 +198,39 @@ function SuccessScreen({
         Back to form
       </motion.button>
     </motion.div>
+  );
+}
+
+function ClosedScreen({
+  title,
+  messageHtml,
+}: {
+  title: string;
+  messageHtml: string;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-[28px] border border-white/10 bg-[#0b1335] px-6 py-14 text-center shadow-[0_24px_80px_rgba(0,0,0,0.18)] sm:px-10 sm:py-16">
+      <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full border border-amber-400/20 bg-amber-400/10 text-amber-300">
+        <LockKeyhole size={26} />
+      </div>
+      <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
+        Applications Status
+      </p>
+      <h3
+        className="mb-4 text-3xl font-bold text-white sm:text-4xl"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
+        {title}
+      </h3>
+      <div
+        className="mx-auto max-w-2xl space-y-4 text-base leading-relaxed text-[#c4cede]"
+        dangerouslySetInnerHTML={{ __html: messageHtml }}
+      />
+      <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-[#c4cede]">
+        <CalendarRange size={15} className="text-[#00c9ff]" />
+        Check back for the next opening window.
+      </div>
+    </div>
   );
 }
 
@@ -813,9 +846,15 @@ function MentorForm({
 export default function TrainingApplyPage({
   prefilledEmail,
   prefilledName,
+  isOpen = true,
+  closedTitle = "Applications Closed.",
+  closedMessageHtml = "<p>Our 6-Week Tech &amp; Creativity Mentorship Program is now fully booked. Thank you to everyone who applied!</p>",
 }: {
   prefilledEmail?: string | null;
   prefilledName?: string | null;
+  isOpen?: boolean;
+  closedTitle?: string;
+  closedMessageHtml?: string;
 }) {
   const [tab, setTab] = useState<JoinTab>("youth");
   const [submitted, setSubmitted] = useState(false);
@@ -932,57 +971,42 @@ export default function TrainingApplyPage({
 
           <FadeUp delay={0.1}>
             <div className="card p-10" style={{ borderRadius: 28 }}>
-              <AnimatePresence mode="wait">
-                {submitted ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                  >
-                    <SuccessScreen
-                      type={tab}
-                      onBack={() => setSubmitted(false)}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="youth"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <YouthForm
-                      action={formAction}
-                      loading={loading}
-                      error={state.error}
-                      fieldErrors={state.fieldErrors}
-                      prefilledName={prefilledName}
-                      prefilledEmail={prefilledEmail}
-                    />
-                  </motion.div>
-                  /*
-                ) : (
-                  <motion.div
-                    key="mentor"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <MentorForm
-                      action={formAction}
-                      loading={loading}
-                      error={state.error}
-                      fieldErrors={state.fieldErrors}
-                      prefilledName={prefilledName}
-                      prefilledEmail={prefilledEmail}
-                    />
-                  </motion.div>
-                  */
-                )}
-              </AnimatePresence>
+              {!isOpen ? (
+                <ClosedScreen title={closedTitle} messageHtml={closedMessageHtml} />
+              ) : (
+                <AnimatePresence mode="wait">
+                  {submitted ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                    >
+                      <SuccessScreen
+                        type={tab}
+                        onBack={() => setSubmitted(false)}
+                      />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="youth"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <YouthForm
+                        action={formAction}
+                        loading={loading}
+                        error={state.error}
+                        fieldErrors={state.fieldErrors}
+                        prefilledName={prefilledName}
+                        prefilledEmail={prefilledEmail}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
             </div>
           </FadeUp>
         </div>

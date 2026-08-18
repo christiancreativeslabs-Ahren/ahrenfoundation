@@ -1,4 +1,5 @@
 export { Checkbox } from "./checkbox";
+export { DateInput } from "./date-input";
 export { DateTimeInput } from "./date-time-input";
 export { EmailInput } from "./email-input";
 export { HiddenInput } from "./hidden-input";

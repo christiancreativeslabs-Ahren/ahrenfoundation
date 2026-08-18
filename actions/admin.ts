@@ -23,6 +23,11 @@ import {
   projectShowcases,
   users,
 } from "@/db/schema";
+import {
+  coerceTrainingApplicationDateInput,
+  sanitizeTrainingApplicationHtml,
+} from "@/lib/application-settings.shared";
+import { upsertTrainingApplicationSettings } from "@/lib/application-settings";
 import { getAdminEmails } from "@/lib/validations/join";
 import {
   applicationRejectedEmail,
@@ -194,6 +199,52 @@ export async function updateJoinApplicationStatus(
     return {
       ok: false,
       message: error instanceof Error ? error.message : "Status update failed.",
+    };
+  }
+}
+
+export async function updateTrainingApplicationSettings(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    const applicationsOpenAt = coerceTrainingApplicationDateInput(
+      formData.get("applications_open_at"),
+    );
+    const applicationsCloseAt = coerceTrainingApplicationDateInput(
+      formData.get("applications_close_at"),
+    );
+    const forceClosed = String(formData.get("force_closed") ?? "") === "true";
+    const closedTitle = value(formData, "closed_title") || "Applications Closed.";
+    const closedMessageHtml = sanitizeTrainingApplicationHtml(
+      value(formData, "closed_message_html") ||
+        "<p>Our 6-Week Tech & Creativity Mentorship Program is now fully booked. Thank you to everyone who applied!</p>",
+    );
+
+    await upsertTrainingApplicationSettings({
+      applicationsOpenAt,
+      applicationsCloseAt,
+      forceClosed,
+      closedTitle,
+      closedMessageHtml,
+    });
+
+    revalidatePath("/training/apply");
+    revalidatePath("/admin/join-applications");
+
+    return {
+      ok: true,
+      message: "Application window updated.",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Application window update failed.",
     };
   }
 }

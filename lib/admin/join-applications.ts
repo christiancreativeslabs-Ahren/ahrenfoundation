@@ -59,6 +59,34 @@ export type JoinApplicationListResponse = {
   };
 };
 
+export type JoinApplicationExportRow = {
+  createdAt: string;
+  updatedAt: string;
+  applicationType: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  location: string;
+  ageRange: string;
+  sex: string;
+  skills: string;
+  skillsOther: string;
+  skillsToLearn: string;
+  availability: string;
+  whyJoin: string;
+  faithBornAgain: string;
+  faithHolySpirit: string;
+  testimony: string;
+  status: string;
+  consent: string;
+  programMemberId: string;
+  memberRole: string;
+  memberStatus: string;
+  memberCurrentStep: string;
+  userId: string;
+  searchText: string;
+};
+
 function buildSearchText(input: {
   fullName: string;
   email: string;
@@ -294,6 +322,78 @@ export async function getJoinApplicationListData(
       withoutMember: Number(summaryRow?.withoutMember ?? 0),
     },
   };
+}
+
+export async function getJoinApplicationExportRows(
+  input: Pick<
+    JoinApplicationListInput,
+    "search" | "applicationType" | "status"
+  >,
+): Promise<JoinApplicationExportRow[]> {
+  const search = input.search?.trim();
+
+  const filters = [
+    input.applicationType && input.applicationType !== "all"
+      ? eq(joinApplicationListItems.applicationType, input.applicationType)
+      : undefined,
+    input.status
+      ? eq(joinApplicationListItems.status, input.status)
+      : undefined,
+    search
+      ? or(
+          ilike(joinApplicationListItems.searchText, `%${search}%`),
+          ilike(joinApplicationListItems.fullName, `%${search}%`),
+          ilike(joinApplicationListItems.email, `%${search}%`),
+          ilike(joinApplicationListItems.phoneNumber, `%${search}%`),
+          ilike(joinApplicationListItems.location, `%${search}%`),
+        )
+      : undefined,
+  ].filter(Boolean);
+
+  const whereClause = filters.length ? and(...filters) : undefined;
+
+  const rows = await db
+    .select()
+    .from(joinApplicationListItems)
+    .where(whereClause)
+    .orderBy(
+      desc(joinApplicationListItems.createdAt),
+      desc(joinApplicationListItems.joinApplicationId),
+    );
+
+  return rows.map((row) => {
+    const payload = row.payload ?? {};
+
+    return {
+      createdAt: new Date(row.createdAt).toISOString(),
+      updatedAt: new Date(row.updatedAt).toISOString(),
+      applicationType: row.applicationType,
+      fullName: row.fullName,
+      email: row.email,
+      phoneNumber: row.phoneNumber,
+      location: row.location,
+      ageRange: String(payload.ageRange ?? ""),
+      sex: String(payload.sex ?? ""),
+      skills: Array.isArray(payload.skills) ? payload.skills.join(", ") : "",
+      skillsOther: String(payload.skillsOther ?? ""),
+      skillsToLearn: String(payload.skillsToLearn ?? ""),
+      availability: Array.isArray(payload.availability)
+        ? payload.availability.join(", ")
+        : "",
+      whyJoin: String(payload.whyJoin ?? ""),
+      faithBornAgain: String(payload.faithBornAgain ?? ""),
+      faithHolySpirit: String(payload.faithHolySpirit ?? ""),
+      testimony: String(payload.testimony ?? ""),
+      status: row.status,
+      consent: row.consent ? "Yes" : "No",
+      programMemberId: row.programMemberId ?? "",
+      memberRole: row.memberRole ?? "",
+      memberStatus: row.memberStatus ?? "",
+      memberCurrentStep: row.memberCurrentStep ?? "",
+      userId: row.userId ?? "",
+      searchText: row.searchText,
+    };
+  });
 }
 
 export async function syncJoinApplicationProjection(joinApplicationId: string) {

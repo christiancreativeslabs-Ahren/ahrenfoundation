@@ -51,7 +51,7 @@ function getDatabaseUrl(env: Environment) {
   }
 
   throw new Error(
-    `No database URL configured. Set DATABASE_URL or DATABASE_URL_${env.toUpperCase()}.`,
+    `No database URL configured. Set DATABASE_URL or DATABASE_URL_${env.toUpperCase()}.`
   );
 }
 

@@ -102,6 +102,21 @@ export const verifications = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
+export const trainingApplicationSettings = pgTable(
+  "training_application_settings",
+  {
+    key: text("key").primaryKey(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    applicationsOpenAt: timestamp("applications_open_at", { withTimezone: true }),
+    applicationsCloseAt: timestamp("applications_close_at", { withTimezone: true }),
+    forceClosed: boolean("force_closed").notNull().default(false),
+    closedTitle: text("closed_title").notNull().default("Applications Closed."),
+    closedMessageHtml: text("closed_message_html").notNull().default(""),
+  },
+  (table) => [index("training_application_settings_key_idx").on(table.key)]
+);
+
 export const joinApplications = pgTable(
   "join_application",
   {

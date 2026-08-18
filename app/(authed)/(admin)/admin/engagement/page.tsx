@@ -3,7 +3,7 @@ import { formatAdminDate, getEngagementLogData } from "@/lib/admin/onboarding";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, TextInput } from "@/components/ui/input-fields";
+import { DateInput, Select, TextInput } from "@/components/ui/input-fields";
 import {
   Table,
   TableBody,
@@ -90,11 +90,7 @@ export default async function AdminEngagementPage({
                 })),
               ]}
             />
-            <TextInput
-              type="date"
-              name="date"
-              defaultValue={filters.date ?? ""}
-            />
+            <DateInput name="date" defaultValue={filters.date ?? ""} />
             <Button type="submit" variant="secondary" className="h-10">
               Apply filters
             </Button>

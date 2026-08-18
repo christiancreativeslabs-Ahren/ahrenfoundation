@@ -4,17 +4,19 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { LayoutGrid, Rows3, Users } from "lucide-react";
+import { Download, LayoutGrid, Rows3, Users } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { DataTableToolbar, FilterTags, DataTablePagination, TableLoadingSkeleton } from "@/components/shared/table";
+import { TrainingApplicationSettingsDialog } from "@/components/admin/training-application-settings-dialog";
 import type {
   JoinApplicationListInput,
   JoinApplicationListResponse,
   JoinApplicationListRow,
 } from "@/lib/admin/join-applications";
+import type { TrainingApplicationSettingsRecord } from "@/lib/application-settings.shared";
 import { useJoinApplicationList } from "../_hooks/use-join-application-list";
 import { buildJoinApplicationColumns } from "./join-application.columns";
 import { JoinApplicationCard } from "./join-application.card";
@@ -23,13 +25,14 @@ import { JoinApplicationFilterSheet, type JoinApplicationListFilterState } from 
 interface JoinApplicationTableProps {
   initialData: JoinApplicationListResponse;
   initialFilters: JoinApplicationListInput;
+  applicationSettings: TrainingApplicationSettingsRecord;
 }
 
 function formatCount(value: number) {
   return new Intl.NumberFormat("en-NG").format(value);
 }
 
-export function JoinApplicationTable({ initialData, initialFilters }: JoinApplicationTableProps) {
+export function JoinApplicationTable({ initialData, initialFilters, applicationSettings }: JoinApplicationTableProps) {
   const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [view, setView] = useState<"table" | "grid">("table");
@@ -55,6 +58,27 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
   const handleViewDetails = (applicationId: string) => {
     router.push(`/admin/join-applications/${applicationId}`);
   };
+
+  const exportHref = useMemo(() => {
+    const params = new URLSearchParams();
+
+    if (currentInput.search) {
+      params.set("search", currentInput.search);
+    }
+
+    if (currentInput.applicationType && currentInput.applicationType !== "all") {
+      params.set("applicationType", currentInput.applicationType);
+    }
+
+    if (currentInput.status) {
+      params.set("status", currentInput.status);
+    }
+
+    const query = params.toString();
+    return query
+      ? `/api/admin/join-applications/export?${query}`
+      : "/api/admin/join-applications/export";
+  }, [currentInput.applicationType, currentInput.search, currentInput.status]);
 
   const prefetchDetail = (applicationId: string) => {
     router.prefetch(`/admin/join-applications/${applicationId}`);
@@ -139,6 +163,25 @@ export function JoinApplicationTable({ initialData, initialFilters }: JoinApplic
             </div>
 
             <div className="flex flex-wrap gap-3">
+              <Link
+                href={exportHref}
+                prefetch={false}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "gap-2 border-white/15 bg-transparent text-white hover:bg-white/10",
+                )}
+              >
+                <Download className="h-4 w-4" />
+                Export all records
+              </Link>
+              <TrainingApplicationSettingsDialog
+                key={
+                  applicationSettings.updatedAt?.toISOString() ??
+                  applicationSettings.createdAt?.toISOString() ??
+                  applicationSettings.closedTitle
+                }
+                settings={applicationSettings}
+              />
               <Link
                 href="/admin/dashboard"
                 className={cn(
