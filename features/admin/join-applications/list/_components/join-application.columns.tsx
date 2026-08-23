@@ -3,6 +3,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import type { JoinApplicationListRow } from "@/lib/admin/join-applications";
+import type { MentorAssignmentCandidate } from "@/lib/admin/mentor-assignments";
+import { JoinApplicationActions } from "./join-application.actions";
 
 export function formatStatus(status: string) {
   return status
@@ -27,6 +29,7 @@ export function statusVariant(status: string) {
 export function buildJoinApplicationColumns(input: {
   page: number;
   limit: number;
+  mentors: MentorAssignmentCandidate[];
   onViewDetails: (applicationId: string) => void;
 }): ColumnDef<JoinApplicationListRow>[] {
   return [
@@ -124,6 +127,17 @@ export function buildJoinApplicationColumns(input: {
             timeStyle: "short",
           }).format(new Date(row.original.createdAt))}
         </span>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <JoinApplicationActions
+          application={row.original}
+          mentors={input.mentors}
+          onViewDetails={input.onViewDetails}
+        />
       ),
     },
   ];

@@ -11,6 +11,8 @@ import {
   LineChart,
   ScrollText,
   ShieldCheck,
+  UserRoundPlus,
+  Send,
 } from "lucide-react";
 import SignOutButton from "@/components/auth/sign-out-button";
 import {
@@ -43,6 +45,11 @@ const navItems = [
     icon: ClipboardList,
   },
   {
+    href: "/admin/assignments",
+    label: "Assignments",
+    icon: UserRoundPlus,
+  },
+  {
     href: "/admin/resources",
     label: "Resources",
     icon: BookOpen,
@@ -73,9 +80,19 @@ const navItems = [
     icon: LineChart,
   },
   {
+    href: "/admin/workbook",
+    label: "Workbook",
+    icon: BookOpen,
+  },
+  {
     href: "/admin/email-events",
     label: "Email events",
     icon: Mail,
+  },
+  {
+    href: "/admin/bulk-email",
+    label: "Bulk email",
+    icon: Send,
   },
   {
     href: "/admin/engagement",
@@ -85,6 +102,11 @@ const navItems = [
   {
     href: "/admin/module-submissions",
     label: "Module submissions",
+    icon: BookOpen,
+  },
+  {
+    href: "/admin/workbook-submissions",
+    label: "Workbook submissions",
     icon: BookOpen,
   },
   {

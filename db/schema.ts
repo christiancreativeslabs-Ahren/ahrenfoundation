@@ -250,6 +250,133 @@ export const programs = pgTable(
   ]
 );
 
+export const workbookPrograms = pgTable(
+  "workbook_program",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    summary: text("summary"),
+    status: text("status").notNull().default("draft"),
+    isActive: boolean("is_active").notNull().default(false),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    uniqueIndex("workbook_program_slug_idx").on(table.slug),
+    index("workbook_program_status_idx").on(table.status),
+    index("workbook_program_active_idx").on(table.isActive),
+  ]
+);
+
+export const workbookModules = pgTable(
+  "workbook_module",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    workbookProgramId: text("workbook_program_id")
+      .notNull()
+      .references(() => workbookPrograms.id, { onDelete: "cascade" }),
+    moduleKey: text("module_key").notNull(),
+    moduleNumber: integer("module_number").notNull(),
+    title: text("title").notNull(),
+    subtitle: text("subtitle"),
+    summary: text("summary"),
+    contentHtml: text("content_html").notNull().default(""),
+    sortOrder: integer("sort_order").notNull(),
+    status: text("status").notNull().default("draft"),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    uniqueIndex("workbook_module_program_key_idx").on(
+      table.workbookProgramId,
+      table.moduleKey,
+    ),
+    uniqueIndex("workbook_module_program_number_idx").on(
+      table.workbookProgramId,
+      table.moduleNumber,
+    ),
+    index("workbook_module_program_idx").on(table.workbookProgramId),
+    index("workbook_module_status_idx").on(table.status),
+  ]
+);
+
+export const workbookQuestions = pgTable(
+  "workbook_question",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    workbookModuleId: text("workbook_module_id")
+      .notNull()
+      .references(() => workbookModules.id, { onDelete: "cascade" }),
+    questionNumber: integer("question_number").notNull(),
+    prompt: text("prompt").notNull(),
+    responseType: text("response_type").notNull().default("long_text"),
+    isRequired: boolean("is_required").notNull().default(true),
+  },
+  (table) => [
+    uniqueIndex("workbook_question_module_number_idx").on(
+      table.workbookModuleId,
+      table.questionNumber,
+    ),
+    index("workbook_question_module_idx").on(table.workbookModuleId),
+  ]
+);
+
+export const workbookSubmissions = pgTable(
+  "workbook_submission",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    workbookProgramId: text("workbook_program_id")
+      .notNull()
+      .references(() => workbookPrograms.id, { onDelete: "cascade" }),
+    workbookModuleId: text("workbook_module_id")
+      .notNull()
+      .references(() => workbookModules.id, { onDelete: "cascade" }),
+    programMemberId: text("program_member_id")
+      .notNull()
+      .references(() => programMembers.id, { onDelete: "cascade" }),
+    status: text("status").notNull().default("submitted"),
+    submittedAt: timestamp("submitted_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    index("workbook_submission_program_idx").on(table.workbookProgramId),
+    index("workbook_submission_module_idx").on(table.workbookModuleId),
+    index("workbook_submission_member_idx").on(table.programMemberId),
+  ]
+);
+
+export const workbookSubmissionAnswers = pgTable(
+  "workbook_submission_answer",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    submissionId: text("submission_id")
+      .notNull()
+      .references(() => workbookSubmissions.id, { onDelete: "cascade" }),
+    questionId: text("question_id")
+      .notNull()
+      .references(() => workbookQuestions.id, { onDelete: "cascade" }),
+    answer: text("answer").notNull(),
+  },
+  (table) => [
+    uniqueIndex("workbook_submission_answer_question_idx").on(
+      table.submissionId,
+      table.questionId,
+    ),
+    index("workbook_submission_answer_submission_idx").on(table.submissionId),
+  ]
+);
+
 export const programModules = pgTable(
   "program_module",
   {
@@ -568,6 +695,7 @@ export const emailEvents = pgTable(
     moduleId: text("module_id").references(() => programModules.id, {
       onDelete: "set null",
     }),
+    bulkEmailCampaignId: text("bulk_email_campaign_id"),
     deliveryId: text("delivery_id").references(() => moduleDeliveries.id, {
       onDelete: "set null",
     }),
@@ -583,10 +711,99 @@ export const emailEvents = pgTable(
     index("email_event_member_idx").on(table.programMemberId),
     index("email_event_enrollment_idx").on(table.enrollmentId),
     index("email_event_module_idx").on(table.moduleId),
+    index("email_event_bulk_campaign_idx").on(table.bulkEmailCampaignId),
     index("email_event_delivery_idx").on(table.deliveryId),
     index("email_event_recipient_idx").on(table.recipientEmail),
     index("email_event_template_idx").on(table.templateKey),
     index("email_event_status_idx").on(table.status),
+  ]
+);
+
+export const bulkEmailCampaigns = pgTable(
+  "bulk_email_campaign",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    createdByUserId: text("created_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    title: text("title").notNull(),
+    subject: text("subject").notNull(),
+    bodyHtml: text("body_html").notNull(),
+    status: text("status").notNull().default("draft"),
+    audienceType: text("audience_type").notNull().default("custom"),
+    audienceLabel: text("audience_label"),
+    recipientQuery: jsonb("recipient_query").$type<Record<string, unknown>>(),
+    scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    senderLabel: text("sender_label"),
+    replyTo: text("reply_to"),
+    recipientCount: integer("recipient_count").notNull().default(0),
+    sentCount: integer("sent_count").notNull().default(0),
+    failedCount: integer("failed_count").notNull().default(0),
+    skippedCount: integer("skipped_count").notNull().default(0),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    index("bulk_email_campaign_status_idx").on(table.status),
+    index("bulk_email_campaign_audience_idx").on(table.audienceType),
+    index("bulk_email_campaign_scheduled_for_idx").on(table.scheduledFor),
+    index("bulk_email_campaign_created_by_idx").on(table.createdByUserId),
+  ]
+);
+
+export const bulkEmailCampaignAttachments = pgTable(
+  "bulk_email_campaign_attachment",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    campaignId: text("campaign_id")
+      .notNull()
+      .references(() => bulkEmailCampaigns.id, { onDelete: "cascade" }),
+    filename: text("filename").notNull(),
+    contentType: text("content_type"),
+    contentBase64: text("content_base64").notNull(),
+    sizeBytes: integer("size_bytes").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    index("bulk_email_campaign_attachment_campaign_idx").on(table.campaignId),
+  ]
+);
+
+export const bulkEmailCampaignRecipients = pgTable(
+  "bulk_email_campaign_recipient",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    campaignId: text("campaign_id")
+      .notNull()
+      .references(() => bulkEmailCampaigns.id, { onDelete: "cascade" }),
+    programMemberId: text("program_member_id").references(
+      () => programMembers.id,
+      { onDelete: "set null" }
+    ),
+    joinApplicationId: text("join_application_id").references(
+      () => joinApplications.id,
+      { onDelete: "set null" }
+    ),
+    recipientName: text("recipient_name").notNull(),
+    recipientEmail: text("recipient_email").notNull(),
+    status: text("status").notNull().default("pending"),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    providerId: text("provider_id"),
+    error: text("error"),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+  },
+  (table) => [
+    index("bulk_email_campaign_recipient_campaign_idx").on(table.campaignId),
+    index("bulk_email_campaign_recipient_email_idx").on(table.recipientEmail),
+    index("bulk_email_campaign_recipient_status_idx").on(table.status),
+    index("bulk_email_campaign_recipient_member_idx").on(table.programMemberId),
   ]
 );
 

@@ -19,6 +19,7 @@ import {
   getString,
   getStringArray,
 } from "@/lib/admin/onboarding";
+import { getMentorAssignmentCandidates } from "@/lib/admin/mentor-assignments";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -46,6 +47,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ResendLessonEmailDialog } from "@/components/admin/resend-lesson-email-dialog";
+import { MentorAssignmentDialog } from "@/components/admin/mentor-assignment-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -192,6 +194,7 @@ export default async function JoinApplicationDetailPage({
   const memberJourney = detail.member
     ? await getProgramMemberJourneyData(detail.member.id)
     : null;
+  const mentors = detail.member ? await getMentorAssignmentCandidates() : [];
   const lessonDeliveries = memberJourney
     ? memberJourney.moduleProgress.map((item) => ({
         deliveryId: item.delivery.id,
@@ -434,6 +437,15 @@ export default async function JoinApplicationDetailPage({
                     Grant verified access
                   </Button>
                 </form>
+                {detail.member.role === "youth" ? (
+                  <MentorAssignmentDialog
+                    memberId={detail.member.id}
+                    applicantName={detail.member.fullName}
+                    applicantEmail={detail.member.email}
+                    triggerLabel="Assign mentor"
+                    mentors={mentors}
+                  />
+                ) : null}
               </div>
             </>
           ) : (

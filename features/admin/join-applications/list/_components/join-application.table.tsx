@@ -16,6 +16,7 @@ import type {
   JoinApplicationListResponse,
   JoinApplicationListRow,
 } from "@/lib/admin/join-applications";
+import type { MentorAssignmentCandidate } from "@/lib/admin/mentor-assignments";
 import type { TrainingApplicationSettingsRecord } from "@/lib/application-settings.shared";
 import { useJoinApplicationList } from "../_hooks/use-join-application-list";
 import { buildJoinApplicationColumns } from "./join-application.columns";
@@ -26,13 +27,14 @@ interface JoinApplicationTableProps {
   initialData: JoinApplicationListResponse;
   initialFilters: JoinApplicationListInput;
   applicationSettings: TrainingApplicationSettingsRecord;
+  mentors: MentorAssignmentCandidate[];
 }
 
 function formatCount(value: number) {
   return new Intl.NumberFormat("en-NG").format(value);
 }
 
-export function JoinApplicationTable({ initialData, initialFilters, applicationSettings }: JoinApplicationTableProps) {
+export function JoinApplicationTable({ initialData, initialFilters, applicationSettings, mentors }: JoinApplicationTableProps) {
   const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [view, setView] = useState<"table" | "grid">("table");
@@ -89,9 +91,10 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
       buildJoinApplicationColumns({
         page: currentInput.page,
         limit: currentInput.limit,
+        mentors,
         onViewDetails: handleViewDetails,
       }),
-    [currentInput.page, currentInput.limit],
+    [currentInput.page, currentInput.limit, mentors],
   );
 
   const table = useReactTable({
@@ -384,6 +387,7 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
               <JoinApplicationCard
                 key={application.joinApplicationId}
                 application={application}
+                mentors={mentors}
                 onViewDetails={handleViewDetails}
                 onHover={prefetchDetail}
               />

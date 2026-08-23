@@ -108,6 +108,140 @@ async function getDeliveryJoinApplicationPath(deliveryId: string) {
     : "/admin/join-applications";
 }
 
+async function assignMentorToYouthMembersInternal({
+  mentorMemberId,
+  youthMemberIds,
+  notes,
+}: {
+  mentorMemberId: string;
+  youthMemberIds: string[];
+  notes?: string | null;
+}) {
+  const uniqueYouthMemberIds = Array.from(
+    new Set(youthMemberIds.map((value) => value.trim()).filter(Boolean)),
+  );
+
+  if (!mentorMemberId || !uniqueYouthMemberIds.length) {
+    return { ok: false, message: "Mentor and at least one mentee are required." };
+  }
+
+  const [mentor] = await db
+    .select({
+      id: programMembers.id,
+      fullName: programMembers.fullName,
+      joinApplicationId: programMembers.joinApplicationId,
+    })
+    .from(programMembers)
+    .where(and(eq(programMembers.id, mentorMemberId), eq(programMembers.role, "mentor")))
+    .limit(1);
+
+  if (!mentor) {
+    return { ok: false, message: "Selected mentor was not found." };
+  }
+
+  const youthMembers = await db
+    .select({
+      id: programMembers.id,
+      joinApplicationId: programMembers.joinApplicationId,
+      fullName: programMembers.fullName,
+      email: programMembers.email,
+    })
+    .from(programMembers)
+    .where(
+      and(
+        eq(programMembers.role, "youth"),
+        inArray(programMembers.id, uniqueYouthMemberIds),
+      ),
+    );
+
+  if (!youthMembers.length) {
+    return { ok: false, message: "Selected mentees were not found." };
+  }
+
+  const existingAssignments = await db
+    .select({
+      id: mentorAssignments.id,
+      youthMemberId: mentorAssignments.youthMemberId,
+    })
+    .from(mentorAssignments)
+    .where(
+      and(
+        eq(mentorAssignments.status, "active"),
+        inArray(mentorAssignments.youthMemberId, youthMembers.map((item) => item.id)),
+      ),
+    );
+
+  if (existingAssignments.length) {
+    await db
+      .update(mentorAssignments)
+      .set({
+        status: "ended",
+        endedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(
+        inArray(
+          mentorAssignments.id,
+          existingAssignments.map((assignment) => assignment.id),
+        ),
+      );
+  }
+
+  const assignmentRows = [];
+  const now = new Date();
+
+  for (const youthMember of youthMembers) {
+    const [assignment] = await db
+      .insert(mentorAssignments)
+      .values({
+        youthMemberId: youthMember.id,
+        mentorMemberId,
+        notes,
+        assignedAt: now,
+      })
+      .returning({ id: mentorAssignments.id });
+
+    assignmentRows.push(assignment);
+
+    await db.insert(mentorshipSessions).values(
+      [1, 2, 3].map((sessionNumber) => ({
+        assignmentId: assignment.id,
+        sessionNumber,
+      })),
+    );
+
+    await db
+      .update(programMembers)
+      .set({ currentStep: "monthly_virtual_sessions", updatedAt: new Date() })
+      .where(eq(programMembers.id, youthMember.id));
+  }
+
+  await db
+    .update(programMembers)
+    .set({ currentStep: "assigned_to_youth", updatedAt: new Date() })
+    .where(eq(programMembers.id, mentorMemberId));
+
+  await Promise.all(
+    youthMembers.map((member) => syncJoinApplicationProjection(member.joinApplicationId)),
+  );
+
+  const mentorPath = await getMemberJoinApplicationPath(mentorMemberId);
+  const youthPaths = await Promise.all(
+    youthMembers.map((member) => getMemberJoinApplicationPath(member.id)),
+  );
+
+  revalidatePath("/admin/join-applications");
+  revalidatePath("/admin/assignments");
+  revalidatePath(mentorPath);
+  youthPaths.forEach((path) => revalidatePath(path));
+
+  return {
+    ok: true,
+    message: `Assigned mentor to ${youthMembers.length} mentee${youthMembers.length === 1 ? "" : "s"}.`,
+    assignmentIds: assignmentRows.map((row) => row.id),
+  };
+}
+
 async function sendAndLogEmail(
   payload: ReturnType<typeof applicationRejectedEmail>,
   context: { programMemberId?: string } = {},
@@ -259,57 +393,49 @@ export async function assignMentorToYouth(
     const youthMemberId = value(formData, "youth_member_id");
     const mentorMemberId = value(formData, "mentor_member_id");
     const notes = value(formData, "notes");
+    const result = await assignMentorToYouthMembersInternal({
+      mentorMemberId,
+      youthMemberIds: [youthMemberId],
+      notes,
+    });
 
-    if (!youthMemberId || !mentorMemberId) {
-      return { ok: false, message: "Youth and mentor are required." };
+    if (!result.ok) {
+      return result;
     }
 
-    const [assignment] = await db
-      .insert(mentorAssignments)
-      .values({
-        youthMemberId,
-        mentorMemberId,
-        notes,
-      })
-      .returning({ id: mentorAssignments.id });
+    return { ok: true, message: result.message };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Mentor assignment failed.",
+    };
+  }
+}
 
-    await db.insert(mentorshipSessions).values(
-      [1, 2, 3].map((sessionNumber) => ({
-        assignmentId: assignment.id,
-        sessionNumber,
-      })),
+export async function assignMentorToYouthGroup(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    const mentorMemberId = value(formData, "mentor_member_id");
+    const notes = value(formData, "notes");
+    const youthMemberIds = formData.getAll("youth_member_ids").map((value) =>
+      String(value ?? "").trim(),
     );
 
-    await db
-      .update(programMembers)
-      .set({ currentStep: "monthly_virtual_sessions", updatedAt: new Date() })
-      .where(eq(programMembers.id, youthMemberId));
+    const result = await assignMentorToYouthMembersInternal({
+      mentorMemberId,
+      youthMemberIds,
+      notes,
+    });
 
-    await db
-      .update(programMembers)
-      .set({ currentStep: "assigned_to_youth", updatedAt: new Date() })
-      .where(eq(programMembers.id, mentorMemberId));
+    if (!result.ok) {
+      return result;
+    }
 
-    const linkedMembers = await db
-      .select({
-        id: programMembers.id,
-        joinApplicationId: programMembers.joinApplicationId,
-      })
-      .from(programMembers)
-      .where(inArray(programMembers.id, [youthMemberId, mentorMemberId]));
-
-    await Promise.all(
-      linkedMembers.map((member) =>
-        syncJoinApplicationProjection(member.joinApplicationId),
-      ),
-    );
-
-    const youthPath = await getMemberJoinApplicationPath(youthMemberId);
-    const mentorPath = await getMemberJoinApplicationPath(mentorMemberId);
-    revalidatePath("/admin/join-applications");
-    revalidatePath(youthPath);
-    revalidatePath(mentorPath);
-    return { ok: true, message: "Mentor assigned." };
+    return { ok: true, message: result.message };
   } catch (error) {
     return {
       ok: false,

@@ -12,8 +12,8 @@ export default function MentorWelcomePage() {
       sectionLabel="Mentor Welcome"
       heading={<>Welcome back, <span className="grad-text">mentor</span></>}
       description="You have successfully signed in as a mentor. For now, we’re showing your contact details and role while the mentor workspace continues to grow."
-      ctaHref="/dashboard"
-      ctaLabel="Go to Dashboard"
+      ctaHref="/mentor/dashboard"
+      ctaLabel="Go to Mentor Dashboard"
       expectedRole="mentor"
       fallbackLoginHref="/mentor/login"
     />

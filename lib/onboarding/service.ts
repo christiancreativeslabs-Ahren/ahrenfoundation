@@ -44,6 +44,8 @@ export type EngagementEventType =
   | "lesson_viewed"
   | "assignment_started"
   | "assignment_submitted"
+  | "workbook_viewed"
+  | "workbook_submitted"
   | "delivery_rescheduled"
   | "delivery_cancelled"
   | "delivery_synced"

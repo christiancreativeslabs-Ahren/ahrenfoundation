@@ -9,6 +9,7 @@ type EmailPayload = {
   subject: string;
   html: string;
   templateKey: string;
+  replyTo?: string;
   programMemberId?: string;
   enrollmentId?: string;
   moduleId?: string;
@@ -229,6 +230,7 @@ async function sendWithResend(payload: EmailPayload): Promise<EmailSendResult> {
       to: payload.to,
       subject: payload.subject,
       html: payload.html,
+      reply_to: payload.replyTo,
       attachments: payload.attachments,
     }),
   });
@@ -273,7 +275,7 @@ async function sendWithSmtp(
     to: payload.to,
     subject: payload.subject,
     html: payload.html,
-    replyTo: undefined,
+    replyTo: payload.replyTo,
     attachments: payload.attachments?.map((attachment) => ({
       filename: attachment.filename,
       content: attachment.content,

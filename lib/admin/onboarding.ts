@@ -2,6 +2,7 @@ import { asc, desc, eq, inArray, or } from "drizzle-orm";
 import { db } from "@/db";
 import {
   emailEvents,
+  bulkEmailCampaigns,
   mentorAssignments,
   mentorshipSessions,
   engagementEvents,
@@ -382,12 +383,14 @@ export async function getEmailEventLogData() {
       module: programModules,
       delivery: moduleDeliveries,
       enrollment: programEnrollments,
+      campaign: bulkEmailCampaigns,
     })
     .from(emailEvents)
     .leftJoin(programMembers, eq(programMembers.id, emailEvents.programMemberId))
     .leftJoin(programModules, eq(programModules.id, emailEvents.moduleId))
     .leftJoin(moduleDeliveries, eq(moduleDeliveries.id, emailEvents.deliveryId))
     .leftJoin(programEnrollments, eq(programEnrollments.id, emailEvents.enrollmentId))
+    .leftJoin(bulkEmailCampaigns, eq(bulkEmailCampaigns.id, emailEvents.bulkEmailCampaignId))
     .orderBy(desc(emailEvents.createdAt))
     .limit(200);
 }

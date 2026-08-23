@@ -44,7 +44,7 @@ export default async function AdminEmailEventsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map(({ emailEvent, member, module, delivery, enrollment }) => (
+              {rows.map(({ emailEvent, member, module, delivery, enrollment, campaign }) => (
                 <TableRow key={emailEvent.id} className="border-white/10 align-top">
                   <TableCell className="whitespace-normal">
                     {member ? (
@@ -71,6 +71,7 @@ export default async function AdminEmailEventsPage() {
                     <p>Member: {member?.id || "-"}</p>
                     <p>Enrollment: {enrollment?.id || "-"}</p>
                     <p>Delivery: {delivery?.id || "-"}</p>
+                    <p>Campaign: {campaign?.title || "-"}</p>
                     <p>
                       Module:{" "}
                       {module ? `${module.moduleNumber} - ${module.title}` : "-"}

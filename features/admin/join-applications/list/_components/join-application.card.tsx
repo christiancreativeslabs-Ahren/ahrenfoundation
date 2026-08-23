@@ -1,16 +1,19 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import type { JoinApplicationListRow } from "@/lib/admin/join-applications";
+import type { MentorAssignmentCandidate } from "@/lib/admin/mentor-assignments";
 import { formatStatus, statusVariant } from "./join-application.columns";
+import { JoinApplicationActions } from "./join-application.actions";
 
 export function JoinApplicationCard({
   application,
+  mentors,
   onViewDetails,
   onHover,
 }: {
   application: JoinApplicationListRow;
+  mentors: MentorAssignmentCandidate[];
   onViewDetails: (applicationId: string) => void;
   onHover?: (applicationId: string) => void;
 }) {
@@ -94,14 +97,12 @@ export function JoinApplicationCard({
             )}
           </div>
         </div>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-9 border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
-          onClick={() => onViewDetails(application.joinApplicationId)}
-        >
-          View
-        </Button>
+        <JoinApplicationActions
+          application={application}
+          mentors={mentors}
+          onViewDetails={onViewDetails}
+          className="shrink-0"
+        />
       </div>
     </div>
   );

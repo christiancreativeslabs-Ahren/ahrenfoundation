@@ -15,9 +15,9 @@ export default function MentorLoginPage() {
       homeHref="/mentors"
       newUserHref="/become-a-mentor"
       newUserLabel="Become a mentor"
-      callbackURL="/mentor/welcome"
+      callbackURL="/mentor/dashboard"
       newUserCallbackURL="/become-a-mentor"
-      signedInRedirect="/mentor/welcome"
+      signedInRedirect="/mentor/dashboard"
       note="Use your email and password, or continue with Google."
     />
   );
