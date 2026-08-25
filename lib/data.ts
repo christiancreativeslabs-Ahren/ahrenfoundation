@@ -54,9 +54,19 @@ export const MENTORS: MentorCard[] = [
     bio: "Engr. Kenneth Ogbebor is a Mechanical Engineer with extensive experience in construction, project management, and engineering operations, with a proven ability to deliver complex projects efficiently and effectively. He combines strong technical expertise with excellent communication, leadership, and public speaking skills, enabling him to manage teams, engage stakeholders, and drive successful project outcomes. His professional experience spans engineering, strategic planning, farming, energy and general project execution. He is passionate about innovation, excellence, self-development and crafting impactful solutions that create lasting value.",
   },
   {
+    name: "Eweloghena",
+    photo: "/mentors/eweloghena.jpg",
+    bio: "Eweloghena has spent the past four years using creativity and content creation as tools for ministry; creating carousels, reels, and other digital content, writing devotionals, and serving in her local church through content creation and video editing, all for the glory of God. She is passionate about mentoring young Christian creatives and is currently building a space that will help them find their voice, discover their unique creative expression, and confidently use content creation to communicate their message and advance God's Kingdom.",
+  },
+  {
     name: "Folakemi Ajala",
     photo: "/mentors/folakemi-ajala.jpg",
     bio: "Folakemi Ajala is a literary consultant, ghostwriter, editor, and MC, with over a decade of experience helping others find and refine their voice. She serves as a worker her local church, where she is intentional about discipling young people to steward their gifts for God's glory. Folakemi mentors young creatives to see their talent not as self-expression alone, but as a calling entrusted to them by God, worth developing with excellence and used to build His kingdom.",
+  },
+  {
+    name: "Grace Iroh",
+    photo: "/mentors/grace-iroh.jpg",
+    bio: "Grace Iroh is a Product Manager with a proven track record of leading the design, development, and scaling of high-impact technical, operational, and enterprise products. She specializes in Product Management, Product Operations, Enterprise Systems, and Platform Strategy, with a strong focus on driving clarity from complexity and delivering scalable solutions that enable business growth and efficiency at scale. She has led cross-functional teams in building and optimizing critical systems across Edtech, Fintech, e-commerce, and transportation. Her leadership has contributed to significant gains in efficiency, system reliability, and customer satisfaction across multiple product ecosystems. Beyond product execution, Grace is deeply committed to talent development and organizational capability building. She actively mentors emerging product managers, equipping them with practical skills in product thinking, systems thinking, and execution excellence, while fostering a culture of impact-driven product development.",
   },
   {
     name: "Ibidun Adeleke",
@@ -122,6 +132,11 @@ export const MENTORS: MentorCard[] = [
     name: "Taiwo Oladipupo",
     photo: "/mentors/taiwo-oladipupo.jpg",
     bio: "Taiwo is the Founder/CEO of Telleosis, a specialist firm that designs and delivers enterprise-grade web and mobile platforms for health bodies, regulatory councils, NGOs, and educational institutions across Africa and the Middle East. His flagship achievement includes delivering a full-scale Learning Management System for the Nursing and Midwifery Council of Nigeria, a Gates Foundation-funded project that now supports the professional development of Nigeria's nursing and midwifery workforce. With expertise spanning enterprise LMS platforms, health education systems, custom web/mobile applications (Flutter, React, Node.js, AWS), and agile delivery for regulated environments, Taiwo is passionate about building the digital infrastructure that empowers institutions to train, certify, and up-skill the people communities depend on.",
+  },
+  {
+    name: "Tobi Ayelaagbe",
+    photo: "/mentors/tobi-ayelaagbe.jpg",
+    bio: "Tobi Ayelaagbe is an entrepreneur, digital strategist, creative technologist, and the Founder & CEO of WaowX Innovations. His work sits at the intersection of technology, creativity, business, media, and brand growth, helping organisations turn ideas into impactful solutions. Passionate about purpose-driven innovation, Tobi is committed to equipping young people to discover, develop, and steward their gifts with excellence. As a Christian and Kingdom-minded entrepreneur, he believes technology, creativity, and business can be powerful tools for solving problems, creating value, and advancing God's Kingdom. He is passionate about mentoring the next generation to build boldly, think innovatively, and use their skills to create meaningful impact.",
   },
   {
     name: "Tolulope Akin-Williams",
@@ -215,7 +230,7 @@ export const BLOGS = [
 ];
 
 export const STATS = [
-  { value: "26+", label: "Mentors & Facilitators" },
+  { value: "29+", label: "Mentors & Facilitators" },
   { value: "6", label: "Week Masterclass" },
   { value: "4", label: "Core Initiatives" },
   { value: "\u221e", label: "Kingdom Impact" },
