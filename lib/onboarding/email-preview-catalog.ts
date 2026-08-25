@@ -32,6 +32,12 @@ export function getEmailPreviewCatalog(): EmailPreviewCategory[] {
           description: "Welcome email for mentors beginning onboarding.",
         },
         {
+          templateKey: "program-welcome",
+          title: "Program Welcome",
+          description:
+            "Detailed welcome email with program overview, schedule, and WhatsApp join instructions.",
+        },
+        {
           templateKey: "completion-letter",
           title: "Completion Letter",
           description: "Closing letter to the creative cohort.",
@@ -47,7 +53,9 @@ export function getEmailPreviewCatalog(): EmailPreviewCategory[] {
 }
 
 export function getOnboardingPreviewTemplates() {
-  return getEmailPreviewCatalog()
-    .find((category) => category.categoryKey === "onboarding")
-    ?.templates ?? [];
+  return (
+    getEmailPreviewCatalog().find(
+      (category) => category.categoryKey === "onboarding",
+    )?.templates ?? []
+  );
 }

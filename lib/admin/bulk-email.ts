@@ -11,6 +11,8 @@ import {
 } from "@/db/schema";
 import { sendEmail } from "@/lib/email";
 import { sanitizeTrainingApplicationHtml } from "@/lib/application-settings.shared";
+import { getAppBaseUrl } from "../onboarding/urls";
+import { renderProgramWelcomeEmail } from "../onboarding/email-renderer";
 
 export type BulkEmailAudienceType =
   | "all_members"
@@ -142,6 +144,19 @@ export async function getBulkEmailCampaignDetail(campaignId: string) {
   };
 }
 
+export function getProgramWelcomeCampaignContent() {
+  const rendered = renderProgramWelcomeEmail({
+    name: "Creative",
+    baseUrl: getAppBaseUrl(),
+  });
+
+  return {
+    subject: rendered.subject,
+    bodyHtml: rendered.html,
+    templateKey: rendered.templateKey, // "program-welcome"
+  };
+}
+
 export async function getBulkEmailAudiencePreview(
   audienceType: BulkEmailAudienceType,
   customRecipientEmails: string[] = [],
@@ -174,7 +189,9 @@ export async function getBulkEmailAudiencePreview(
   return {
     audienceType,
     count: filtered.length,
-    samples: filtered.slice(0, 10).map((row) => `${row.fullName} <${row.email}>`),
+    samples: filtered
+      .slice(0, 10)
+      .map((row) => `${row.fullName} <${row.email}>`),
   };
 }
 
@@ -399,13 +416,13 @@ export async function sendBulkEmailCampaignNow(
           sentAt: result.sent ? new Date() : null,
           payload: {
             subject: campaign.subject,
-          campaignId: campaign.id,
-          campaignTitle: campaign.title,
-          audienceType: campaign.audienceType,
-          senderLabel: campaign.senderLabel,
-          source: options.source ?? "admin",
-        },
-      })
+            campaignId: campaign.id,
+            campaignTitle: campaign.title,
+            audienceType: campaign.audienceType,
+            senderLabel: campaign.senderLabel,
+            source: options.source ?? "admin",
+          },
+        })
         .returning({ id: emailEvents.id });
 
       await db.insert(engagementEvents).values({
@@ -571,20 +588,18 @@ export async function processDueBulkEmailCampaigns() {
   return results;
 }
 
-export async function createBulkEmailCampaign(
-  input: {
-    title: string;
-    subject: string;
-    bodyHtml: string;
-    audienceType: BulkEmailAudienceType;
-    audienceLabel?: string | null;
-    scheduledFor?: Date | null;
-    senderLabel?: string | null;
-    replyTo?: string | null;
-    payload?: Record<string, unknown>;
-    createdByUserId?: string | null;
-  },
-) {
+export async function createBulkEmailCampaign(input: {
+  title: string;
+  subject: string;
+  bodyHtml: string;
+  audienceType: BulkEmailAudienceType;
+  audienceLabel?: string | null;
+  scheduledFor?: Date | null;
+  senderLabel?: string | null;
+  replyTo?: string | null;
+  payload?: Record<string, unknown>;
+  createdByUserId?: string | null;
+}) {
   const [campaign] = await db
     .insert(bulkEmailCampaigns)
     .values({

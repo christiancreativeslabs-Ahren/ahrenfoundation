@@ -568,8 +568,89 @@ export const COHORT_COMPLETION_EMAIL = {
     "So go. Build. Create. Shine. Serve. Surrender. Grow. Redeem. Align. The world is waiting for your creativity and innovation - not your perfection, but your obedience to God.",
 };
 
+export const PROGRAM_WELCOME_EMAIL = {
+  subject: "Welcome to Ahren Foundation Program!",
+  previewText:
+    "Welcome to the 6-Week Tech & Creativity Masterclass. Here's everything you need to know to get started.",
+  paragraphs: [
+    "Welcome to Ahren Foundation!",
+    "Thank you for registering for our 6-Week Tech & Creativity Masterclass program.",
+    "We are so excited to have you on board for our 6 Week Tech & Creativity Mentorship Program. Thank you for registering — we truly believe you are here for such a time as this.",
+    "Starting from September 1st over the next 6 weeks, we will walk together as you discover your creative identity, learn practical digital skills, connect with mentors and like minded creatives, and uncover the Kingdom purpose God has placed inside you.",
+  ],
+  whatToExpect: [
+    "12 Interactive Modules – Delivered twice a week (Mondays & Fridays) on our community app",
+    "4 Live Virtual Training Sessions – AI & Tech, Branding, Digital Content Creation and Digital Marketing",
+    "3 Mentor Meetings – Bi weekly 1 on 1 virtual sessions with your assigned mentor",
+    "Certificate of Completion – Awarded upon successful completion",
+    "Verified Member Access – Unlock community resources, training, programs and pathway to funding opportunities",
+  ],
+  liveSessions: [
+    ["AI & Tech for Creatives", "Saturday, September 5, 2026"],
+    ["Branding", "Saturday, September 19, 2026"],
+    [
+      "Digital Content Creation & Digital Marketing",
+      "Saturday, October 3, 2026",
+    ],
+  ],
+  mentorMeetings: [
+    ["Mentor Meeting 1", "Saturday, September 12, 2026"],
+    ["Mentor Meeting 2", "Saturday, September 26, 2026"],
+    ["Mentor Meeting 3", "Saturday, October 10, 2026"],
+  ],
+  whatsappNote:
+    "To start receiving updates and community discussions, please join our official WhatsApp group via SMS or WhatsApp Message from our Program Admin or send a chat to +234 704 755 5064.",
+  attachmentNote:
+    "Please find attached: Orientation Guide – Everything you need to know about the program.",
+  closing:
+    "We are praying for you and cheering you on. This is going to be a transformative journey.",
+  contactNote:
+    "If you have any questions, please don't hesitate to email us hello@ahrenfoundation.org or reach out to us on WhatsApp: +234 704 755 5064.",
+  website: "www.ahrenfoundation.org",
+};
+
+// export const PROGRAM_WELCOME_EMAIL = {
+//   subject: "Welcome to Ahren Foundation Program!",
+//   previewText:
+//     "Welcome to the 6-Week Tech & Creativity Masterclass. Here's everything you need to know to get started.",
+//   paragraphs: [
+//     "Welcome to Ahren Foundation!",
+//     "Thank you for registering for our 6-Week Tech & Creativity Masterclass program.",
+//     "We are so excited to have you on board. Thank you for registering — we truly believe you are here for such a time as this.",
+//     "Starting from September 1st, over the next 6 weeks we will walk together as you discover your creative identity, learn practical digital skills, connect with mentors and like-minded creatives, and uncover the Kingdom purpose God has placed inside you.",
+//   ],
+//   whatToExpect: [
+//     "12 Interactive Modules – Delivered twice a week (Mondays & Fridays) on our community app",
+//     "4 Live Virtual Training Sessions – AI & Tech, Branding, Digital Content Creation and Digital Marketing",
+//     "3 Mentor Meetings – Bi-weekly 1-on-1 virtual sessions with your assigned mentor",
+//     "Certificate of Completion – Awarded upon successful completion",
+//     "Verified Member Access – Unlock community, resources, training, programs and pathway to funding opportunities",
+//   ],
+//   liveSessions: [
+//     ["AI & Tech for Creatives", "Saturday, September 5, 2026"],
+//     ["Branding", "Saturday, September 19, 2026"],
+//     [
+//       "Digital Content Creation & Digital Marketing",
+//       "Saturday, October 3, 2026",
+//     ],
+//   ],
+//   mentorMeetings: [
+//     ["Mentor Meeting 1", "Saturday, September 12, 2026"],
+//     ["Mentor Meeting 2", "Saturday, September 26, 2026"],
+//     ["Mentor Meeting 3", "Saturday, October 10, 2026"],
+//   ],
+//   whatsappNote:
+//     "To start receiving updates and community discussions, please join our official WhatsApp group via SMS or WhatsApp Message from our Program Admin, or send a chat to +234 704 755 5064.",
+//   attachmentNote:
+//     "Please find attached: Orientation Guide – Everything you need to know about the program.",
+//   closing:
+//     "We are praying for you and cheering you on. This is going to be a transformative journey.",
+//   contactNote:
+//     "If you have any questions, please don't hesitate to email us or reach out to us on WhatsApp: +234 704 755 5064.",
+// };
+
 export function getModuleDefinition(moduleKey: string) {
   return AHREN_ONBOARDING_PROGRAM.modules.find(
-    (module) => module.moduleKey === moduleKey
+    (module) => module.moduleKey === moduleKey,
   );
 }

@@ -71,6 +71,26 @@ export function unorderedList(items: string[]) {
     .join("")}</ul>`;
 }
 
+// in email-markup.ts (or inline in the renderer)
+export function mailtoLink(email: string, label?: string) {
+  const text = label ?? email;
+  return `<a href="mailto:${escapeHtml(email)}" style="color:#0ea5e9;text-decoration:underline;">${escapeHtml(text)}</a>`;
+}
+
+export function whatsappLink(
+  phoneDisplay: string,
+  phoneE164 = "2347047555064",
+) {
+  // phoneE164 without + or spaces
+  return `<a href="https://wa.me/${phoneE164}" style="color:#0ea5e9;text-decoration:underline;" target="_blank" rel="noopener noreferrer">${escapeHtml(phoneDisplay)}</a>`;
+}
+
+export function webLink(url: string, label?: string) {
+  const href = url.startsWith("http") ? url : `https://${url}`;
+  const text = label ?? url;
+  return `<a href="${escapeHtml(href)}" style="color:#0ea5e9;text-decoration:underline;" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
+}
+
 export function infoBox(label: string, body: string) {
   const badgeColor =
     label.toLowerCase().includes("scripture") ||
@@ -123,7 +143,9 @@ export function emailButton(href: string, label: string) {
   `;
 }
 
-export function scriptureBlock(scriptures: Array<{ text: string; reference: string }>) {
+export function scriptureBlock(
+  scriptures: Array<{ text: string; reference: string }>,
+) {
   return scriptures
     .map(
       (scripture) => `

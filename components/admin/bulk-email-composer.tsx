@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { saveBulkEmailCampaignAction } from "@/actions/bulk-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useJoinApplicationEmails } from "../../features/admin/join-applications/list/_hooks/use-join-application-emails";
 import {
   DateTimeInput,
   HiddenInput,
@@ -34,6 +35,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { loadProgramWelcomeTemplateAction } from "@/actions/bulk-email";
 
 type ActionState = {
   ok: boolean;
@@ -87,6 +89,8 @@ export function BulkEmailComposer({
 }: BulkEmailComposerProps) {
   const router = useRouter();
   const editorRef = useRef<HTMLDivElement | null>(null);
+  const { data: applicantEmails = [] } = useJoinApplicationEmails();
+
   const [state, formAction, pending] = useActionState(
     saveBulkEmailCampaignAction,
     initialActionState,
@@ -127,6 +131,36 @@ export function BulkEmailComposer({
       editorRef.current.innerHTML = editorHtml;
     }
   }, []);
+
+  useEffect(() => {
+    if (audienceType === "applicants") {
+      setCustomEmails(applicantEmails.join(", "));
+    } else {
+      setCustomEmails("");
+    }
+  }, [audienceType, applicantEmails]);
+
+  const [loadingTemplate, setLoadingTemplate] = useState(false);
+
+  const loadProgramWelcome = async () => {
+    setLoadingTemplate(true);
+    try {
+      const content = await loadProgramWelcomeTemplateAction();
+      setSubject(content.subject);
+      setEditorHtml(content.bodyHtml);
+
+      // Important: also update the contentEditable
+      if (editorRef.current) {
+        editorRef.current.innerHTML = content.bodyHtml;
+      }
+
+      if (!title) {
+        setTitle("Program Welcome – September Cohort");
+      }
+    } finally {
+      setLoadingTemplate(false);
+    }
+  };
 
   const summaryLabel = useMemo(() => {
     if (!recipientCount) return "No saved recipients yet";
@@ -343,6 +377,15 @@ export function BulkEmailComposer({
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Clear
+              </button>
+              <button
+                type="button"
+                onClick={loadProgramWelcome}
+                disabled={loadingTemplate}
+                className={buttonStyles}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                {loadingTemplate ? "Loading…" : "Load Program Welcome"}
               </button>
             </div>
 
