@@ -1,4 +1,9 @@
-import { absoluteUrl, assetUrl, colors, escapeHtml } from "@/lib/onboarding/email-markup";
+import {
+  absoluteUrl,
+  assetUrl,
+  colors,
+  escapeHtml,
+} from "@/lib/onboarding/email-markup";
 
 function splitHeroLabel(label: string) {
   const match = label.match(/Week\s+(\d+)\s*-\s*Module\s+(\d+)/i);
@@ -15,7 +20,10 @@ export function emailShell(input: {
   heroSubtitle?: string;
   bodyHtml: string;
   openPixelUrl?: string;
+  showLessonMap?: boolean;
 }) {
+  const showLessonMap = input.showLessonMap ?? true;
+
   const openPixel = input.openPixelUrl
     ? `<img src="${escapeHtml(absoluteUrl(input.openPixelUrl))}" width="1" height="1" alt="" style="display:none;width:1px;height:1px;" />`
     : "";
@@ -82,23 +90,28 @@ export function emailShell(input: {
                 </tr>
 
                 <tr>
-                  <td colspan="2" style="padding:18px 32px 0;">
+                  <td colspan="${showLessonMap ? "2" : "1"}" style="padding:18px 32px 0;">
                     <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:0;background:linear-gradient(135deg, ${colors.softSky}, ${colors.panel} 42%, ${colors.softMint});border:1px solid ${colors.border};border-radius:28px;overflow:hidden;">
                       <tbody>
                         <tr>
-                          <td style="vertical-align:top;padding:22px 24px 24px;width:66%;">
+                          <td style="vertical-align:top;padding:22px 24px 24px;width:${showLessonMap ? "66%" : "100%"};"
+                          >
+                          
                             <p style="margin:0 0 12px;color:${colors.muted};font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;">
                               ${escapeHtml(input.heroEyebrow)}
                             </p>
-                            <h1 style="margin:0 0 14px;color:${colors.black};font-size:38px;font-weight:800;line-height:42px;letter-spacing:-1.6px;max-width:12ch;font-family:Georgia, 'Times New Roman', serif;">
+                            <h1 style="margin:0 0 14px;color:${colors.black};font-size:38px;font-weight:800;line-height:42px;letter-spacing:-1.6px;max-width:${showLessonMap ? "12ch" : "20ch"};font-family:Georgia, 'Times New Roman', serif;">
                               ${escapeHtml(input.heroTitle)}
                             </h1>
                             ${
                               input.heroSubtitle
-                                ? `<p style="margin:0;color:${colors.ink};font-size:16px;font-weight:400;line-height:29px;max-width:34em;">${escapeHtml(input.heroSubtitle)}</p>`
+                                ? `<p style="margin:0;color:${colors.ink};font-size:16px;font-weight:400;line-height:29px;max-width:${showLessonMap ? "34em" : "54em"};">${escapeHtml(input.heroSubtitle)}</p>`
                                 : ""
                             }
                           </td>
+                            ${
+                              showLessonMap
+                                ? `
                           <td style="vertical-align:top;padding:22px 24px 24px;width:34%;">
                             <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:0;background-color:${colors.panel};border:1px solid ${colors.border};border-radius:20px;overflow:hidden;">
                               <tbody>
@@ -135,6 +148,9 @@ export function emailShell(input: {
                               </tbody>
                             </table>
                           </td>
+                          `
+                                : ""
+                            }
                         </tr>
                       </tbody>
                     </table>

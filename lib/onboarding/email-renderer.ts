@@ -3,6 +3,7 @@ import {
   COHORT_COMPLETION_EMAIL,
   MENTEE_WELCOME_EMAIL,
   MENTOR_WELCOME_EMAIL,
+  PROGRAM_WELCOME_EMAIL,
 } from "@/lib/onboarding/content";
 import {
   alignmentTable,
@@ -10,9 +11,12 @@ import {
   escapeHtml,
   greeting,
   infoBox,
+  mailtoLink,
   paragraph,
   scriptureBlock,
   unorderedList,
+  webLink,
+  whatsappLink,
   wrapParagraphs,
 } from "@/lib/onboarding/email-markup";
 import { emailShell } from "@/lib/onboarding/email-shell";
@@ -34,9 +38,7 @@ export function renderOnboardingWelcomeEmail(
       ? "We are preparing your onboarding journey and will follow up with the next mentoring steps shortly."
       : "Your first lesson will arrive one week after signup, and from there we will walk with you through the full 6-week journey.";
   const roleExpectation =
-    props.role === "mentor"
-      ? "What to expect next"
-      : "Your onboarding path";
+    props.role === "mentor" ? "What to expect next" : "Your onboarding path";
 
   const bodyHtml = `
     ${greeting(props.name)}
@@ -57,7 +59,9 @@ export function renderOnboardingWelcomeEmail(
       baseUrl: props.baseUrl,
       heroEyebrow: "Welcome Letter",
       heroTitle:
-        props.role === "mentor" ? "Welcome, Mentor" : "Welcome to Ahren Foundation",
+        props.role === "mentor"
+          ? "Welcome, Mentor"
+          : "Welcome to Ahren Foundation",
       bodyHtml,
     }),
     templateKey: props.role === "mentor" ? "mentor_welcome" : "mentee_welcome",
@@ -73,9 +77,9 @@ export function renderOnboardingModuleEmail(
     ${greeting(props.name)}
     ${wrapParagraphs(props.module.openingCopy)}
     ${infoBox("Key Scripture", scriptureBlock(props.module.scriptures))}
-    ${infoBox("Reflection", paragraph(props.module.reflection).replace('margin:0 0 20px;', "margin:0;"))}
-    ${infoBox("This Week's Focus", paragraph(props.module.focus).replace('margin:0 0 20px;', "margin:0;"))}
-    ${infoBox("This Week's Action", paragraph(props.module.action).replace('margin:0 0 20px;', "margin:0;"))}
+    ${infoBox("Reflection", paragraph(props.module.reflection).replace("margin:0 0 20px;", "margin:0;"))}
+    ${infoBox("This Week's Focus", paragraph(props.module.focus).replace("margin:0 0 20px;", "margin:0;"))}
+    ${infoBox("This Week's Action", paragraph(props.module.action).replace("margin:0 0 20px;", "margin:0;"))}
     ${emailButton(props.lessonUrl, "Access This Module")}
     ${
       props.module.moduleNumber === 12
@@ -85,7 +89,7 @@ export function renderOnboardingModuleEmail(
               "You have now completed the Ahren Foundation Christian Creativity Masterclass Program.",
             )}${paragraph(
               "Your certificate of completion and verified member access details will be sent to you shortly. We are so proud of you for finishing this journey. Now go build something for eternity.",
-            ).replace('margin:0 0 20px;', "margin:0;")}`,
+            ).replace("margin:0 0 20px;", "margin:0;")}`,
           )
         : ""
     }
@@ -187,6 +191,13 @@ export function renderOnboardingPreviewTemplate(templateKey: string) {
     });
   }
 
+  if (templateKey === "program-welcome") {
+    return renderProgramWelcomeEmail({
+      name: "Creative",
+      baseUrl,
+    });
+  }
+
   const module = AHREN_ONBOARDING_PROGRAM.modules.find(
     (item) => item.moduleKey === templateKey,
   );
@@ -200,4 +211,170 @@ export function renderOnboardingPreviewTemplate(templateKey: string) {
     openPixelUrl: `${baseUrl}/api/email/open/sample-delivery/sample-token`,
     baseUrl,
   });
+}
+
+// export function renderProgramWelcomeEmail(props: {
+//   name: string;
+//   baseUrl: string;
+// }): RenderedOnboardingEmail {
+//   const copy = PROGRAM_WELCOME_EMAIL;
+
+//   const bodyHtml = `
+//     ${greeting(props.name)}
+//     ${wrapParagraphs(copy.paragraphs)}
+
+//     ${infoBox("What to Expect", unorderedList(copy.whatToExpect))}
+
+//     ${infoBox(
+//       "Live Training Sessions",
+//       `
+//         <p style="margin:0 0 14px;color:#404040;font-size:14px;line-height:22px;">
+//           Saturdays, 10:00 AM – 12:00 PM
+//         </p>
+//         ${alignmentTable(
+//           copy.liveSessions.map(([label, value]): [string, string] => [
+//             label,
+//             value,
+//           ]),
+//         )}
+//       `,
+//     )}
+
+//     ${infoBox(
+//       "Mentor Meetings",
+//       `
+//         <p style="margin:0 0 14px;color:#404040;font-size:14px;line-height:22px;">
+//           Saturdays, 11:00 AM – 12:00 NOON
+//         </p>
+//         ${alignmentTable(
+//           copy.mentorMeetings.map(([label, value]): [string, string] => [
+//             label,
+//             value,
+//           ]),
+//         )}
+//       `,
+//     )}
+
+//     ${infoBox("Join the Community", paragraph(copy.whatsappNote).replace("margin:0 0 20px;", "margin:0;"))}
+
+//     ${paragraph(copy.attachmentNote)}
+//     ${paragraph(copy.closing)}
+//     ${paragraph(copy.contactNote, { small: true })}
+
+//     ${paragraph("With joy and expectation,")}
+//     <p style="margin:0 0 20px;color:#000000;font-size:15px;font-weight:600;line-height:26px;">
+//       The Ahren Foundation Team
+//     </p>
+
+//     ${emailButton(props.baseUrl, "Visit Ahren Foundation")}
+//   `;
+
+//   return {
+//     subject: copy.subject,
+//     html: emailShell({
+//       title: copy.subject,
+//       previewText: copy.previewText,
+//       baseUrl: props.baseUrl,
+//       heroEyebrow: "Welcome Letter",
+//       heroTitle: "Welcome to Ahren Foundation",
+//       heroSubtitle: "6-Week Tech & Creativity Masterclass",
+//       bodyHtml,
+//       showLessonMap: false,
+//     }),
+//     templateKey: "program-welcome",
+//   };
+// }
+
+export function renderProgramWelcomeEmail(props: {
+  name: string;
+  baseUrl: string;
+}): RenderedOnboardingEmail {
+  const copy = PROGRAM_WELCOME_EMAIL;
+
+  // Build contact paragraph with real links
+  const contactHtml = `
+    <p style="margin:0 0 20px;color:#404040;font-size:13px;font-weight:400;line-height:20px;">
+      If you have any questions, please don't hesitate to email us
+      ${mailtoLink("hello@ahrenfoundation.org")}
+      or reach out to us on WhatsApp:
+      ${whatsappLink("+234 704 755 5064")}.
+    </p>
+  `;
+
+  const whatsappBoxBody = `
+    <p style="margin:0;color:#404040;font-size:15px;line-height:27px;">
+      To start receiving updates and community discussions, please join our official WhatsApp group via SMS or WhatsApp Message from our Program Admin or send a chat to
+      ${whatsappLink("+234 704 755 5064")}.
+    </p>
+  `;
+
+  const bodyHtml = `
+    ${greeting(props.name)}
+    ${wrapParagraphs(copy.paragraphs)}
+
+    ${infoBox("What to Expect", unorderedList(copy.whatToExpect))}
+
+    ${infoBox(
+      "Live Training Sessions",
+      `
+        <p style="margin:0 0 14px;color:#404040;font-size:14px;line-height:22px;">
+          Saturdays, 10:00 AM – 12:00 PM
+        </p>
+        ${alignmentTable(
+          copy.liveSessions.map(([label, value]): [string, string] => [
+            label,
+            value,
+          ]),
+        )}
+      `,
+    )}
+
+    ${infoBox(
+      "Mentor Meetings",
+      `
+        <p style="margin:0 0 14px;color:#404040;font-size:14px;line-height:22px;">
+          Saturdays, 11:00 AM – 12:00 NOON
+        </p>
+        ${alignmentTable(
+          copy.mentorMeetings.map(([label, value]): [string, string] => [
+            label,
+            value,
+          ]),
+        )}
+      `,
+    )}
+
+    ${infoBox("Join the Community", whatsappBoxBody)}
+
+    ${paragraph(copy.attachmentNote)}
+    ${paragraph(copy.closing)}
+    ${contactHtml}
+
+    ${paragraph("With joy and expectation,")}
+    <p style="margin:0 0 8px;color:#000000;font-size:15px;font-weight:600;line-height:26px;">
+      The Ahren Foundation Team
+    </p>
+    <p style="margin:0 0 20px;color:#404040;font-size:14px;line-height:22px;">
+      ${webLink("www.ahrenfoundation.org")}
+    </p>
+
+    ${emailButton(props.baseUrl, "Visit Ahren Foundation")}
+  `;
+
+  return {
+    subject: copy.subject,
+    html: emailShell({
+      title: copy.subject,
+      previewText: copy.previewText,
+      baseUrl: props.baseUrl,
+      heroEyebrow: "Welcome Letter",
+      heroTitle: "Program Schedule",
+      // heroTitle: "Welcome to Ahren Foundation",
+
+      heroSubtitle: "6-Week Tech & Creativity Masterclass",
+      showLessonMap: false,
+      bodyHtml,
+    }),
+    templateKey: "program-welcome",
+  };
 }

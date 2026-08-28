@@ -19,10 +19,23 @@ import { useRouter } from "next/navigation";
 import { saveBulkEmailCampaignAction } from "@/actions/bulk-email";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DateTimeInput, HiddenInput, Select, Textarea } from "@/components/ui/input-fields";
+import { useJoinApplicationEmails } from "../../features/admin/join-applications/list/_hooks/use-join-application-emails";
+import {
+  DateTimeInput,
+  HiddenInput,
+  Select,
+  Textarea,
+} from "@/components/ui/input-fields";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { loadProgramWelcomeTemplateAction } from "@/actions/bulk-email";
 
 type ActionState = {
   ok: boolean;
@@ -76,13 +89,24 @@ export function BulkEmailComposer({
 }: BulkEmailComposerProps) {
   const router = useRouter();
   const editorRef = useRef<HTMLDivElement | null>(null);
-  const [state, formAction, pending] = useActionState(saveBulkEmailCampaignAction, initialActionState);
+  const { data: applicantEmails = [] } = useJoinApplicationEmails();
+
+  const [state, formAction, pending] = useActionState(
+    saveBulkEmailCampaignAction,
+    initialActionState,
+  );
   const [title, setTitle] = useState(initialCampaign?.title ?? "");
   const [subject, setSubject] = useState(initialCampaign?.subject ?? "");
-  const [audienceType, setAudienceType] = useState(initialCampaign?.audienceType ?? "custom");
-  const [audienceLabel, setAudienceLabel] = useState(initialCampaign?.audienceLabel ?? "");
+  const [audienceType, setAudienceType] = useState(
+    initialCampaign?.audienceType ?? "custom",
+  );
+  const [audienceLabel, setAudienceLabel] = useState(
+    initialCampaign?.audienceLabel ?? "",
+  );
   const [replyTo, setReplyTo] = useState(initialCampaign?.replyTo ?? "");
-  const [senderLabel, setSenderLabel] = useState(initialCampaign?.senderLabel ?? "");
+  const [senderLabel, setSenderLabel] = useState(
+    initialCampaign?.senderLabel ?? "",
+  );
   const [scheduledFor, setScheduledFor] = useState(
     initialCampaign?.scheduledFor
       ? new Date(initialCampaign.scheduledFor).toISOString().slice(0, 16)
@@ -90,13 +114,53 @@ export function BulkEmailComposer({
   );
   const [editorHtml, setEditorHtml] = useState(initialCampaign?.bodyHtml ?? "");
   const [customEmails, setCustomEmails] = useState("");
-  const [attachmentNames, setAttachmentNames] = useState(initialAttachmentNames);
+  const [attachmentNames, setAttachmentNames] = useState(
+    initialAttachmentNames,
+  );
 
   useEffect(() => {
     if (!state.ok || !state.campaignId) return;
     router.push(`/admin/bulk-email/${state.campaignId}`);
     router.refresh();
   }, [router, state.campaignId, state.ok]);
+
+  useEffect(() => {
+    if (!editorRef.current) return;
+
+    if (editorRef.current.innerHTML !== editorHtml) {
+      editorRef.current.innerHTML = editorHtml;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (audienceType === "applicants") {
+      setCustomEmails(applicantEmails.join(", "));
+    } else {
+      setCustomEmails("");
+    }
+  }, [audienceType, applicantEmails]);
+
+  const [loadingTemplate, setLoadingTemplate] = useState(false);
+
+  const loadProgramWelcome = async () => {
+    setLoadingTemplate(true);
+    try {
+      const content = await loadProgramWelcomeTemplateAction();
+      setSubject(content.subject);
+      setEditorHtml(content.bodyHtml);
+
+      // Important: also update the contentEditable
+      if (editorRef.current) {
+        editorRef.current.innerHTML = content.bodyHtml;
+      }
+
+      if (!title) {
+        setTitle("Program Welcome – September Cohort");
+      }
+    } finally {
+      setLoadingTemplate(false);
+    }
+  };
 
   const summaryLabel = useMemo(() => {
     if (!recipientCount) return "No saved recipients yet";
@@ -109,7 +173,13 @@ export function BulkEmailComposer({
     ].filter(Boolean);
 
     return parts.join(" · ");
-  }, [recipientCount, statusSummary.failed, statusSummary.scheduled, statusSummary.sent, statusSummary.skipped]);
+  }, [
+    recipientCount,
+    statusSummary.failed,
+    statusSummary.scheduled,
+    statusSummary.sent,
+    statusSummary.skipped,
+  ]);
 
   const insertLink = () => {
     const href = window.prompt("Enter link URL", "https://");
@@ -129,10 +199,13 @@ export function BulkEmailComposer({
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-2">
               <CardTitle className="text-3xl font-bold tracking-tight">
-                {initialCampaign ? "Edit bulk email campaign" : "Create bulk email campaign"}
+                {initialCampaign
+                  ? "Edit bulk email campaign"
+                  : "Create bulk email campaign"}
               </CardTitle>
               <CardDescription className="max-w-3xl text-slate-300">
-                Compose a campaign, attach files, and choose whether to save it as a draft, schedule it, or send it immediately.
+                Compose a campaign, attach files, and choose whether to save it
+                as a draft, schedule it, or send it immediately.
               </CardDescription>
             </div>
             <div className="rounded-full border border-cyan-400/10 bg-white/[0.04] px-4 py-2 text-sm text-[#cfe6ff]">
@@ -163,7 +236,9 @@ export function BulkEmailComposer({
         <Card className="border-white/10 bg-white/[0.03] text-white">
           <CardContent className="grid gap-4 p-6 lg:grid-cols-2">
             <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-200">Campaign title</span>
+              <span className="text-sm font-medium text-slate-200">
+                Campaign title
+              </span>
               <Input
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
@@ -172,7 +247,9 @@ export function BulkEmailComposer({
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-200">Email subject</span>
+              <span className="text-sm font-medium text-slate-200">
+                Email subject
+              </span>
               <Input
                 value={subject}
                 onChange={(event) => setSubject(event.target.value)}
@@ -181,7 +258,9 @@ export function BulkEmailComposer({
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-200">Audience</span>
+              <span className="text-sm font-medium text-slate-200">
+                Audience
+              </span>
               <Select
                 value={audienceType}
                 onValueChange={(value) => {
@@ -198,7 +277,9 @@ export function BulkEmailComposer({
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-200">Audience label</span>
+              <span className="text-sm font-medium text-slate-200">
+                Audience label
+              </span>
               <Input
                 value={audienceLabel}
                 onChange={(event) => setAudienceLabel(event.target.value)}
@@ -207,7 +288,9 @@ export function BulkEmailComposer({
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-200">Reply-to email</span>
+              <span className="text-sm font-medium text-slate-200">
+                Reply-to email
+              </span>
               <Input
                 type="email"
                 value={replyTo}
@@ -217,7 +300,9 @@ export function BulkEmailComposer({
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-medium text-slate-200">Sender label</span>
+              <span className="text-sm font-medium text-slate-200">
+                Sender label
+              </span>
               <Input
                 value={senderLabel}
                 onChange={(event) => setSenderLabel(event.target.value)}
@@ -226,7 +311,9 @@ export function BulkEmailComposer({
               />
             </label>
             <label className="space-y-2 lg:col-span-2">
-              <span className="text-sm font-medium text-slate-200">Schedule time</span>
+              <span className="text-sm font-medium text-slate-200">
+                Schedule time
+              </span>
               <DateTimeInput
                 value={scheduledFor}
                 onChange={(event) => setScheduledFor(event.target.value)}
@@ -239,12 +326,20 @@ export function BulkEmailComposer({
         <Card className="border-white/10 bg-white/[0.03] text-white">
           <CardContent className="space-y-4 p-6">
             <div className="flex flex-wrap items-center gap-2">
-              {[ 
+              {[
                 { icon: Bold, command: "bold", label: "Bold" },
                 { icon: Italic, command: "italic", label: "Italic" },
                 { icon: Underline, command: "underline", label: "Underline" },
-                { icon: List, command: "insertUnorderedList", label: "Bullets" },
-                { icon: ListOrdered, command: "insertOrderedList", label: "Numbered" },
+                {
+                  icon: List,
+                  command: "insertUnorderedList",
+                  label: "Bullets",
+                },
+                {
+                  icon: ListOrdered,
+                  command: "insertOrderedList",
+                  label: "Numbered",
+                },
               ].map((item) => (
                 <button
                   key={item.command}
@@ -283,6 +378,15 @@ export function BulkEmailComposer({
                 <RefreshCw className="h-3.5 w-3.5" />
                 Clear
               </button>
+              <button
+                type="button"
+                onClick={loadProgramWelcome}
+                disabled={loadingTemplate}
+                className={buttonStyles}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                {loadingTemplate ? "Loading…" : "Load Program Welcome"}
+              </button>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
@@ -291,13 +395,15 @@ export function BulkEmailComposer({
                 contentEditable
                 suppressContentEditableWarning
                 onInput={(event) => {
-                  setEditorHtml((event.currentTarget as HTMLDivElement).innerHTML);
+                  setEditorHtml(
+                    (event.currentTarget as HTMLDivElement).innerHTML,
+                  );
                 }}
                 className={cn(
                   "min-h-[360px] rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-relaxed text-white outline-none",
                   "focus:border-[#00c9ff] focus:ring-2 focus:ring-[#00c9ff]/20",
                 )}
-                dangerouslySetInnerHTML={{ __html: editorHtml }}
+                // dangerouslySetInnerHTML={{ __html: editorHtml }}
               />
 
               <div className="space-y-4">
@@ -307,7 +413,8 @@ export function BulkEmailComposer({
                     Campaign notes
                   </div>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Keep the body concise, link out to the lesson or resource page, and attach only the files the audience needs.
+                    Keep the body concise, link out to the lesson or resource
+                    page, and attach only the files the audience needs.
                   </p>
                 </div>
 
@@ -322,31 +429,43 @@ export function BulkEmailComposer({
                     multiple
                     onChange={(event) => {
                       setAttachmentNames(
-                        Array.from(event.target.files ?? []).map((file) => file.name),
+                        Array.from(event.target.files ?? []).map(
+                          (file) => file.name,
+                        ),
                       );
                     }}
                     className="mt-3 border-white/10 bg-white/[0.04] text-white file:border-0 file:bg-white/10 file:text-white"
                   />
                   <p className="mt-2 text-xs leading-5 text-slate-400">
-                    Each attachment is limited to 5 MB. Files are stored with the campaign so scheduled sends can still deliver them later.
+                    Each attachment is limited to 5 MB. Files are stored with
+                    the campaign so scheduled sends can still deliver them
+                    later.
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {attachmentNames.length ? (
                       attachmentNames.map((name) => (
-                        <Badge key={name} variant="outline" className="border-white/15 text-white">
+                        <Badge
+                          key={name}
+                          variant="outline"
+                          className="border-white/15 text-white"
+                        >
                           {name}
                         </Badge>
                       ))
                     ) : (
                       <span className="text-sm text-slate-400">
-                        {initialAttachmentNames.length ? "Existing attachments will be kept unless you upload replacements." : "No attachments selected."}
+                        {initialAttachmentNames.length
+                          ? "Existing attachments will be kept unless you upload replacements."
+                          : "No attachments selected."}
                       </span>
                     )}
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                  <span className="text-sm font-semibold text-white">Custom recipients</span>
+                  <span className="text-sm font-semibold text-white">
+                    Custom recipients
+                  </span>
                   <Textarea
                     value={customEmails}
                     onChange={(event) => setCustomEmails(event.target.value)}
@@ -365,7 +484,8 @@ export function BulkEmailComposer({
           <div>
             <p className="font-medium text-white">Send options</p>
             <p className="mt-1">
-              Save a draft, schedule for later, or send immediately to the selected audience.
+              Save a draft, schedule for later, or send immediately to the
+              selected audience.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -428,11 +548,16 @@ export function BulkEmailComposer({
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-slate-300">
-              {audiencePreview.count} recipient{audiencePreview.count === 1 ? "" : "s"} in this audience.
+              {audiencePreview.count} recipient
+              {audiencePreview.count === 1 ? "" : "s"} in this audience.
             </p>
             <div className="flex flex-wrap gap-2">
               {audiencePreview.samples.map((sample) => (
-                <Badge key={sample} variant="outline" className="border-white/15 text-white">
+                <Badge
+                  key={sample}
+                  variant="outline"
+                  className="border-white/15 text-white"
+                >
                   {sample}
                 </Badge>
               ))}

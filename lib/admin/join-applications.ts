@@ -105,7 +105,7 @@ function buildSearchText(input: {
           if (typeof value === "string") return [value];
           if (Array.isArray(value)) {
             return value.filter(
-              (item): item is string => typeof item === "string"
+              (item): item is string => typeof item === "string",
             );
           }
           return [];
@@ -140,7 +140,7 @@ export async function upsertJoinApplicationListItem(joinApplicationId: string) {
     .from(joinApplications)
     .leftJoin(
       programMembers,
-      eq(programMembers.joinApplicationId, joinApplications.id)
+      eq(programMembers.joinApplicationId, joinApplications.id),
     )
     .leftJoin(users, eq(users.id, programMembers.userId))
     .where(eq(joinApplications.id, joinApplicationId))
@@ -220,7 +220,7 @@ function encodeCursor(row: JoinApplicationListRow) {
 }
 
 export async function getJoinApplicationListData(
-  input: JoinApplicationListInput
+  input: JoinApplicationListInput,
 ): Promise<JoinApplicationListResponse> {
   const cursor = normalizeCursorCursor(input.cursor);
   const search = input.search?.trim();
@@ -238,7 +238,7 @@ export async function getJoinApplicationListData(
           ilike(joinApplicationListItems.fullName, `%${search}%`),
           ilike(joinApplicationListItems.email, `%${search}%`),
           ilike(joinApplicationListItems.phoneNumber, `%${search}%`),
-          ilike(joinApplicationListItems.location, `%${search}%`)
+          ilike(joinApplicationListItems.location, `%${search}%`),
         )
       : undefined,
     cursor
@@ -248,9 +248,9 @@ export async function getJoinApplicationListData(
             eq(joinApplicationListItems.createdAt, cursor.createdAt),
             lt(
               joinApplicationListItems.joinApplicationId,
-              cursor.joinApplicationId
-            )
-          )
+              cursor.joinApplicationId,
+            ),
+          ),
         )
       : undefined,
   ].filter(Boolean);
@@ -284,14 +284,14 @@ export async function getJoinApplicationListData(
       ? await baseQuery
           .orderBy(
             asc(joinApplicationListItems.createdAt),
-            asc(joinApplicationListItems.joinApplicationId)
+            asc(joinApplicationListItems.joinApplicationId),
           )
           .offset(Math.max(0, totalCount - input.limit))
           .limit(input.limit)
       : await baseQuery
           .orderBy(
             desc(joinApplicationListItems.createdAt),
-            desc(joinApplicationListItems.joinApplicationId)
+            desc(joinApplicationListItems.joinApplicationId),
           )
           .limit(input.limit + 1);
 
@@ -322,6 +322,16 @@ export async function getJoinApplicationListData(
       withoutMember: Number(summaryRow?.withoutMember ?? 0),
     },
   };
+}
+
+export async function getJoinApplicationEmails() {
+  const applications = await db
+    .select({
+      email: joinApplications.email,
+    })
+    .from(joinApplications);
+
+  return applications.map((application) => application.email);
 }
 
 export async function getJoinApplicationExportRows(

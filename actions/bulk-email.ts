@@ -17,8 +17,11 @@ import {
   sendBulkEmailCampaignNow,
   syncBulkEmailAttachments,
   syncBulkEmailRecipients,
+  getProgramWelcomeCampaignContent,
   type BulkEmailAudienceType,
 } from "@/lib/admin/bulk-email";
+
+import { getJoinApplicationEmails } from "@/lib/admin/join-applications";
 
 type ActionResult = {
   ok: boolean;
@@ -53,7 +56,9 @@ function optionalDate(input: string) {
 }
 
 function firstFile(formData: FormData, key: string) {
-  return formData.getAll(key).filter((value): value is File => value instanceof File);
+  return formData
+    .getAll(key)
+    .filter((value): value is File => value instanceof File);
 }
 
 export async function saveBulkEmailCampaignAction(
@@ -66,14 +71,22 @@ export async function saveBulkEmailCampaignAction(
     const intent = value(formData, "intent") || "draft";
     const title = value(formData, "title");
     const subject = value(formData, "subject");
-    const audienceType = value(formData, "audience_type") as BulkEmailAudienceType;
+    const audienceType = value(
+      formData,
+      "audience_type",
+    ) as BulkEmailAudienceType;
     const audienceLabel = value(formData, "audience_label") || null;
-    const bodyHtml = sanitizeBulkEmailHtml(value(formData, "body_html"));
+    const bodyHtml = value(formData, "body_html");
+    // const bodyHtml = sanitizeBulkEmailHtml(value(formData, "body_html"));
     const replyTo = value(formData, "reply_to") || null;
     const senderLabel = value(formData, "sender_label") || null;
     const scheduledFor = optionalDate(value(formData, "scheduled_for"));
-    const customEmails = parseBulkEmailRecipientsInput(value(formData, "custom_emails"));
-    const files = firstFile(formData, "attachments").filter((file) => file.size > 0);
+    const customEmails = parseBulkEmailRecipientsInput(
+      value(formData, "custom_emails"),
+    );
+    const files = firstFile(formData, "attachments").filter(
+      (file) => file.size > 0,
+    );
 
     if (!title) {
       return { ok: false, message: "Campaign title is required." };
@@ -109,19 +122,23 @@ export async function saveBulkEmailCampaignAction(
     }
 
     let campaign = campaignId
-      ? (
+      ? ((
           await db
             .select()
             .from(bulkEmailCampaigns)
             .where(eq(bulkEmailCampaigns.id, campaignId))
             .limit(1)
-        )[0] ?? null
+        )[0] ?? null)
       : null;
 
-    if (campaign && !["draft", "scheduled", "failed", "partial"].includes(campaign.status)) {
+    if (
+      campaign &&
+      !["draft", "scheduled", "failed", "partial"].includes(campaign.status)
+    ) {
       return {
         ok: false,
-        message: "This campaign is already sending or sent. Create a new draft instead.",
+        message:
+          "This campaign is already sending or sent. Create a new draft instead.",
       };
     }
 
@@ -226,4 +243,8 @@ export async function saveBulkEmailCampaignAction(
         error instanceof Error ? error.message : "Bulk email save failed.",
     };
   }
+}
+
+export async function loadProgramWelcomeTemplateAction() {
+  return getProgramWelcomeCampaignContent();
 }
