@@ -6,22 +6,29 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
 import {
+  accounts,
+  bulkEmailCampaignRecipients,
   certificates,
   communityEvents,
   communityPosts,
   dashboardResources,
   emailEvents,
+  engagementEvents,
   joinApplications,
+  joinApplicationListItems,
   mentorAssignments,
   mentorshipSessions,
   moduleDeliveries,
+  moduleSubmissionAnswers,
   programModules,
   moduleSubmissions,
   opportunities,
   programEnrollments,
   programMembers,
   projectShowcases,
+  sessions,
   users,
+  verifications,
 } from "@/db/schema";
 import {
   coerceTrainingApplicationDateInput,
@@ -85,6 +92,76 @@ function splitName(fullName: string) {
     firstName: parts[0] ?? fullName,
     lastName: parts.slice(1).join(" ") || null,
   };
+}
+
+async function ensureProgramMemberLoginAccess(memberId: string) {
+  const [member] = await db
+    .select()
+    .from(programMembers)
+    .where(eq(programMembers.id, memberId))
+    .limit(1);
+
+  if (!member) {
+    throw new Error("Program member was not found.");
+  }
+
+  if (member.role !== "mentor" && member.role !== "youth") {
+    throw new Error("Only mentors and mentees can receive login links.");
+  }
+
+  const { firstName, lastName } = splitName(member.fullName);
+  const now = new Date();
+  const [user] = await db
+    .insert(users)
+    .values({
+      email: member.email,
+      name: member.fullName,
+      firstName,
+      lastName,
+      emailVerified: true,
+    })
+    .onConflictDoUpdate({
+      target: users.email,
+      set: {
+        name: member.fullName,
+        firstName,
+        lastName,
+        emailVerified: true,
+        updatedAt: now,
+      },
+    })
+    .returning({ id: users.id });
+
+  await db
+    .update(programMembers)
+    .set({
+      userId: user.id,
+      status: member.role === "mentor" ? "verified_mentor" : "verified_member",
+      currentStep: "dashboard_access",
+      verifiedAt: member.verifiedAt ?? now,
+      loginCredentialsSentAt: now,
+      updatedAt: now,
+    })
+    .where(eq(programMembers.id, member.id));
+
+  if (member.role === "youth") {
+    await enrollMemberInWorkbookProgram(member.id, now);
+    await syncMemberWorkbookDeliveries(member.id);
+  }
+
+  await syncJoinApplicationProjection(member.joinApplicationId);
+
+  await auth.api.signInMagicLink({
+    body: {
+      email: member.email,
+      name: member.fullName,
+      callbackURL: member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
+      errorCallbackURL: member.role === "mentor" ? "/mentor/login" : "/hub/login",
+    },
+    headers: await headers(),
+  });
+
+  return member;
 }
 
 export async function registerProgramMemberAction(
@@ -204,6 +281,231 @@ export async function registerProgramMemberAction(
     };
   }
 }
+
+export async function deactivateProgramMemberAction(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const memberId = value(formData, "program_member_id");
+    if (!memberId) return { ok: false, message: "Program member is required." };
+
+    const [member] = await db
+      .select()
+      .from(programMembers)
+      .where(eq(programMembers.id, memberId))
+      .limit(1);
+
+    if (!member) return { ok: false, message: "Program member was not found." };
+
+    const now = new Date();
+    const payload =
+      member.payload && typeof member.payload === "object" ? member.payload : {};
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(programMembers)
+        .set({
+          status: "application_received",
+          currentStep: "application_review",
+          payload: {
+            ...payload,
+            isDeleted: true,
+            deactivatedAt: now.toISOString(),
+          },
+          updatedAt: now,
+        })
+        .where(eq(programMembers.id, member.id));
+
+      if (member.userId) {
+        await tx
+          .update(users)
+          .set({ emailVerified: false, updatedAt: now })
+          .where(eq(users.id, member.userId));
+      }
+
+      await tx
+        .update(mentorAssignments)
+        .set({ status: "inactive", endedAt: now, updatedAt: now })
+        .where(
+          or(
+            eq(mentorAssignments.youthMemberId, member.id),
+            eq(mentorAssignments.mentorMemberId, member.id),
+          ),
+        );
+
+      await tx
+        .update(moduleDeliveries)
+        .set({ status: "cancelled", updatedAt: now })
+        .where(eq(moduleDeliveries.programMemberId, member.id));
+
+      await tx
+        .update(programEnrollments)
+        .set({ status: "inactive", updatedAt: now })
+        .where(eq(programEnrollments.programMemberId, member.id));
+    });
+
+    await syncJoinApplicationProjection(member.joinApplicationId);
+    revalidatePath("/admin/mentors");
+    revalidatePath("/admin/mentees");
+    revalidatePath(`/admin/mentors/${member.id}`);
+    revalidatePath(`/admin/mentees/${member.id}`);
+    revalidatePath("/admin/join-applications");
+
+    return { ok: true, message: "Account deactivated." };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Deactivate failed.",
+    };
+  }
+}
+
+export async function reactivateProgramMemberAction(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const memberId = value(formData, "program_member_id");
+    if (!memberId) return { ok: false, message: "Program member is required." };
+
+    const member = await ensureProgramMemberLoginAccess(memberId);
+    const payload =
+      member.payload && typeof member.payload === "object" ? member.payload : {};
+
+    await db
+      .update(programMembers)
+      .set({
+        payload: {
+          ...payload,
+          isDeleted: false,
+          reactivatedAt: new Date().toISOString(),
+        },
+        updatedAt: new Date(),
+      })
+      .where(eq(programMembers.id, member.id));
+
+    revalidatePath("/admin/mentors");
+    revalidatePath("/admin/mentees");
+    revalidatePath(`/admin/mentors/${member.id}`);
+    revalidatePath(`/admin/mentees/${member.id}`);
+    revalidatePath("/admin/join-applications");
+
+    return { ok: true, message: "Account reactivated and login link sent." };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Reactivate failed.",
+    };
+  }
+}
+
+export async function permanentlyDeleteProgramMemberAction(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const memberId = value(formData, "program_member_id");
+    const confirmation = value(formData, "confirmation");
+    if (!memberId) return { ok: false, message: "Program member is required." };
+
+    const [member] = await db
+      .select()
+      .from(programMembers)
+      .where(eq(programMembers.id, memberId))
+      .limit(1);
+
+    if (!member) return { ok: false, message: "Program member was not found." };
+    if (confirmation !== member.email) {
+      return { ok: false, message: "Type the member email to confirm deletion." };
+    }
+
+    const assignments = await db
+      .select({ id: mentorAssignments.id })
+      .from(mentorAssignments)
+      .where(
+        or(
+          eq(mentorAssignments.youthMemberId, member.id),
+          eq(mentorAssignments.mentorMemberId, member.id),
+        ),
+      );
+    const assignmentIds = assignments.map((assignment) => assignment.id);
+    const submissions = await db
+      .select({ id: moduleSubmissions.id })
+      .from(moduleSubmissions)
+      .where(eq(moduleSubmissions.programMemberId, member.id));
+    const submissionIds = submissions.map((submission) => submission.id);
+
+    await db.transaction(async (tx) => {
+      if (assignmentIds.length) {
+        await tx
+          .delete(mentorshipSessions)
+          .where(inArray(mentorshipSessions.assignmentId, assignmentIds));
+      }
+
+      if (submissionIds.length) {
+        await tx
+          .delete(moduleSubmissionAnswers)
+          .where(inArray(moduleSubmissionAnswers.submissionId, submissionIds));
+      }
+
+      await tx.delete(moduleSubmissions).where(eq(moduleSubmissions.programMemberId, member.id));
+      await tx.delete(emailEvents).where(eq(emailEvents.programMemberId, member.id));
+      await tx.delete(engagementEvents).where(eq(engagementEvents.programMemberId, member.id));
+      await tx.delete(certificates).where(eq(certificates.programMemberId, member.id));
+      await tx.delete(moduleDeliveries).where(eq(moduleDeliveries.programMemberId, member.id));
+      await tx.delete(programEnrollments).where(eq(programEnrollments.programMemberId, member.id));
+      await tx
+        .delete(mentorAssignments)
+        .where(
+          or(
+            eq(mentorAssignments.youthMemberId, member.id),
+            eq(mentorAssignments.mentorMemberId, member.id),
+          ),
+        );
+      await tx
+        .delete(bulkEmailCampaignRecipients)
+        .where(eq(bulkEmailCampaignRecipients.programMemberId, member.id));
+      await tx.delete(projectShowcases).where(eq(projectShowcases.programMemberId, member.id));
+      await tx.delete(communityPosts).where(eq(communityPosts.programMemberId, member.id));
+      await tx.delete(programMembers).where(eq(programMembers.id, member.id));
+      await tx
+        .delete(joinApplicationListItems)
+        .where(eq(joinApplicationListItems.joinApplicationId, member.joinApplicationId));
+      await tx.delete(joinApplications).where(eq(joinApplications.id, member.joinApplicationId));
+
+      if (member.userId) {
+        const siblings = await tx
+          .select({ id: programMembers.id })
+          .from(programMembers)
+          .where(eq(programMembers.userId, member.userId))
+          .limit(1);
+
+        if (!siblings.length) {
+          await tx.delete(sessions).where(eq(sessions.userId, member.userId));
+          await tx.delete(accounts).where(eq(accounts.userId, member.userId));
+          await tx.delete(verifications).where(eq(verifications.identifier, member.email));
+          await tx.delete(users).where(eq(users.id, member.userId));
+        }
+      }
+    });
+
+    revalidatePath("/admin/mentors");
+    revalidatePath("/admin/mentees");
+    revalidatePath("/admin/join-applications");
+
+    return { ok: true, message: "Account permanently deleted." };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Permanent delete failed.",
+    };
+  }
+}
+
 async function getMemberJoinApplicationPath(memberId: string) {
   const [member] = await db
     .select({
@@ -730,71 +1032,48 @@ export async function grantVerifiedStatus(
       return { ok: false, message: "Program member is required." };
     }
 
-    const [member] = await db
-      .select()
-      .from(programMembers)
-      .where(eq(programMembers.id, memberId))
-      .limit(1);
-
-    if (!member) {
-      return { ok: false, message: "Program member was not found." };
-    }
-
-    const { firstName, lastName } = splitName(member.fullName);
-    const now = new Date();
-    const [user] = await db
-      .insert(users)
-      .values({
-        email: member.email,
-        name: member.fullName,
-        firstName,
-        lastName,
-        emailVerified: true,
-      })
-      .onConflictDoUpdate({
-        target: users.email,
-        set: {
-          name: member.fullName,
-          firstName,
-          lastName,
-          emailVerified: true,
-          updatedAt: now,
-        },
-      })
-      .returning({ id: users.id });
-
-    await db
-      .update(programMembers)
-      .set({
-        userId: user.id,
-        status: member.role === "mentor" ? "verified_mentor" : "verified_member",
-        currentStep: "dashboard_access",
-        verifiedAt: now,
-        loginCredentialsSentAt: now,
-        updatedAt: now,
-      })
-      .where(eq(programMembers.id, member.id));
-
-    await syncJoinApplicationProjection(member.joinApplicationId);
-
-    await auth.api.signInMagicLink({
-      body: {
-        email: member.email,
-        name: member.fullName,
-        callbackURL: member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
-        errorCallbackURL: member.role === "mentor" ? "/mentor/login" : "/hub/login",
-      },
-      headers: await headers(),
-    });
+    const member = await ensureProgramMemberLoginAccess(memberId);
 
     revalidatePath("/admin/join-applications");
     revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
+    revalidatePath(`/admin/${member.role === "mentor" ? "mentors" : "mentees"}/${member.id}`);
+    revalidatePath(`/admin/program-members/${member.id}`);
     revalidatePath("/dashboard");
-    return { ok: true, message: "Verified access granted." };
+    return { ok: true, message: "Login link sent." };
   } catch (error) {
     return {
       ok: false,
       message: error instanceof Error ? error.message : "Verification failed.",
+    };
+  }
+}
+
+export async function sendProgramMemberLoginLinkAction(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+
+    const memberId = value(formData, "program_member_id");
+    if (!memberId) {
+      return { ok: false, message: "Program member is required." };
+    }
+
+    const member = await ensureProgramMemberLoginAccess(memberId);
+
+    revalidatePath("/admin/mentors");
+    revalidatePath("/admin/mentees");
+    revalidatePath(`/admin/${member.role === "mentor" ? "mentors" : "mentees"}/${member.id}`);
+    revalidatePath(`/admin/program-members/${member.id}`);
+    revalidatePath("/admin/join-applications");
+    revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
+
+    return { ok: true, message: "Login link sent." };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Login link could not be sent.",
     };
   }
 }

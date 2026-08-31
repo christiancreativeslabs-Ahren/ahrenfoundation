@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMentorDashboardData } from "@/lib/mentorship";
 import { formatAdminDate, getProgramMemberJourneyData } from "@/lib/admin/member-workflow";
+import { MemberLoginLinkDialog } from "@/components/admin/member-login-link-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -37,9 +38,25 @@ export default async function AdminMentorDetailPage({
           <CardTitle className="mt-3 text-3xl font-bold tracking-tight">
             {journey.member.fullName}
           </CardTitle>
-          <CardDescription className="text-slate-300">
-            Mentor profile, assignment load, mentee submissions, and session activity.
-          </CardDescription>
+          <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <CardDescription className="text-slate-300">
+              Mentor profile, assignment load, mentee submissions, and session activity.
+            </CardDescription>
+            <MemberLoginLinkDialog
+              member={{
+                id: journey.member.id,
+                fullName: journey.member.fullName,
+                email: journey.member.email,
+                role: journey.member.role,
+                status: journey.member.status,
+                currentStep: journey.member.currentStep,
+                userId: journey.member.userId,
+                verifiedAt: journey.member.verifiedAt?.toISOString() ?? null,
+                loginCredentialsSentAt:
+                  journey.member.loginCredentialsSentAt?.toISOString() ?? null,
+              }}
+            />
+          </div>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
           {[
