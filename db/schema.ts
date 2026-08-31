@@ -250,6 +250,7 @@ export const programs = pgTable(
   ]
 );
 
+/*
 export const workbookPrograms = pgTable(
   "workbook_program",
   {
@@ -376,6 +377,8 @@ export const workbookSubmissionAnswers = pgTable(
     index("workbook_submission_answer_submission_idx").on(table.submissionId),
   ]
 );
+*/
+
 
 export const programModules = pgTable(
   "program_module",
@@ -918,3 +921,7 @@ export const opportunities = pgTable(
     index("opportunity_status_idx").on(table.status),
   ]
 );
+
+
+
+

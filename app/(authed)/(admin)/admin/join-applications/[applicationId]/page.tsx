@@ -6,8 +6,8 @@ import {
   rescheduleModuleDeliveryAction,
   retryFailedModuleDelivery,
   grantVerifiedStatus,
-  syncMemberDeliveriesAction,
-  updateMentorOnboardingMilestone,
+  syncMemberWorkbookDeliveriesAction,
+  updateMentorWorkflowMilestone,
   updateMentorshipSession,
   updateJoinApplicationStatus,
 } from "@/actions/admin";
@@ -18,7 +18,7 @@ import {
   getProgramMemberJourneyData,
   getString,
   getStringArray,
-} from "@/lib/admin/onboarding";
+} from "@/lib/admin/member-workflow";
 import { getMentorAssignmentCandidates } from "@/lib/admin/mentor-assignments";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -46,7 +46,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ResendLessonEmailDialog } from "@/components/admin/resend-lesson-email-dialog";
+import { ResendWorkbookEmailDialog } from "@/components/admin/resend-workbook-email-dialog";
 import { MentorAssignmentDialog } from "@/components/admin/mentor-assignment-dialog";
 
 export const dynamic = "force-dynamic";
@@ -60,7 +60,7 @@ async function reviewApplicationAction(formData: FormData) {
 
 async function syncDeliveriesAction(formData: FormData) {
   "use server";
-  await syncMemberDeliveriesAction(initialActionState, formData);
+  await syncMemberWorkbookDeliveriesAction(initialActionState, formData);
 }
 
 async function verifyMemberAction(formData: FormData) {
@@ -80,7 +80,7 @@ async function updateSessionAction(formData: FormData) {
 
 async function updateMentorMilestoneAction(formData: FormData) {
   "use server";
-  await updateMentorOnboardingMilestone(formData);
+  await updateMentorWorkflowMilestone(formData);
 }
 
 async function resendDeliveryAction(formData: FormData) {
@@ -121,7 +121,6 @@ function DetailItem({
     </div>
   );
 }
-
 function DetailList({
   label,
   values,
@@ -195,7 +194,7 @@ export default async function JoinApplicationDetailPage({
     ? await getProgramMemberJourneyData(detail.member.id)
     : null;
   const mentors = detail.member ? await getMentorAssignmentCandidates() : [];
-  const lessonDeliveries = memberJourney
+  const moduleDeliveries = memberJourney
     ? memberJourney.moduleProgress.map((item) => ({
         deliveryId: item.delivery.id,
         label: `Week ${item.module.weekNumber} - Module ${item.module.moduleNumber}: ${item.module.title}`,
@@ -225,7 +224,7 @@ export default async function JoinApplicationDetailPage({
                 {detail.application.applicationType === "youth"
                   ? "Prospective mentee"
                   : "Mentor applicant"}{" "}
-                review and onboarding handoff.
+                review and member handoff.
               </CardDescription>
             </div>
 
@@ -271,7 +270,7 @@ export default async function JoinApplicationDetailPage({
             value={detail.member?.currentStep?.replaceAll("_", " ") ?? "Application review"}
           />
           <DetailItem
-            label="Onboarding decision"
+            label="Member decision"
             value={detail.member?.status?.replaceAll("_", " ") ?? "No member record yet"}
           />
         </CardContent>
@@ -359,7 +358,7 @@ export default async function JoinApplicationDetailPage({
         <CardHeader>
           <CardTitle className="text-lg">Operational workflow</CardTitle>
           <CardDescription className="text-slate-300">
-            Bridge application review into onboarding and member operations.
+            Bridge application review into Workbook and member operations.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -419,10 +418,10 @@ export default async function JoinApplicationDetailPage({
                     Issue certificate
                   </Button>
                 </form>
-                <ResendLessonEmailDialog
-                  deliveries={lessonDeliveries}
+                <ResendWorkbookEmailDialog
+                  deliveries={moduleDeliveries}
                   resendAction={resendDeliveryAction}
-                  disabled={!lessonDeliveries.length}
+                  disabled={!moduleDeliveries.length}
                 />
                 <form action={verifyMemberAction}>
                   <HiddenInput
@@ -434,7 +433,7 @@ export default async function JoinApplicationDetailPage({
                     variant="outline"
                     className="border-white/15 bg-transparent text-white hover:bg-white/10"
                   >
-                    Grant verified access
+                    Send login link
                   </Button>
                 </form>
                 {detail.member.role === "youth" ? (
@@ -465,7 +464,7 @@ export default async function JoinApplicationDetailPage({
           <CardHeader>
             <CardTitle className="text-lg">Member journey</CardTitle>
             <CardDescription className="text-slate-300">
-              Active onboarding progress, lesson deliveries, submissions, and follow-up actions.
+              Active Workbook progress, deliveries, submissions, and follow-up actions.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
@@ -659,7 +658,7 @@ export default async function JoinApplicationDetailPage({
                 {!memberJourney.moduleProgress.length ? (
                   <TableRow className="border-white/10">
                     <TableCell colSpan={4} className="py-8 text-center text-sm text-slate-400">
-                      No onboarding modules have been scheduled for this member.
+                      No Workbook modules have been scheduled for this member.
                     </TableCell>
                   </TableRow>
                 ) : null}
@@ -716,7 +715,7 @@ export default async function JoinApplicationDetailPage({
                   name="notes"
                   defaultValue={session.notes ?? ""}
                   className="min-h-20 rounded-md md:col-span-5"
-                  placeholder="Check-in, lesson discussion, project refinement, prayer, and next steps"
+                  placeholder="Check-in, Workbook discussion, project refinement, prayer, and next steps"
                 />
               </form>
             ))}

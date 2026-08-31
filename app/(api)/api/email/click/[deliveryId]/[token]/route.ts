@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { moduleDeliveries } from "@/db/schema";
 import {
-  buildLessonUrl,
+  buildWorkbookModuleUrl,
   getDeliveryByToken,
   getAppBaseUrl,
   recordEngagementEvent,
-} from "@/lib/onboarding/service";
+} from "@/lib/workbook/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,5 +59,7 @@ export async function GET(
     });
   }
 
-  return NextResponse.redirect(buildLessonUrl(row.delivery.id, row.delivery.accessToken));
+  return NextResponse.redirect(buildWorkbookModuleUrl(row.delivery.id, row.delivery.accessToken));
 }
+
+

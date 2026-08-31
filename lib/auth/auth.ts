@@ -2,12 +2,13 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { parseSetCookieHeader } from "better-auth/cookies";
 import { createAuthMiddleware } from "better-auth/api";
+import { magicLink } from "better-auth/plugins";
 import { APIError } from "@better-auth/core/error";
 import { sql } from "drizzle-orm";
 import type { BetterAuthPlugin } from "better-auth";
 import { db } from "@/db";
-import { accounts, programMembers, sessions, users, verifications } from "@/db/schema";
-import { passwordResetEmail, sendEmail } from "@/lib/email";
+import { accounts, emailEvents, programMembers, sessions, users, verifications } from "@/db/schema";
+import { magicLoginEmail, passwordResetEmail, sendEmail } from "@/lib/email";
 import { getAdminEmails } from "@/lib/validations/join";
 
 const VERIFIED_ACCESS_STATUSES = new Set(["verified_member", "verified_mentor"]);
@@ -60,6 +61,59 @@ async function isAllowedToSignIn(email: string) {
   };
 }
 
+async function getVerifiedProgramMemberForEmail(email: string) {
+  const normalizedEmail = normalizeEmail(email);
+  const [member] = await db
+    .select({
+      id: programMembers.id,
+      fullName: programMembers.fullName,
+      email: programMembers.email,
+      role: programMembers.role,
+      status: programMembers.status,
+    })
+    .from(programMembers)
+    .where(sql`lower(${programMembers.email}) = ${normalizedEmail}`)
+    .limit(1);
+
+  if (!member || !VERIFIED_ACCESS_STATUSES.has(member.status)) {
+    return null;
+  }
+
+  return member;
+}
+
+async function sendMagicLoginEmail(email: string, url: string) {
+  const member = await getVerifiedProgramMemberForEmail(email);
+  if (!member) {
+    throw loginBlockedError();
+  }
+
+  const payload = magicLoginEmail(member.fullName, member.email, url, member.role);
+
+  try {
+    const result = await sendEmail(payload);
+    await db.insert(emailEvents).values({
+      programMemberId: member.id,
+      recipientEmail: member.email,
+      templateKey: payload.templateKey,
+      status: result.sent ? "sent" : "skipped",
+      providerId: result.providerId,
+      sentAt: result.sent ? new Date() : null,
+      payload: { subject: payload.subject, source: "magic_login" },
+    });
+  } catch (error) {
+    await db.insert(emailEvents).values({
+      programMemberId: member.id,
+      recipientEmail: member.email,
+      templateKey: payload.templateKey,
+      status: "failed",
+      error: error instanceof Error ? error.message : "Magic login email failed.",
+      payload: { subject: payload.subject, source: "magic_login" },
+    });
+    throw error;
+  }
+}
+
 function createVerifiedAccessPlugin(): BetterAuthPlugin {
   return {
     id: "ahren-verified-access-gate",
@@ -68,6 +122,20 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
         {
           matcher(context: { path?: string }) {
             return context.path === "/sign-in/email";
+          },
+          handler: createAuthMiddleware(async (ctx) => {
+            const email = typeof ctx.body?.email === "string" ? ctx.body.email : "";
+            if (!email) return;
+
+            const access = await isAllowedToSignIn(email);
+            if (!access.allowed) {
+              throw loginBlockedError();
+            }
+          }),
+        },
+        {
+          matcher(context: { path?: string }) {
+            return context.path === "/sign-in/magic-link";
           },
           handler: createAuthMiddleware(async (ctx) => {
             const email = typeof ctx.body?.email === "string" ? ctx.body.email : "";
@@ -170,7 +238,16 @@ export const auth = betterAuth({
       await sendEmail(passwordResetEmail(user.email, url));
     },
   },
-  plugins: [createVerifiedAccessPlugin()],
+  plugins: [
+    createVerifiedAccessPlugin(),
+    magicLink({
+      disableSignUp: true,
+      expiresIn: 60 * 15,
+      sendMagicLink: async ({ email, url }) => {
+        await sendMagicLoginEmail(email, url);
+      },
+    }),
+  ],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",

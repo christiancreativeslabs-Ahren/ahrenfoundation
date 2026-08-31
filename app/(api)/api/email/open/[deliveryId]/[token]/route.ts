@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { moduleDeliveries } from "@/db/schema";
-import { getDeliveryByToken, recordEngagementEvent } from "@/lib/onboarding/service";
+import { getDeliveryByToken, recordEngagementEvent } from "@/lib/workbook/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,3 +54,5 @@ export async function GET(
 
   return pixelResponse();
 }
+
+

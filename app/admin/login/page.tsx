@@ -26,7 +26,7 @@ export default async function AdminLoginPage() {
     <LoginPage
       sectionLabel="Admin access"
       heading={<>Admin portal for Ahren Foundation.</>}
-      description="Use the seeded admin account or your approved admin email to review applications, onboarding, and operational logs."
+      description="Use the seeded admin account or your approved admin email to review applications, Workbook delivery, and operational logs."
       homeHref="/"
       newUserHref="/hub/login"
       newUserLabel="Member Login"

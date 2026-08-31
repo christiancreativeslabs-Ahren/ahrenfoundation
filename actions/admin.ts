@@ -33,15 +33,15 @@ import {
   applicationRejectedEmail,
   certificateIssuedEmail,
   sendEmail,
-  verifiedAccessEmail,
 } from "@/lib/email";
 import {
   cancelModuleDelivery,
+  enrollMemberInWorkbookProgram,
   recordEngagementEvent,
   rescheduleModuleDelivery as updateScheduledModuleDelivery,
   sendModuleDeliveryNow,
-  syncMemberDeliveries as syncOnboardingMemberDeliveries,
-} from "@/lib/onboarding/service";
+  syncMemberWorkbookDeliveries,
+} from "@/lib/workbook/service";
 import { syncJoinApplicationProjection } from "@/lib/admin/join-applications";
 import { createCertificatePdf } from "@/lib/pdf";
 
@@ -79,7 +79,131 @@ function optionalDate(input: string) {
 function optionalText(input: string) {
   return input ? input : null;
 }
+function splitName(fullName: string) {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts[0] ?? fullName,
+    lastName: parts.slice(1).join(" ") || null,
+  };
+}
 
+export async function registerProgramMemberAction(
+  _previousState: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    const admin = await requireAdmin();
+    const role = value(formData, "role");
+    const fullName = value(formData, "full_name");
+    const email = value(formData, "email").toLowerCase();
+    const phoneNumber = value(formData, "phone_number");
+    const location = value(formData, "location");
+    const notes = value(formData, "notes");
+    const sendLogin = String(formData.get("send_login") ?? "") === "true";
+
+    if (role !== "mentor" && role !== "youth") {
+      return { ok: false, message: "Choose mentor or mentee." };
+    }
+    if (!fullName || !email) {
+      return { ok: false, message: "Name and email are required." };
+    }
+
+    const { firstName, lastName } = splitName(fullName);
+    const now = new Date();
+    const memberStatus = role === "mentor" ? "verified_mentor" : "verified_member";
+    const payload = {
+      source: "admin_direct_registration",
+      notes,
+      createdByAdminEmail: admin.email,
+    };
+
+    const [application] = await db
+      .insert(joinApplications)
+      .values({
+        applicationType: role,
+        fullName,
+        email,
+        phoneNumber,
+        location,
+        status: "approved",
+        consent: true,
+        payload,
+      })
+      .returning();
+
+    const [user] = await db
+      .insert(users)
+      .values({
+        email,
+        name: fullName,
+        firstName,
+        lastName,
+        emailVerified: true,
+      })
+      .onConflictDoUpdate({
+        target: users.email,
+        set: {
+          name: fullName,
+          firstName,
+          lastName,
+          emailVerified: true,
+          updatedAt: now,
+        },
+      })
+      .returning({ id: users.id });
+
+    const [member] = await db
+      .insert(programMembers)
+      .values({
+        joinApplicationId: application.id,
+        userId: user.id,
+        role,
+        fullName,
+        email,
+        status: memberStatus,
+        currentStep: "dashboard_access",
+        verifiedAt: now,
+        loginCredentialsSentAt: sendLogin ? now : null,
+        payload,
+      })
+      .returning({ id: programMembers.id });
+
+    await syncJoinApplicationProjection(application.id);
+
+    if (role === "youth") {
+      await enrollMemberInWorkbookProgram(member.id, now);
+      await syncMemberWorkbookDeliveries(member.id);
+    }
+
+    if (sendLogin) {
+      await auth.api.signInMagicLink({
+        body: {
+          email,
+          name: fullName,
+          callbackURL: role === "mentor" ? "/mentor/dashboard" : "/dashboard",
+          errorCallbackURL: role === "mentor" ? "/mentor/login" : "/hub/login",
+        },
+        headers: await headers(),
+      });
+    }
+
+    revalidatePath("/admin/mentors");
+    revalidatePath("/admin/mentees");
+    revalidatePath("/admin/join-applications");
+    revalidatePath(`/admin/join-applications/${application.id}`);
+
+    return {
+      ok: true,
+      message: `${role === "mentor" ? "Mentor" : "Mentee"} registered.`,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error ? error.message : "Member registration failed.",
+    };
+  }
+}
 async function getMemberJoinApplicationPath(memberId: string) {
   const [member] = await db
     .select({
@@ -303,7 +427,7 @@ export async function updateJoinApplicationStatus(
       status === "approved"
         ? application.applicationType === "mentor"
           ? "executive_meeting"
-          : "onboarding_modules"
+          : "program_modules"
         : status === "rejected"
           ? "exit"
           : "application_review";
@@ -616,34 +740,51 @@ export async function grantVerifiedStatus(
       return { ok: false, message: "Program member was not found." };
     }
 
+    const { firstName, lastName } = splitName(member.fullName);
+    const now = new Date();
+    const [user] = await db
+      .insert(users)
+      .values({
+        email: member.email,
+        name: member.fullName,
+        firstName,
+        lastName,
+        emailVerified: true,
+      })
+      .onConflictDoUpdate({
+        target: users.email,
+        set: {
+          name: member.fullName,
+          firstName,
+          lastName,
+          emailVerified: true,
+          updatedAt: now,
+        },
+      })
+      .returning({ id: users.id });
+
     await db
       .update(programMembers)
       .set({
+        userId: user.id,
         status: member.role === "mentor" ? "verified_mentor" : "verified_member",
         currentStep: "dashboard_access",
-        verifiedAt: new Date(),
-        loginCredentialsSentAt: new Date(),
-        updatedAt: new Date(),
+        verifiedAt: now,
+        loginCredentialsSentAt: now,
+        updatedAt: now,
       })
       .where(eq(programMembers.id, member.id));
 
-    await db
-      .update(users)
-      .set({ emailVerified: true, updatedAt: new Date() })
-      .where(eq(users.email, member.email));
-
     await syncJoinApplicationProjection(member.joinApplicationId);
 
-    await auth.api.requestPasswordReset({
+    await auth.api.signInMagicLink({
       body: {
         email: member.email,
-        redirectTo: "/dashboard",
+        name: member.fullName,
+        callbackURL: member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
+        errorCallbackURL: member.role === "mentor" ? "/mentor/login" : "/hub/login",
       },
       headers: await headers(),
-    });
-
-    await sendAndLogEmail(verifiedAccessEmail(member.fullName, member.email), {
-      programMemberId: member.id,
     });
 
     revalidatePath("/admin/join-applications");
@@ -658,7 +799,7 @@ export async function grantVerifiedStatus(
   }
 }
 
-export async function updateMentorOnboardingMilestone(formData: FormData) {
+export async function updateMentorWorkflowMilestone(formData: FormData) {
   await requireAdmin();
 
   const memberId = value(formData, "program_member_id");
@@ -838,7 +979,7 @@ export async function resendModuleDelivery(
 
     await sendModuleDeliveryNow(deliveryId, { source: "admin_resend" });
 
-    revalidatePath("/admin/onboarding");
+    revalidatePath("/admin/workbook/deliveries");
     revalidatePath("/admin/email-events");
     revalidatePath("/admin/engagement");
     revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
@@ -867,7 +1008,7 @@ export async function rescheduleModuleDeliveryAction(
 
     await updateScheduledModuleDelivery(deliveryId, scheduledAt);
 
-    revalidatePath("/admin/onboarding");
+    revalidatePath("/admin/workbook/deliveries");
     revalidatePath("/admin/engagement");
     revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
     return { ok: true, message: "Delivery rescheduled." };
@@ -907,7 +1048,7 @@ export async function retryFailedModuleDelivery(
     );
     await sendModuleDeliveryNow(deliveryId, { source: "admin_retry" });
 
-    revalidatePath("/admin/onboarding");
+    revalidatePath("/admin/workbook/deliveries");
     revalidatePath("/admin/email-events");
     revalidatePath("/admin/engagement");
     revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
@@ -934,7 +1075,7 @@ export async function cancelModuleDeliveryAction(
 
     await cancelModuleDelivery(deliveryId);
 
-    revalidatePath("/admin/onboarding");
+    revalidatePath("/admin/workbook/deliveries");
     revalidatePath("/admin/engagement");
     revalidatePath(await getDeliveryJoinApplicationPath(deliveryId));
     return { ok: true, message: "Delivery cancelled." };
@@ -946,7 +1087,7 @@ export async function cancelModuleDeliveryAction(
   }
 }
 
-export async function syncMemberDeliveriesAction(
+export async function syncMemberWorkbookDeliveriesAction(
   _previousState: ActionResult,
   formData: FormData,
 ): Promise<ActionResult> {
@@ -958,9 +1099,9 @@ export async function syncMemberDeliveriesAction(
       return { ok: false, message: "Program member is required." };
     }
 
-    const result = await syncOnboardingMemberDeliveries(memberId);
+    const result = await syncMemberWorkbookDeliveries(memberId);
 
-    revalidatePath("/admin/onboarding");
+    revalidatePath("/admin/workbook/deliveries");
     revalidatePath(await getMemberJoinApplicationPath(memberId));
     revalidatePath("/admin/join-applications");
     return {
@@ -1032,7 +1173,7 @@ export async function markSubmissionReviewed(
       },
     });
 
-    revalidatePath("/admin/module-submissions");
+    revalidatePath("/admin/workbook/submissions");
     revalidatePath(`/admin/program-members/${submission.member.id}`);
     return { ok: true, message: "Submission marked as reviewed." };
   } catch (error) {

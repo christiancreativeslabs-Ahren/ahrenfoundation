@@ -7,7 +7,7 @@ import {
 } from "@/db/schema";
 import {
   sendModuleDeliveryNow,
-} from "@/lib/onboarding/service";
+} from "@/lib/workbook/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -74,3 +74,5 @@ export async function GET(request: Request) {
     results,
   });
 }
+
+

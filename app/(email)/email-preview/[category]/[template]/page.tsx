@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import { renderOnboardingPreviewTemplate } from "@/lib/onboarding/email-renderer";
+import { renderWorkbookPreviewTemplate } from "@/lib/workbook/email-renderer";
 
 export const dynamic = "force-dynamic";
 
-const validCategories = new Set(["onboarding"]);
+const validCategories = new Set(["workbook", "onboarding"]);
 
 export default async function EmailTemplatePreviewPage({
   params,
@@ -18,7 +18,8 @@ export default async function EmailTemplatePreviewPage({
     notFound();
   }
 
-  const rendered = renderOnboardingPreviewTemplate(template);
+  const rendered = renderWorkbookPreviewTemplate(template);
+  const displayCategory = category === "onboarding" ? "workbook" : category;
 
   if (!rendered) {
     notFound();
@@ -38,7 +39,7 @@ export default async function EmailTemplatePreviewPage({
             </Link>
             <h1 className="mt-3 text-2xl font-bold">{rendered.subject}</h1>
             <p className="mt-2 text-sm text-slate-400">
-              Category: {category} | Template key: {rendered.templateKey}
+              Category: {displayCategory} | Template key: {rendered.templateKey}
             </p>
           </div>
         </div>
@@ -46,7 +47,7 @@ export default async function EmailTemplatePreviewPage({
         <div className="overflow-hidden rounded-lg border border-white/10 bg-white">
           <iframe
             srcDoc={rendered.html}
-            title={`Email preview: ${category}/${template}`}
+            title={`Email preview: ${displayCategory}/${template}`}
             className="h-[900px] w-full border-0 bg-white"
             sandbox="allow-same-origin"
           />

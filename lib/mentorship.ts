@@ -1,17 +1,26 @@
-import "server-only";
-
 import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import {
   mentorAssignments,
   mentorshipSessions,
+  moduleQuestions,
+  moduleDeliveries,
+  moduleSubmissionAnswers,
+  moduleSubmissions,
   programMembers,
-  workbookModules,
-  workbookQuestions,
-  workbookSubmissionAnswers,
-  workbookSubmissions,
+  programModules,
 } from "@/db/schema";
 import { getWorkbookMemberDashboard } from "@/lib/workbook";
+
+type SubmissionPayload = {
+  mentorFeedback?: string;
+  mentorReviewStatus?: string;
+  mentorReviewedAt?: string;
+  mentorReviewerId?: string;
+  mentorReviewerName?: string;
+  mentorReviewerEmail?: string;
+  [key: string]: unknown;
+};
 
 function formatDate(value: Date | string | null | undefined) {
   if (!value) return "-";
@@ -22,7 +31,31 @@ function formatDate(value: Date | string | null | undefined) {
   }).format(date);
 }
 
-export async function getActiveMentorAssignmentForMentee(menteeMemberId: string) {
+function asPayload(value: Record<string, unknown> | null | undefined): SubmissionPayload {
+  return value && typeof value === "object" ? value : {};
+}
+
+export function getMentorReviewStatus(
+  payload: Record<string, unknown> | null | undefined,
+) {
+  return asPayload(payload).mentorReviewStatus ?? "needs_review";
+}
+
+export function getMentorFeedback(
+  payload: Record<string, unknown> | null | undefined,
+) {
+  return asPayload(payload).mentorFeedback ?? "";
+}
+
+export function getMentorReviewedAt(
+  payload: Record<string, unknown> | null | undefined,
+) {
+  return asPayload(payload).mentorReviewedAt ?? null;
+}
+
+export async function getActiveMentorAssignmentForMentee(
+  menteeMemberId: string
+) {
   const [row] = await db
     .select({
       assignment: mentorAssignments,
@@ -31,13 +64,13 @@ export async function getActiveMentorAssignmentForMentee(menteeMemberId: string)
     .from(mentorAssignments)
     .innerJoin(
       programMembers,
-      eq(programMembers.id, mentorAssignments.mentorMemberId),
+      eq(programMembers.id, mentorAssignments.mentorMemberId)
     )
     .where(
       and(
         eq(mentorAssignments.youthMemberId, menteeMemberId),
-        eq(mentorAssignments.status, "active"),
-      ),
+        eq(mentorAssignments.status, "active")
+      )
     )
     .orderBy(desc(mentorAssignments.assignedAt))
     .limit(1);
@@ -77,13 +110,13 @@ export async function getMentorDashboardData(mentorMemberId: string) {
     .from(mentorAssignments)
     .innerJoin(
       programMembers,
-      eq(programMembers.id, mentorAssignments.youthMemberId),
+      eq(programMembers.id, mentorAssignments.youthMemberId)
     )
     .where(
       and(
         eq(mentorAssignments.mentorMemberId, mentorMemberId),
-        eq(mentorAssignments.status, "active"),
-      ),
+        eq(mentorAssignments.status, "active")
+      )
     )
     .orderBy(desc(mentorAssignments.assignedAt));
 
@@ -101,17 +134,27 @@ export async function getMentorDashboardData(mentorMemberId: string) {
   const submissions = menteeIds.length
     ? await db
         .select({
-          submission: workbookSubmissions,
-          module: workbookModules,
+          submission: moduleSubmissions,
+          module: programModules,
         })
-        .from(workbookSubmissions)
+        .from(moduleSubmissions)
         .innerJoin(
-          workbookModules,
-          eq(workbookModules.id, workbookSubmissions.workbookModuleId),
+          programModules,
+          eq(programModules.id, moduleSubmissions.moduleId)
         )
-        .where(inArray(workbookSubmissions.programMemberId, menteeIds))
-        .orderBy(desc(workbookSubmissions.submittedAt))
+        .where(inArray(moduleSubmissions.programMemberId, menteeIds))
+        .orderBy(desc(moduleSubmissions.submittedAt))
     : [];
+
+  const reviewedSubmissions = submissions.filter(
+    (row) => getMentorReviewStatus(row.submission.payload) === "reviewed",
+  ).length;
+  const followUpSubmissions = submissions.filter(
+    (row) => getMentorReviewStatus(row.submission.payload) === "needs_follow_up",
+  ).length;
+  const completedSessions = sessions.filter(
+    (session) => session.status === "completed",
+  ).length;
 
   const latestSubmissionByMember = new Map<
     string,
@@ -121,7 +164,7 @@ export async function getMentorDashboardData(mentorMemberId: string) {
     if (!latestSubmissionByMember.has(submission.submission.programMemberId)) {
       latestSubmissionByMember.set(
         submission.submission.programMemberId,
-        submission,
+        submission
       );
     }
   }
@@ -136,8 +179,10 @@ export async function getMentorDashboardData(mentorMemberId: string) {
   return {
     mentor,
     assignments: assignments.map((row) => {
-      const assignmentSessions = sessionsByAssignment.get(row.assignment.id) ?? [];
-      const latestSubmission = latestSubmissionByMember.get(row.mentee.id) ?? null;
+      const assignmentSessions =
+        sessionsByAssignment.get(row.assignment.id) ?? [];
+      const latestSubmission =
+        latestSubmissionByMember.get(row.mentee.id) ?? null;
 
       return {
         ...row,
@@ -147,12 +192,18 @@ export async function getMentorDashboardData(mentorMemberId: string) {
       };
     }),
     totalAssignments: assignments.length,
+    totalSubmissions: submissions.length,
+    needsReviewCount: submissions.length - reviewedSubmissions,
+    reviewedSubmissions,
+    followUpSubmissions,
+    totalSessions: sessions.length,
+    completedSessions,
   };
 }
 
 export async function getMentorMenteeDetailData(
   mentorMemberId: string,
-  menteeMemberId: string,
+  menteeMemberId: string
 ) {
   const [mentee] = await db
     .select()
@@ -172,14 +223,14 @@ export async function getMentorMenteeDetailData(
     .from(mentorAssignments)
     .innerJoin(
       programMembers,
-      eq(programMembers.id, mentorAssignments.mentorMemberId),
+      eq(programMembers.id, mentorAssignments.mentorMemberId)
     )
     .where(
       and(
         eq(mentorAssignments.youthMemberId, menteeMemberId),
         eq(mentorAssignments.mentorMemberId, mentorMemberId),
-        eq(mentorAssignments.status, "active"),
-      ),
+        eq(mentorAssignments.status, "active")
+      )
     )
     .orderBy(desc(mentorAssignments.assignedAt))
     .limit(1);
@@ -195,32 +246,56 @@ export async function getMentorMenteeDetailData(
 
   const submissions = await db
     .select({
-      submission: workbookSubmissions,
-      module: workbookModules,
+      submission: moduleSubmissions,
+      module: programModules,
     })
-    .from(workbookSubmissions)
+    .from(moduleSubmissions)
     .innerJoin(
-      workbookModules,
-      eq(workbookModules.id, workbookSubmissions.workbookModuleId),
+      programModules,
+      eq(programModules.id, moduleSubmissions.moduleId)
     )
-    .where(eq(workbookSubmissions.programMemberId, menteeMemberId))
-    .orderBy(desc(workbookSubmissions.submittedAt));
+    .where(eq(moduleSubmissions.programMemberId, menteeMemberId))
+    .orderBy(desc(moduleSubmissions.submittedAt));
 
   const latestSubmission = submissions[0] ?? null;
-  const answers = latestSubmission
+  const submissionIds = submissions.map((row) => row.submission.id);
+  const allAnswers = submissionIds.length
     ? await db
         .select({
-          answer: workbookSubmissionAnswers,
-          question: workbookQuestions,
+          answer: moduleSubmissionAnswers,
+          question: moduleQuestions,
         })
-        .from(workbookSubmissionAnswers)
-        .innerJoin(
-          workbookQuestions,
-          eq(workbookQuestions.id, workbookSubmissionAnswers.questionId),
-        )
-        .where(eq(workbookSubmissionAnswers.submissionId, latestSubmission.submission.id))
-        .orderBy(asc(workbookQuestions.questionNumber))
+        .from(moduleSubmissionAnswers)
+        .innerJoin(moduleQuestions, eq(moduleQuestions.id, moduleSubmissionAnswers.questionId))
+        .where(inArray(moduleSubmissionAnswers.submissionId, submissionIds))
+        .orderBy(asc(moduleQuestions.questionNumber))
     : [];
+
+  const answersBySubmission = new Map<string, typeof allAnswers>();
+  for (const answer of allAnswers) {
+    const existing = answersBySubmission.get(answer.answer.submissionId) ?? [];
+    existing.push(answer);
+    answersBySubmission.set(answer.answer.submissionId, existing);
+  }
+
+  const answers = latestSubmission
+    ? answersBySubmission.get(latestSubmission.submission.id) ?? []
+    : [];
+
+  const deliveryByModuleId = new Map(
+    workbook.deliveries.map((delivery) => [delivery.moduleId, delivery]),
+  );
+  const submissionByModuleId = new Map(
+    submissions.map((row) => [row.module.id, row]),
+  );
+  const moduleJourney = workbook.modules.map((module) => ({
+    module,
+    delivery: deliveryByModuleId.get(module.id) ?? null,
+    submission: submissionByModuleId.get(module.id) ?? null,
+    reviewStatus: getMentorReviewStatus(
+      submissionByModuleId.get(module.id)?.submission.payload,
+    ),
+  }));
 
   return {
     mentor: assignmentRow.mentor,
@@ -229,9 +304,112 @@ export async function getMentorMenteeDetailData(
     sessions: menteeAssignment?.sessions ?? [],
     workbook,
     submissions,
+    moduleJourney,
     latestSubmission,
     answers,
+    answersBySubmission,
     formatDate,
+  };
+}
+
+export async function getMentorSubmissionsData(mentorMemberId: string) {
+  const dashboard = await getMentorDashboardData(mentorMemberId);
+  if (!dashboard) return null;
+
+  const menteeIds = dashboard.assignments.map((row) => row.mentee.id);
+  const rows = menteeIds.length
+    ? await db
+        .select({
+          submission: moduleSubmissions,
+          module: programModules,
+          mentee: programMembers,
+          delivery: moduleDeliveries,
+        })
+        .from(moduleSubmissions)
+        .innerJoin(programModules, eq(programModules.id, moduleSubmissions.moduleId))
+        .innerJoin(programMembers, eq(programMembers.id, moduleSubmissions.programMemberId))
+        .innerJoin(moduleDeliveries, eq(moduleDeliveries.id, moduleSubmissions.deliveryId))
+        .where(inArray(moduleSubmissions.programMemberId, menteeIds))
+        .orderBy(desc(moduleSubmissions.submittedAt))
+    : [];
+
+  return {
+    mentor: dashboard.mentor,
+    rows: rows.map((row) => ({
+      ...row,
+      reviewStatus: getMentorReviewStatus(row.submission.payload),
+      feedback: getMentorFeedback(row.submission.payload),
+      reviewedAt: getMentorReviewedAt(row.submission.payload),
+    })),
+    needsReviewCount: rows.filter(
+      (row) => getMentorReviewStatus(row.submission.payload) !== "reviewed",
+    ).length,
+  };
+}
+
+export async function getMentorSubmissionDetailData(
+  mentorMemberId: string,
+  submissionId: string,
+) {
+  const [row] = await db
+    .select({
+      submission: moduleSubmissions,
+      module: programModules,
+      mentee: programMembers,
+      delivery: moduleDeliveries,
+      assignment: mentorAssignments,
+    })
+    .from(moduleSubmissions)
+    .innerJoin(programModules, eq(programModules.id, moduleSubmissions.moduleId))
+    .innerJoin(programMembers, eq(programMembers.id, moduleSubmissions.programMemberId))
+    .innerJoin(moduleDeliveries, eq(moduleDeliveries.id, moduleSubmissions.deliveryId))
+    .innerJoin(
+      mentorAssignments,
+      and(
+        eq(mentorAssignments.youthMemberId, moduleSubmissions.programMemberId),
+        eq(mentorAssignments.mentorMemberId, mentorMemberId),
+        eq(mentorAssignments.status, "active"),
+      ),
+    )
+    .where(eq(moduleSubmissions.id, submissionId))
+    .limit(1);
+
+  if (!row) return null;
+
+  const answers = await db
+    .select({
+      answer: moduleSubmissionAnswers,
+      question: moduleQuestions,
+    })
+    .from(moduleSubmissionAnswers)
+    .innerJoin(moduleQuestions, eq(moduleQuestions.id, moduleSubmissionAnswers.questionId))
+    .where(eq(moduleSubmissionAnswers.submissionId, submissionId))
+    .orderBy(asc(moduleQuestions.questionNumber));
+
+  return {
+    ...row,
+    answers,
+    reviewStatus: getMentorReviewStatus(row.submission.payload),
+    feedback: getMentorFeedback(row.submission.payload),
+    reviewedAt: getMentorReviewedAt(row.submission.payload),
+  };
+}
+
+export async function getMentorSessionsData(mentorMemberId: string) {
+  const dashboard = await getMentorDashboardData(mentorMemberId);
+  if (!dashboard) return null;
+
+  return {
+    mentor: dashboard.mentor,
+    sessions: dashboard.assignments.flatMap((assignment) =>
+      assignment.sessions.map((session) => ({
+        session,
+        assignment: assignment.assignment,
+        mentee: assignment.mentee,
+      })),
+    ),
+    scheduledCount: dashboard.totalSessions - dashboard.completedSessions,
+    completedCount: dashboard.completedSessions,
   };
 }
 

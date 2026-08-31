@@ -13,7 +13,7 @@ import {
 } from "@/lib/validations/join";
 import { splitFullName } from "@/lib/names";
 import { getInitialProgramStatus, getInitialProgramStep } from "@/lib/program";
-import { enrollMemberInAhrenOnboarding } from "@/lib/onboarding/service";
+import { enrollMemberInWorkbookProgram } from "@/lib/workbook/service";
 import type { JoinTab } from "@/types/join";
 import type { JoinFieldErrors } from "@/types/join";
 
@@ -115,7 +115,7 @@ export async function submitJoinApplication(
       .returning({ id: programMembers.id });
 
     if (parsed.data.applicationType === "youth" && member?.id) {
-      await enrollMemberInAhrenOnboarding(member.id);
+      await enrollMemberInWorkbookProgram(member.id);
     }
 
     await syncJoinApplicationProjection(record.id);

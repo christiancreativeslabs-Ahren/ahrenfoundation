@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ArrowRight, ShieldCheck, UserCircle2, WandSparkles } from "lucide-react";
 import { auth } from "@/lib/auth/auth";
-import { getAdminDashboardMetrics } from "@/lib/admin/onboarding";
+import { getAdminDashboardMetrics } from "@/lib/admin/member-workflow";
 import SignOutButton from "@/components/auth/sign-out-button";
 import {
   Card,
@@ -50,7 +50,7 @@ export default async function AdminDashboardPage() {
               <span className="text-[#00ff9d]">{user.name || "admin"}</span>
             </CardTitle>
             <CardDescription className="max-w-2xl text-sm leading-relaxed text-slate-300">
-              Review applications, track onboarding, and keep delivery, engagement,
+              Review applications, track Workbook delivery, and keep engagement,
               and submission flow moving through the Ahren Foundation journey.
             </CardDescription>
           </CardHeader>
@@ -132,13 +132,13 @@ export default async function AdminDashboardPage() {
                 <ArrowRight size={14} />
               </Link>
               <Link
-                href="/admin/onboarding"
+                href="/admin/workbook/deliveries"
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "w-full justify-between border-white/15 bg-transparent text-white hover:bg-white/10",
                 )}
               >
-                Onboarding operations
+                Workbook delivery operations
                 <ArrowRight size={14} />
               </Link>
               <Link
@@ -171,7 +171,7 @@ export default async function AdminDashboardPage() {
                 Journey ops
               </CardTitle>
               <CardDescription className="text-slate-300">
-                The join queue now stores lesson progress, mentor matching,
+                The join queue now stores Workbook progress, mentor matching,
                 delivery status, certificate state, and verified access state.
               </CardDescription>
             </CardHeader>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getEmailEventLogData, formatAdminDate } from "@/lib/admin/onboarding";
+import { getEmailEventLogData, formatAdminDate } from "@/lib/admin/member-workflow";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -24,7 +24,7 @@ export default async function AdminEmailEventsPage() {
             Email event log
           </CardTitle>
           <CardDescription className="max-w-3xl text-slate-300">
-            Delivery visibility across welcome, onboarding, and operational email sends.
+            Delivery visibility across welcome, Workbook, and operational email sends.
           </CardDescription>
         </CardHeader>
       </Card>

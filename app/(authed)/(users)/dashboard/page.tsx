@@ -74,7 +74,7 @@ export default async function MemberDashboardPage() {
               <div>
                 <h2 className="text-xl font-semibold">Verified dashboard pending</h2>
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-200">
-                  Your profile is still under review. Once approved, you will see your workbook, your assigned mentor, and only the information tied to your journey.
+                  Your profile is still under review. Once approved, you will see your Workbook, your assigned mentor, and only the information tied to your journey.
                 </p>
                 <Link
                   href="/training/apply"
@@ -101,9 +101,7 @@ export default async function MemberDashboardPage() {
 
   const completedModules = workbook.completedModuleIds.size;
   const totalModules = workbook.modules.length;
-  const nextModule = workbook.modules.find(
-    (module) => !workbook.completedModuleIds.has(module.id),
-  );
+  const nextModule = workbook.currentModule;
 
   return (
     <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">
@@ -117,7 +115,7 @@ export default async function MemberDashboardPage() {
               Welcome, {session.user.name || "member"}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
-              Your dashboard now shows only your assigned mentor and workbook journey.
+              Your dashboard now shows only your assigned mentor and Workbook journey.
             </p>
           </div>
           <SignOutButton />
@@ -189,7 +187,7 @@ export default async function MemberDashboardPage() {
                 Program: <span className="text-white">{workbook.program?.name ?? "Workbook not published"}</span>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Modules: <span className="text-white">{totalModules}</span>
+                Available: <span className="text-white">{workbook.availableModules.length} / {totalModules}</span>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
                 Completed: <span className="text-white">{completedModules}</span>
@@ -199,19 +197,21 @@ export default async function MemberDashboardPage() {
             <div className="mt-5 space-y-4">
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
-                  Next lesson
+                  Next Workbook module
                 </p>
                 <p className="mt-2 text-sm text-slate-300">
                   {nextModule
                     ? `Module ${nextModule.moduleNumber}: ${nextModule.title}`
-                    : "You have completed every published workbook module."}
+                    : workbook.availableModules.length
+                      ? "You have completed every available Workbook module."
+                      : "Your first Workbook module is not open yet."}
                 </p>
               </div>
               <Link
                 href="/dashboard/workbook"
                 className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-bold text-white hover:bg-white/10"
               >
-                Open workbook
+                Open Workbook
                 <ArrowRight size={14} />
               </Link>
             </div>

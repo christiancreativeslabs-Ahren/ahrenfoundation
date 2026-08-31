@@ -1,5 +1,3 @@
-import "server-only";
-
 import { and, asc, desc, eq, ilike, inArray, or } from "drizzle-orm";
 import { db } from "@/db";
 import { mentorAssignments, programMembers } from "@/db/schema";
@@ -22,7 +20,7 @@ export async function getMentorAssignmentCandidates(search?: string) {
       ? or(
           ilike(programMembers.fullName, `%${trimmedSearch}%`),
           ilike(programMembers.email, `%${trimmedSearch}%`),
-          ilike(programMembers.currentStep, `%${trimmedSearch}%`),
+          ilike(programMembers.currentStep, `%${trimmedSearch}%`)
         )
       : undefined,
   ].filter(Boolean);
@@ -59,7 +57,7 @@ export async function getMentorAssignmentMenteeCandidates(search?: string) {
           ilike(programMembers.fullName, `%${trimmedSearch}%`),
           ilike(programMembers.email, `%${trimmedSearch}%`),
           ilike(programMembers.currentStep, `%${trimmedSearch}%`),
-          ilike(programMembers.status, `%${trimmedSearch}%`),
+          ilike(programMembers.status, `%${trimmedSearch}%`)
         )
       : undefined,
   ].filter(Boolean);
@@ -85,16 +83,16 @@ export async function getMentorAssignmentMenteeCandidates(search?: string) {
         .from(mentorAssignments)
         .innerJoin(
           programMembers,
-          eq(programMembers.id, mentorAssignments.mentorMemberId),
+          eq(programMembers.id, mentorAssignments.mentorMemberId)
         )
         .where(
           and(
             eq(mentorAssignments.status, "active"),
             inArray(
               mentorAssignments.youthMemberId,
-              mentees.map((mentee) => mentee.id),
-            ),
-          ),
+              mentees.map((mentee) => mentee.id)
+            )
+          )
         )
         .orderBy(desc(mentorAssignments.assignedAt))
     : [];
