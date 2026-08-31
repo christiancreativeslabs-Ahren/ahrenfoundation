@@ -106,7 +106,7 @@ export default function MentorsPage() {
             >
               <span className="w-2 h-2 rounded-full grad-bg animate-pulse flex-shrink-0" />
               <p className="text-[#8892b0] text-sm">
-                More mentors joining soon — we&apos;re onboarding Christian creatives and industry
+                More mentors joining soon — we&apos;re welcoming Christian creatives and industry
                 experts from around the world.
               </p>
             </div>

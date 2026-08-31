@@ -8,8 +8,8 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
 import { programMembers } from "@/db/schema";
 import { submitWorkbookModuleAnswers } from "@/actions/workbook";
-import { getWorkbookModulePageData } from "@/lib/workbook";
-import { recordEngagementEvent } from "@/lib/onboarding/service";
+import { getWorkbookModulePageData, renderWorkbookModuleHtml } from "@/lib/workbook";
+import { recordEngagementEvent } from "@/lib/workbook/service";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { HiddenInput, Textarea } from "@/components/ui/input-fields";
@@ -31,6 +31,15 @@ function Alert({
       : "border-rose-300/20 bg-rose-500/10 text-rose-100";
 
   return <div className={`rounded-2xl border px-4 py-3 text-sm ${styles}`}>{children}</div>;
+}
+
+function dateLabel(value: Date | string | null | undefined) {
+  if (!value) return "Not scheduled";
+  const date = value instanceof Date ? value : new Date(value);
+  return new Intl.DateTimeFormat("en-NG", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
 }
 
 async function submitWorkbookAction(formData: FormData) {
@@ -74,10 +83,13 @@ export default async function WorkbookModulePage({
   await recordEngagementEvent({
     eventType: "workbook_viewed",
     programMemberId: member.id,
+    enrollmentId: data.delivery?.enrollmentId,
     moduleId: data.module.id,
+    deliveryId: data.delivery?.id,
     metadata: {
       workbookModuleId: data.module.id,
       workbookModuleNumber: data.module.moduleNumber,
+      source: "dashboard_workbook",
     },
   });
 
@@ -97,7 +109,7 @@ export default async function WorkbookModulePage({
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
           >
             <ArrowLeft size={14} />
-            Back to workbook
+            Back to Workbook
           </Link>
           <span className="rounded-full border border-[#00c9ff]/20 bg-[#00c9ff]/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c9ff]">
             Module {data.module.moduleNumber}
@@ -106,7 +118,7 @@ export default async function WorkbookModulePage({
 
         <section className="rounded-[32px] border border-white/10 bg-white/[0.04] p-7">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
-            Workbook lesson
+            Workbook module
           </p>
           <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -130,7 +142,7 @@ export default async function WorkbookModulePage({
 
         {query.submitted === "1" ? (
           <Alert type="success">
-            Your workbook answers have been submitted successfully.
+            Your Workbook answers have been submitted successfully.
           </Alert>
         ) : null}
 
@@ -142,10 +154,10 @@ export default async function WorkbookModulePage({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <BookOpen size={18} className="text-[#00ff9d]" />
-                  Lesson content
+                  Workbook content
                 </CardTitle>
                 <CardDescription className="text-slate-300">
-                  Read the lesson carefully before answering the assessment questions below.
+                  Read the Workbook module carefully before answering the assessment questions below.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -153,8 +165,7 @@ export default async function WorkbookModulePage({
                   className="prose prose-invert max-w-none prose-p:leading-8 prose-p:text-slate-200 prose-headings:text-white prose-strong:text-white"
                   dangerouslySetInnerHTML={{
                     __html:
-                      data.module.contentHtml ||
-                      "<p>The workbook content has not been added yet.</p>",
+                      renderWorkbookModuleHtml(data.module),
                   }}
                 />
               </CardContent>
@@ -164,7 +175,7 @@ export default async function WorkbookModulePage({
               <CardHeader>
                 <CardTitle className="text-lg">Assessment questions</CardTitle>
                 <CardDescription className="text-slate-300">
-                  Answer each question carefully. Your response will be saved to the workbook database.
+                  Answer each question carefully. Your response will be saved to your Workbook record.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -197,7 +208,7 @@ export default async function WorkbookModulePage({
                       className="gap-2 bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e]"
                     >
                       <CheckCircle2 className="h-4 w-4" />
-                      Submit workbook
+                      Submit Workbook
                     </Button>
                     <p className="text-sm text-slate-400">
                       You can review this page after submission if you need to revisit your answers.
@@ -216,6 +227,8 @@ export default async function WorkbookModulePage({
               <CardContent className="space-y-3 text-sm text-slate-300">
                 <p>Module: {data.module.moduleNumber}</p>
                 <p>Status: {data.submission ? "Submitted" : "Not submitted"}</p>
+                <p>Opened: {dateLabel(data.delivery?.scheduledFor)}</p>
+                <p>Delivery: {data.delivery?.status ?? "Not synced"}</p>
                 <p>Questions: {data.questions.length}</p>
               </CardContent>
             </Card>

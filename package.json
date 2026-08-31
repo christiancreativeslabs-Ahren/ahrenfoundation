@@ -13,6 +13,8 @@
     "db:prod:migrate": "tsx ./db/migrations/migrate.ts prod",
     "db:prod:generate": "drizzle-kit generate --config ./db/migrations/drizzle-prod.config.ts",
     "db:seed:admin": "tsx ./db/seeds/admin-auth-user.ts",
+    "db:seed:mentors": "tsx ./db/seeds/mentors.ts",
+    "db:seed:workbook": "tsx ./db/seeds/workbook.seed.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",

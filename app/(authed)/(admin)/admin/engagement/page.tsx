@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatAdminDate, getEngagementLogData } from "@/lib/admin/onboarding";
+import { formatAdminDate, getEngagementLogData } from "@/lib/admin/member-workflow";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,7 +62,7 @@ export default async function AdminEngagementPage({
             Engagement activity
           </CardTitle>
           <CardDescription className="max-w-3xl text-slate-300">
-            Email sent, email opened, email clicked, lesson viewed, assignment started,
+            Email sent, email opened, email clicked, Workbook viewed, assignment started,
             assignment submitted, and admin workflow activity.
           </CardDescription>
         </CardHeader>

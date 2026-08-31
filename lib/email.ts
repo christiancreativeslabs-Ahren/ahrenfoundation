@@ -1,6 +1,6 @@
 import type { JoinParsedData } from "@/lib/validations/join";
-import { renderOnboardingWelcomeEmail } from "@/lib/onboarding/email-renderer";
-import { getAppBaseUrl } from "@/lib/onboarding/urls";
+import { renderWorkbookWelcomeEmail } from "@/lib/workbook/email-renderer";
+import { getAppBaseUrl } from "@/lib/workbook/urls";
 
 type EmailProviderName = "resend" | "nodemailer" | "zeptomail";
 
@@ -407,7 +407,7 @@ function frameEmail(title: string, body: string) {
 }
 
 export function youthWelcomeEmail(data: JoinParsedData): EmailPayload {
-  const rendered = renderOnboardingWelcomeEmail({
+  const rendered = renderWorkbookWelcomeEmail({
     name: data.fullName,
     role: "mentee",
     baseUrl: getAppBaseUrl(),
@@ -422,7 +422,7 @@ export function youthWelcomeEmail(data: JoinParsedData): EmailPayload {
 }
 
 export function mentorWelcomeEmail(data: JoinParsedData): EmailPayload {
-  const rendered = renderOnboardingWelcomeEmail({
+  const rendered = renderWorkbookWelcomeEmail({
     name: data.fullName,
     role: "mentor",
     baseUrl: getAppBaseUrl(),
@@ -511,6 +511,32 @@ export function verifiedAccessEmail(name: string, email: string): EmailPayload {
         <p>Inside your dashboard, you can connect with verified members, access resources, view incubation opportunities, register for events, showcase projects, and browse partnership opportunities.</p>
         <p>- Ahren Foundation Team</p>
       `
+    ),
+  };
+}
+
+export function magicLoginEmail(
+  name: string,
+  email: string,
+  url: string,
+  role: "mentor" | "youth" | string | null,
+): EmailPayload {
+  const destination = role === "mentor" ? "mentor dashboard" : "Workbook dashboard";
+
+  return {
+    to: email,
+    subject: "Your Ahren Foundation login link",
+    templateKey: "magic_login",
+    html: frameEmail(
+      "Your Ahren Foundation access is ready",
+      `
+        <p>Dear ${escapeHtml(name || "Ahren Creative")},</p>
+        <p>Your Ahren Foundation account is ready. Use the secure link below to sign in and open your ${escapeHtml(destination)}.</p>
+        <p><a href="${escapeHtml(url)}">Open your dashboard</a></p>
+        <p><strong>Login email:</strong> ${escapeHtml(email)}</p>
+        <p>This link is single-use and will expire soon. If it expires, ask the Ahren Foundation team to send a new login link.</p>
+        <p>- Ahren Foundation Team</p>
+      `,
     ),
   };
 }

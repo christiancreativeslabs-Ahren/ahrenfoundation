@@ -18,16 +18,16 @@ export default function BecomeMentorPage() {
   const whatYouDo = [
     { step: "Apply", desc: "Fill out a simple application form." },
     { step: "Match", desc: "We pair you with a small group of young creatives." },
-    { step: "Weekly Emails", desc: "Your mentees receive a weekly lesson via email. You review their answers before your session." },
+    { step: "Workbook Emails", desc: "Your mentees receive Workbook modules by email. You review their answers before your session." },
     { step: "Bi-weekly Session", desc: "Meet virtually with assigned mentees bi-weekly for 6 weeks (3 sessions total)." },
-    { step: "Review & Guide", desc: "Discuss their lessons, share your wisdom, ask questions, and pray." },
+    { step: "Review & Guide", desc: "Discuss their Workbook responses, share your wisdom, ask questions, and pray." },
     { step: "Launch", desc: "Help your mentee identify and build their Kingdom project." },
     { step: "Verify", desc: "After 6 weeks, you become a Verified Ahren Mentor." },
   ];
 
   const responsibilities = [
-    { task: "Attend a 15 mins virtual onboarding meeting with Ahren Foundation leaders", time: "Once (before matching)" },
-    { task: "Review your mentee's weekly email lesson responses", time: "10–15 minutes/week" },
+    { task: "Attend a 15 mins virtual orientation meeting with Ahren Foundation leaders", time: "Once (before matching)" },
+    { task: "Review your mentee's weekly Workbook responses", time: "10–15 minutes/week" },
     { task: "Meet with your mentees virtually bi-weekly", time: "60–90 minutes/session (3 total)" },
     { task: "Pray for your mentees", time: "10 minutes/week (optional)" },
     { task: "Respond to messages within 48 hours", time: "As needed" },
@@ -145,7 +145,7 @@ export default function BecomeMentorPage() {
               What You Will Do as a Mentor
             </h2>
             <p className="text-[#8892b0] text-base leading-relaxed">
-              You are not expected to be a technical teacher or a career coach. The weekly lessons do the
+              You are not expected to be a technical teacher or a career coach. The Workbook modules do the
               heavy lifting. You are an encourager, a question-asker, a storyteller, and a prayer partner.
             </p>
           </FadeUp>

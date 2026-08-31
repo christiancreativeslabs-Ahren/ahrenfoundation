@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BookOpen, Mail } from "lucide-react";
-import { getEmailPreviewCatalog } from "@/lib/onboarding/email-preview-catalog";
+import { getEmailPreviewCatalog } from "@/lib/workbook/email-preview-catalog";
 
 export const dynamic = "force-dynamic";
 

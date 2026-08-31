@@ -1,5 +1,3 @@
-import "server-only";
-
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { trainingApplicationSettings } from "@/db/schema";
@@ -14,7 +12,9 @@ export async function getTrainingApplicationSettings(): Promise<TrainingApplicat
   const [row] = await db
     .select()
     .from(trainingApplicationSettings)
-    .where(eq(trainingApplicationSettings.key, TRAINING_APPLICATION_SETTINGS_KEY))
+    .where(
+      eq(trainingApplicationSettings.key, TRAINING_APPLICATION_SETTINGS_KEY)
+    )
     .orderBy(desc(trainingApplicationSettings.updatedAt))
     .limit(1);
 
@@ -31,7 +31,7 @@ export async function getTrainingApplicationSettings(): Promise<TrainingApplicat
           closedTitle: row.closedTitle,
           closedMessageHtml: row.closedMessageHtml,
         }
-      : null,
+      : null
   );
 
   return {
@@ -42,7 +42,7 @@ export async function getTrainingApplicationSettings(): Promise<TrainingApplicat
 }
 
 export async function upsertTrainingApplicationSettings(
-  settings: TrainingApplicationSettings,
+  settings: TrainingApplicationSettings
 ) {
   const payload = normalizeTrainingApplicationSettings(settings);
   const applicationsOpenAt = payload.applicationsOpenAt

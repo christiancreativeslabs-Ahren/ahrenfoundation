@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock3 } from "lucide-react";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
 import { programMembers } from "@/db/schema";
 import { getMentorMenteeDetailData } from "@/lib/mentorship";
+import { MentorReviewForm } from "@/components/mentor/mentor-review-form";
+import { MentorSessionForm } from "@/components/mentor/mentor-session-form";
+import { MentorWorkspaceNav } from "@/components/mentor/mentor-workspace-nav";
 import SignOutButton from "@/components/auth/sign-out-button";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +21,12 @@ function dateLabel(value: Date | string | null | undefined) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
+}
+
+function payloadText(payload: Record<string, unknown> | null | undefined, key: string) {
+  if (!payload || typeof payload !== "object") return "";
+  const value = payload[key];
+  return typeof value === "string" ? value : "";
 }
 
 export default async function MentorMenteeDetailPage({
@@ -52,31 +61,34 @@ export default async function MentorMenteeDetailPage({
 
   return (
     <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">
-      <div className="mx-auto max-w-6xl space-y-8">
+      <div className="mx-auto max-w-7xl space-y-8">
         <header className="flex flex-col gap-4 border-b border-white/10 pb-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <Link
-              href="/mentor/dashboard"
+              href="/mentor/mentees"
               className="inline-flex items-center gap-2 text-sm font-semibold text-[#00c9ff]"
             >
               <ArrowLeft size={14} />
-              Back to mentor dashboard
+              Back to mentees
             </Link>
             <h1 className="mt-4 text-4xl font-bold tracking-tight">
               {data.mentee.fullName}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
-              This page shows the mentee assigned to you, along with their workbook progress and current assignment context.
+              Review this mentee's Workbook progress, submission answers, feedback, and mentorship sessions.
             </p>
           </div>
           <SignOutButton />
         </header>
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <MentorWorkspaceNav />
+
+        <section className="grid gap-4 md:grid-cols-4">
           {[
             { label: "Email", value: data.mentee.email },
             { label: "Status", value: data.mentee.status.replaceAll("_", " ") },
-            { label: "Current step", value: data.mentee.currentStep.replaceAll("_", " ") },
+            { label: "Completed", value: `${data.workbook.completedModuleIds.size}/${data.workbook.modules.length}` },
+            { label: "Sessions", value: String(data.sessions.length) },
           ].map((item) => (
             <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
@@ -87,105 +99,126 @@ export default async function MentorMenteeDetailPage({
           ))}
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
-              Assignment
-            </p>
-            <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
-              <p>
-                Assigned on: <span className="text-white">{dateLabel(data.assignment.assignedAt)}</span>
+        <section className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
+          <div className="space-y-6">
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
+                Assignment
               </p>
-              <p>
-                Notes: <span className="text-white">{data.assignment.notes ?? "None"}</span>
-              </p>
-              <p>
-                Mentor: <span className="text-white">{data.mentor.fullName}</span>
-              </p>
-              <p>
-                Mentor email: <span className="text-white">{data.mentor.email}</span>
-              </p>
-              <p>
-                Sessions scheduled: <span className="text-white">{data.sessions.length}</span>
-              </p>
+              <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
+                <p>Assigned on: <span className="text-white">{dateLabel(data.assignment.assignedAt)}</span></p>
+                <p>Notes: <span className="text-white">{data.assignment.notes ?? "None"}</span></p>
+                <p>Current step: <span className="text-white">{data.mentee.currentStep.replaceAll("_", " ")}</span></p>
+              </div>
             </div>
 
-            <div className="mt-5 space-y-3">
-              {data.sessions.map((session) => (
-                <div key={session.id} className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00ff9d]">
-                    Session {session.sessionNumber}
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
+                    Sessions
                   </p>
-                  <p className="mt-2">
-                    Status: <span className="text-white">{session.status.replaceAll("_", " ")}</span>
-                  </p>
-                  <p>
-                    Scheduled: <span className="text-white">{dateLabel(session.scheduledAt)}</span>
-                  </p>
+                  <h2 className="mt-2 text-xl font-bold">Mentorship sessions</h2>
                 </div>
-              ))}
-              {!data.sessions.length ? (
-                <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                  No mentorship sessions have been scheduled yet.
-                </div>
-              ) : null}
+                <Link href="/mentor/sessions" className="text-sm font-semibold text-[#00ff9d]">
+                  All sessions
+                </Link>
+              </div>
+              <div className="mt-5 space-y-4">
+                {data.sessions.map((item) => (
+                  <div key={item.id} className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-bold text-white">Session {item.sessionNumber}</p>
+                      <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00ff9d]">
+                        {item.status.replaceAll("_", " ")}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-slate-300">Scheduled: {dateLabel(item.scheduledAt)}</p>
+                    <div className="mt-4">
+                      <MentorSessionForm session={item} />
+                    </div>
+                  </div>
+                ))}
+                {!data.sessions.length ? (
+                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
+                    No mentorship sessions have been scheduled yet.
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 
           <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
-              Workbook progress
+              Workbook journey
             </p>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Modules: <span className="text-white">{data.workbook.modules.length}</span>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Completed: <span className="text-white">{data.workbook.completedModuleIds.size}</span>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Latest submission: <span className="text-white">{data.latestSubmission ? dateLabel(data.latestSubmission.submission.submittedAt) : "-"}</span>
-              </div>
-            </div>
+            <h2 className="mt-2 text-2xl font-bold">Module-by-module progress</h2>
 
             <div className="mt-5 space-y-4">
-              {data.latestSubmission ? (
-                <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00ff9d]">
-                    Latest module
-                  </p>
-                  <p className="mt-2 text-sm text-slate-300">
-                    Module {data.latestSubmission.module.moduleNumber}: {data.latestSubmission.module.title}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-400">
-                    Submitted {dateLabel(data.latestSubmission.submission.submittedAt)}
-                  </p>
-                </div>
-              ) : null}
+              {data.moduleJourney.map((item) => {
+                const submission = item.submission;
+                const answers = submission
+                  ? data.answersBySubmission.get(submission.submission.id) ?? []
+                  : [];
+                const feedback = payloadText(submission?.submission.payload, "mentorFeedback");
 
-              <div className="space-y-3">
-                {data.answers.map((row) => (
-                  <div key={row.answer.id} className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
-                      Question {row.question.questionNumber}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-white">{row.question.prompt}</p>
-                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-300">
-                      {row.answer.answer}
-                    </p>
-                  </div>
-                ))}
-                {!data.answers.length && data.latestSubmission ? (
-                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    This submission does not have saved answers yet.
-                  </div>
-                ) : null}
-                {!data.latestSubmission ? (
-                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    No workbook submissions have been made by this mentee yet.
-                  </div>
-                ) : null}
-              </div>
+                return (
+                  <article key={item.module.id} className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
+                          Module {item.module.moduleNumber}
+                        </p>
+                        <h3 className="mt-2 text-lg font-bold text-white">{item.module.title}</h3>
+                        <p className="mt-1 text-xs text-slate-400">
+                          Opens {dateLabel(item.delivery?.scheduledFor)} - {item.delivery?.status ?? "not synced"}
+                        </p>
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00ff9d]">
+                        {submission ? <CheckCircle2 size={13} /> : <Clock3 size={13} />}
+                        {submission ? item.reviewStatus.replaceAll("_", " ") : "Not submitted"}
+                      </span>
+                    </div>
+
+                    {submission ? (
+                      <div className="mt-4 space-y-3">
+                        <p className="text-sm text-slate-300">
+                          Submitted {dateLabel(submission.submission.submittedAt)}
+                        </p>
+                        {answers.slice(0, 2).map((row) => (
+                          <div key={row.answer.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                            <p className="text-xs font-semibold text-slate-300">
+                              {row.question.questionNumber}. {row.question.prompt}
+                            </p>
+                            <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-sm leading-6 text-white">
+                              {row.answer.answer}
+                            </p>
+                          </div>
+                        ))}
+                        {feedback ? (
+                          <p className="rounded-xl border border-[#00ff9d]/20 bg-[#00ff9d]/10 p-3 text-sm leading-6 text-slate-100">
+                            {feedback}
+                          </p>
+                        ) : null}
+                        <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
+                          <Link
+                            href={`/mentor/submissions/${submission.submission.id}`}
+                            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-4 text-sm font-bold text-[#080d2e] hover:bg-slate-100"
+                          >
+                            Open full review
+                            <ArrowRight size={14} />
+                          </Link>
+                          <MentorReviewForm
+                            submissionId={submission.submission.id}
+                            defaultFeedback={feedback}
+                            defaultStatus={item.reviewStatus}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>

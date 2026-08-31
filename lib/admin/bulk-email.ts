@@ -11,8 +11,8 @@ import {
 } from "@/db/schema";
 import { sendEmail } from "@/lib/email";
 import { sanitizeTrainingApplicationHtml } from "@/lib/application-settings.shared";
-import { getAppBaseUrl } from "../onboarding/urls";
-import { renderProgramWelcomeEmail } from "../onboarding/email-renderer";
+import { getAppBaseUrl } from "../workbook/urls";
+import { renderProgramWelcomeEmail } from "../workbook/email-renderer";
 
 export type BulkEmailAudienceType =
   | "all_members"

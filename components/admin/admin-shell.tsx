@@ -11,6 +11,8 @@ import {
   LineChart,
   ScrollText,
   ShieldCheck,
+  Users,
+  UserRoundCheck,
   UserRoundPlus,
   Send,
 } from "lucide-react";
@@ -33,88 +35,129 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const navItems = [
+const navGroups = [
   {
-    href: "/admin/dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
+    label: "Core",
+    items: [
+      {
+        href: "/admin/dashboard",
+        label: "Dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        href: "/admin/join-applications",
+        label: "Join applications",
+        icon: ClipboardList,
+      },
+      {
+        href: "/admin/mentees",
+        label: "Mentees",
+        icon: Users,
+      },
+      {
+        href: "/admin/mentors",
+        label: "Mentors",
+        icon: UserRoundCheck,
+      },
+      {
+        href: "/admin/assignments",
+        label: "Assignments",
+        icon: UserRoundPlus,
+      },
+    ],
   },
   {
-    href: "/admin/join-applications",
-    label: "Join applications",
-    icon: ClipboardList,
-  },
-  {
-    href: "/admin/assignments",
-    label: "Assignments",
-    icon: UserRoundPlus,
-  },
-  {
-    href: "/admin/resources",
-    label: "Resources",
-    icon: BookOpen,
-  },
-  {
-    href: "/admin/events",
-    label: "Events",
-    icon: Mail,
-  },
-  {
-    href: "/admin/opportunities",
-    label: "Opportunities",
-    icon: BookOpen,
-  },
-  {
-    href: "/admin/community-posts",
-    label: "Community posts",
-    icon: ScrollText,
-  },
-  {
-    href: "/admin/project-showcases",
-    label: "Project showcases",
-    icon: BookOpen,
-  },
-  {
-    href: "/admin/onboarding",
-    label: "Onboarding",
-    icon: LineChart,
-  },
-  {
-    href: "/admin/workbook",
     label: "Workbook",
-    icon: BookOpen,
+    items: [
+      {
+        href: "/admin/workbook",
+        label: "Modules",
+        icon: BookOpen,
+      },
+      {
+        href: "/admin/workbook/deliveries",
+        label: "Deliveries",
+        icon: LineChart,
+      },
+      {
+        href: "/admin/workbook/submissions",
+        label: "Submissions",
+        icon: BookOpen,
+      },
+      {
+        href: "/admin/engagement",
+        label: "Engagement",
+        icon: ScrollText,
+      },
+      {
+        href: "/admin/email-events",
+        label: "Email tracking",
+        icon: Mail,
+      },
+    ],
   },
   {
-    href: "/admin/email-events",
-    label: "Email events",
-    icon: Mail,
+    label: "Community",
+    items: [
+      {
+        href: "/admin/resources",
+        label: "Resources",
+        icon: BookOpen,
+      },
+      {
+        href: "/admin/events",
+        label: "Events",
+        icon: Mail,
+      },
+      {
+        href: "/admin/opportunities",
+        label: "Opportunities",
+        icon: BookOpen,
+      },
+      {
+        href: "/admin/community-posts",
+        label: "Community posts",
+        icon: ScrollText,
+      },
+      {
+        href: "/admin/project-showcases",
+        label: "Project showcases",
+        icon: BookOpen,
+      },
+      {
+        href: "/admin/content",
+        label: "Content hub",
+        icon: BookOpen,
+      },
+    ],
   },
   {
-    href: "/admin/bulk-email",
-    label: "Bulk email",
-    icon: Send,
-  },
-  {
-    href: "/admin/engagement",
-    label: "Engagement",
-    icon: ScrollText,
-  },
-  {
-    href: "/admin/module-submissions",
-    label: "Module submissions",
-    icon: BookOpen,
-  },
-  {
-    href: "/admin/workbook-submissions",
-    label: "Workbook submissions",
-    icon: BookOpen,
-  },
-  {
-    href: "/admin/content",
-    label: "Content hub",
-    icon: BookOpen,
+    label: "Messaging",
+    items: [
+      {
+        href: "/admin/bulk-email",
+        label: "Bulk email",
+        icon: Send,
+      },
+    ],
   },
 ];
+
+function isActiveNavPath(pathname: string, href: string) {
+  if (pathname === href) {
+    return true;
+  }
+
+  if (href === "/admin/workbook") {
+    return (
+      pathname.startsWith("/admin/workbook/") &&
+      !pathname.startsWith("/admin/workbook/deliveries") &&
+      !pathname.startsWith("/admin/workbook/submissions")
+    );
+  }
+
+  return pathname.startsWith(`${href}/`);
+}
 
 export default function AdminShell({
   children,
@@ -148,37 +191,38 @@ export default function AdminShell({
         </SidebarHeader>
 
         <SidebarContent className="px-3 pb-3">
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-[#e8eeff]/70">
-              Navigation
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const active =
-                    pathname === item.href || pathname.startsWith(`${item.href}/`);
+          {navGroups.map((group) => (
+            <SidebarGroup key={group.label}>
+              <SidebarGroupLabel className="text-[#e8eeff]/70">
+                {group.label}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const active = isActiveNavPath(pathname, item.href);
 
-                  return (
-                    <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton
-                        render={<Link href={item.href} />}
-                        isActive={active}
-                        className={
-                          active
-                            ? "bg-gradient-to-r from-[#00c9ff]/20 to-[#00ff9d]/15 text-white shadow-[inset_3px_0_0_#00ff9d]"
-                            : "text-[#c5d5e8] hover:bg-cyan-400/10 hover:text-white"
-                        }
-                      >
-                        <Icon />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+                    return (
+                      <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton
+                          render={<Link href={item.href} />}
+                          isActive={active}
+                          className={
+                            active
+                              ? "bg-gradient-to-r from-[#00c9ff]/20 to-[#00ff9d]/15 text-white shadow-[inset_3px_0_0_#00ff9d]"
+                              : "text-[#c5d5e8] hover:bg-cyan-400/10 hover:text-white"
+                          }
+                        >
+                          <Icon />
+                          <span>{item.label}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
 
           <SidebarSeparator className="my-4 bg-white/10" />
 
@@ -188,7 +232,7 @@ export default function AdminShell({
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <div className="rounded-2xl border border-cyan-400/10 bg-[#111850]/80 p-4 text-sm leading-relaxed text-[#c5d5e8]">
-                Review applicants, monitor onboarding delivery health, and keep
+                Review applicants, monitor Workbook delivery health, and keep
                 the new module engine moving cleanly.
               </div>
             </SidebarGroupContent>
@@ -224,7 +268,7 @@ export default function AdminShell({
                 Admin area
               </p>
               <p className="truncate text-sm font-semibold text-white">
-                Manage join applications and admin activity
+                Manage members, mentors, and the Workbook
               </p>
             </div>
           </header>

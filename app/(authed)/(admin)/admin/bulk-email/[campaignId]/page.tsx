@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { sendBulkEmailCampaignNow, getBulkEmailCampaignDetail } from "@/lib/admin/bulk-email";
-import { formatAdminDate } from "@/lib/admin/onboarding";
+import { formatAdminDate } from "@/lib/admin/member-workflow";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

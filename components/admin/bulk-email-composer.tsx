@@ -413,7 +413,7 @@ export function BulkEmailComposer({
                     Campaign notes
                   </div>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Keep the body concise, link out to the lesson or resource
+                    Keep the body concise, link out to the Workbook module or resource
                     page, and attach only the files the audience needs.
                   </p>
                 </div>

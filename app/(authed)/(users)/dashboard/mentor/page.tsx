@@ -59,7 +59,7 @@ export default async function MenteeAssignmentPage() {
             </Link>
             <h1 className="mt-4 text-4xl font-bold tracking-tight">Your assignment</h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
-              This page shows the mentor and workbook information connected to your current journey.
+              This page shows the mentor and Workbook information connected to your current journey.
             </p>
           </div>
           <SignOutButton />
@@ -132,7 +132,7 @@ export default async function MenteeAssignmentPage() {
                 href="/dashboard/workbook"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#080d2e] transition-transform hover:scale-[1.02]"
               >
-                Open workbook
+                Open Workbook
               </Link>
             </div>
           </div>
