@@ -6,6 +6,7 @@ import {
 } from "@/lib/admin/member-workflow";
 import { getMentorAssignmentCandidates } from "@/lib/admin/mentor-assignments";
 import { Badge } from "@/components/ui/badge";
+import { MemberLoginLinkDialog } from "@/components/admin/member-login-link-dialog";
 import { MentorAssignmentDialog } from "@/components/admin/mentor-assignment-dialog";
 import {
   Card,
@@ -69,6 +70,20 @@ export default async function AdminMenteeDetailPage({
               applicantEmail={journey.member.email}
               triggerLabel="Assign mentor"
               mentors={mentors}
+            />
+            <MemberLoginLinkDialog
+              member={{
+                id: journey.member.id,
+                fullName: journey.member.fullName,
+                email: journey.member.email,
+                role: journey.member.role,
+                status: journey.member.status,
+                currentStep: journey.member.currentStep,
+                userId: journey.member.userId,
+                verifiedAt: journey.member.verifiedAt?.toISOString() ?? null,
+                loginCredentialsSentAt:
+                  journey.member.loginCredentialsSentAt?.toISOString() ?? null,
+              }}
             />
           </div>
         </CardHeader>
