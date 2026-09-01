@@ -3,7 +3,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth/auth";
+import { auth, takeCapturedMagicLink } from "@/lib/auth/auth";
 import { db } from "@/db";
 import {
   accounts,
@@ -55,6 +55,7 @@ import { createCertificatePdf } from "@/lib/pdf";
 type ActionResult = {
   ok: boolean;
   message: string;
+  url?: string;
 };
 
 async function requireAdmin() {
@@ -155,13 +156,111 @@ async function ensureProgramMemberLoginAccess(memberId: string) {
     body: {
       email: member.email,
       name: member.fullName,
-      callbackURL: member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
-      errorCallbackURL: member.role === "mentor" ? "/mentor/login" : "/hub/login",
+      callbackURL:
+        member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
+      errorCallbackURL:
+        member.role === "mentor" ? "/mentor/login" : "/hub/login",
     },
     headers: await headers(),
   });
 
   return member;
+}
+
+async function ensureProgramMemberQuickLoginAccess(memberId: string) {
+  const [member] = await db
+    .select()
+    .from(programMembers)
+    .where(eq(programMembers.id, memberId))
+    .limit(1);
+
+  if (!member) {
+    throw new Error("Program member was not found.");
+  }
+
+  if (member.role !== "mentor" && member.role !== "youth") {
+    throw new Error("Only mentors and mentees can receive login links.");
+  }
+
+  const { firstName, lastName } = splitName(member.fullName);
+  const now = new Date();
+  const [user] = await db
+    .insert(users)
+    .values({
+      email: member.email,
+      name: member.fullName,
+      firstName,
+      lastName,
+      emailVerified: true,
+    })
+    .onConflictDoUpdate({
+      target: users.email,
+      set: {
+        name: member.fullName,
+        firstName,
+        lastName,
+        emailVerified: true,
+        updatedAt: now,
+      },
+    })
+    .returning({ id: users.id });
+
+  await db
+    .update(programMembers)
+    .set({
+      userId: user.id,
+      status: member.role === "mentor" ? "verified_mentor" : "verified_member",
+      currentStep: "dashboard_access",
+      verifiedAt: member.verifiedAt ?? now,
+      loginCredentialsSentAt: now,
+      updatedAt: now,
+    })
+    .where(eq(programMembers.id, member.id));
+
+  if (member.role === "youth") {
+    await enrollMemberInWorkbookProgram(member.id, now);
+    await syncMemberWorkbookDeliveries(member.id);
+  }
+
+  await syncJoinApplicationProjection(member.joinApplicationId);
+
+  // Generate the magic link WITHOUT sending email
+  const captureId = crypto.randomUUID();
+
+  await auth.api.signInMagicLink({
+    body: {
+      email: member.email,
+      name: member.fullName,
+      callbackURL:
+        member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
+      errorCallbackURL:
+        member.role === "mentor" ? "/mentor/login" : "/hub/login",
+      metadata: { captureId },
+    },
+    headers: await headers(),
+  });
+
+  const magicLinkUrl = takeCapturedMagicLink(captureId);
+
+  if (!magicLinkUrl) {
+    throw new Error("Failed to generate login link.");
+  }
+
+  return { member, magicLinkUrl };
+
+  // await auth.api.signInMagicLink({
+  //   body: {
+  //     email: member.email,
+  //     name: member.fullName,
+  //     callbackURL:
+  //       member.role === "mentor" ? "/mentor/dashboard" : "/dashboard",
+  //     errorCallbackURL:
+  //       member.role === "mentor" ? "/mentor/login" : "/hub/login",
+  //   },
+  //   headers: await headers(),
+  // });
+
+  // return member;
 }
 
 export async function registerProgramMemberAction(
@@ -187,7 +286,8 @@ export async function registerProgramMemberAction(
 
     const { firstName, lastName } = splitName(fullName);
     const now = new Date();
-    const memberStatus = role === "mentor" ? "verified_mentor" : "verified_member";
+    const memberStatus =
+      role === "mentor" ? "verified_mentor" : "verified_member";
     const payload = {
       source: "admin_direct_registration",
       notes,
@@ -301,7 +401,9 @@ export async function deactivateProgramMemberAction(
 
     const now = new Date();
     const payload =
-      member.payload && typeof member.payload === "object" ? member.payload : {};
+      member.payload && typeof member.payload === "object"
+        ? member.payload
+        : {};
 
     await db.transaction(async (tx) => {
       await tx
@@ -373,7 +475,9 @@ export async function reactivateProgramMemberAction(
 
     const member = await ensureProgramMemberLoginAccess(memberId);
     const payload =
-      member.payload && typeof member.payload === "object" ? member.payload : {};
+      member.payload && typeof member.payload === "object"
+        ? member.payload
+        : {};
 
     await db
       .update(programMembers)
@@ -420,7 +524,10 @@ export async function permanentlyDeleteProgramMemberAction(
 
     if (!member) return { ok: false, message: "Program member was not found." };
     if (confirmation !== member.email) {
-      return { ok: false, message: "Type the member email to confirm deletion." };
+      return {
+        ok: false,
+        message: "Type the member email to confirm deletion.",
+      };
     }
 
     const assignments = await db
@@ -452,12 +559,24 @@ export async function permanentlyDeleteProgramMemberAction(
           .where(inArray(moduleSubmissionAnswers.submissionId, submissionIds));
       }
 
-      await tx.delete(moduleSubmissions).where(eq(moduleSubmissions.programMemberId, member.id));
-      await tx.delete(emailEvents).where(eq(emailEvents.programMemberId, member.id));
-      await tx.delete(engagementEvents).where(eq(engagementEvents.programMemberId, member.id));
-      await tx.delete(certificates).where(eq(certificates.programMemberId, member.id));
-      await tx.delete(moduleDeliveries).where(eq(moduleDeliveries.programMemberId, member.id));
-      await tx.delete(programEnrollments).where(eq(programEnrollments.programMemberId, member.id));
+      await tx
+        .delete(moduleSubmissions)
+        .where(eq(moduleSubmissions.programMemberId, member.id));
+      await tx
+        .delete(emailEvents)
+        .where(eq(emailEvents.programMemberId, member.id));
+      await tx
+        .delete(engagementEvents)
+        .where(eq(engagementEvents.programMemberId, member.id));
+      await tx
+        .delete(certificates)
+        .where(eq(certificates.programMemberId, member.id));
+      await tx
+        .delete(moduleDeliveries)
+        .where(eq(moduleDeliveries.programMemberId, member.id));
+      await tx
+        .delete(programEnrollments)
+        .where(eq(programEnrollments.programMemberId, member.id));
       await tx
         .delete(mentorAssignments)
         .where(
@@ -469,13 +588,24 @@ export async function permanentlyDeleteProgramMemberAction(
       await tx
         .delete(bulkEmailCampaignRecipients)
         .where(eq(bulkEmailCampaignRecipients.programMemberId, member.id));
-      await tx.delete(projectShowcases).where(eq(projectShowcases.programMemberId, member.id));
-      await tx.delete(communityPosts).where(eq(communityPosts.programMemberId, member.id));
+      await tx
+        .delete(projectShowcases)
+        .where(eq(projectShowcases.programMemberId, member.id));
+      await tx
+        .delete(communityPosts)
+        .where(eq(communityPosts.programMemberId, member.id));
       await tx.delete(programMembers).where(eq(programMembers.id, member.id));
       await tx
         .delete(joinApplicationListItems)
-        .where(eq(joinApplicationListItems.joinApplicationId, member.joinApplicationId));
-      await tx.delete(joinApplications).where(eq(joinApplications.id, member.joinApplicationId));
+        .where(
+          eq(
+            joinApplicationListItems.joinApplicationId,
+            member.joinApplicationId,
+          ),
+        );
+      await tx
+        .delete(joinApplications)
+        .where(eq(joinApplications.id, member.joinApplicationId));
 
       if (member.userId) {
         const siblings = await tx
@@ -487,7 +617,9 @@ export async function permanentlyDeleteProgramMemberAction(
         if (!siblings.length) {
           await tx.delete(sessions).where(eq(sessions.userId, member.userId));
           await tx.delete(accounts).where(eq(accounts.userId, member.userId));
-          await tx.delete(verifications).where(eq(verifications.identifier, member.email));
+          await tx
+            .delete(verifications)
+            .where(eq(verifications.identifier, member.email));
           await tx.delete(users).where(eq(users.id, member.userId));
         }
       }
@@ -501,7 +633,8 @@ export async function permanentlyDeleteProgramMemberAction(
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Permanent delete failed.",
+      message:
+        error instanceof Error ? error.message : "Permanent delete failed.",
     };
   }
 }
@@ -548,7 +681,10 @@ async function assignMentorToYouthMembersInternal({
   );
 
   if (!mentorMemberId || !uniqueYouthMemberIds.length) {
-    return { ok: false, message: "Mentor and at least one mentee are required." };
+    return {
+      ok: false,
+      message: "Mentor and at least one mentee are required.",
+    };
   }
 
   const [mentor] = await db
@@ -558,7 +694,12 @@ async function assignMentorToYouthMembersInternal({
       joinApplicationId: programMembers.joinApplicationId,
     })
     .from(programMembers)
-    .where(and(eq(programMembers.id, mentorMemberId), eq(programMembers.role, "mentor")))
+    .where(
+      and(
+        eq(programMembers.id, mentorMemberId),
+        eq(programMembers.role, "mentor"),
+      ),
+    )
     .limit(1);
 
   if (!mentor) {
@@ -593,7 +734,10 @@ async function assignMentorToYouthMembersInternal({
     .where(
       and(
         eq(mentorAssignments.status, "active"),
-        inArray(mentorAssignments.youthMemberId, youthMembers.map((item) => item.id)),
+        inArray(
+          mentorAssignments.youthMemberId,
+          youthMembers.map((item) => item.id),
+        ),
       ),
     );
 
@@ -648,7 +792,9 @@ async function assignMentorToYouthMembersInternal({
     .where(eq(programMembers.id, mentorMemberId));
 
   await Promise.all(
-    youthMembers.map((member) => syncJoinApplicationProjection(member.joinApplicationId)),
+    youthMembers.map((member) =>
+      syncJoinApplicationProjection(member.joinApplicationId),
+    ),
   );
 
   const mentorPath = await getMemberJoinApplicationPath(mentorMemberId);
@@ -676,7 +822,9 @@ async function sendAndLogEmail(
     const result = await sendEmail(payload);
     await db.insert(emailEvents).values({
       programMemberId: context.programMemberId ?? null,
-      recipientEmail: Array.isArray(payload.to) ? payload.to.join(",") : payload.to,
+      recipientEmail: Array.isArray(payload.to)
+        ? payload.to.join(",")
+        : payload.to,
       templateKey: payload.templateKey,
       status: result.sent ? "sent" : "skipped",
       providerId: result.providerId,
@@ -686,7 +834,9 @@ async function sendAndLogEmail(
   } catch (error) {
     await db.insert(emailEvents).values({
       programMemberId: context.programMemberId ?? null,
-      recipientEmail: Array.isArray(payload.to) ? payload.to.join(",") : payload.to,
+      recipientEmail: Array.isArray(payload.to)
+        ? payload.to.join(",")
+        : payload.to,
       templateKey: payload.templateKey,
       status: "failed",
       error: error instanceof Error ? error.message : "Email failed.",
@@ -777,7 +927,8 @@ export async function updateTrainingApplicationSettings(
       formData.get("applications_close_at"),
     );
     const forceClosed = String(formData.get("force_closed") ?? "") === "true";
-    const closedTitle = value(formData, "closed_title") || "Applications Closed.";
+    const closedTitle =
+      value(formData, "closed_title") || "Applications Closed.";
     const closedMessageHtml = sanitizeTrainingApplicationHtml(
       value(formData, "closed_message_html") ||
         "<p>Our 6-Week Tech & Creativity Mentorship Program is now fully booked. Thank you to everyone who applied!</p>",
@@ -833,7 +984,8 @@ export async function assignMentorToYouth(
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Mentor assignment failed.",
+      message:
+        error instanceof Error ? error.message : "Mentor assignment failed.",
     };
   }
 }
@@ -847,9 +999,9 @@ export async function assignMentorToYouthGroup(
 
     const mentorMemberId = value(formData, "mentor_member_id");
     const notes = value(formData, "notes");
-    const youthMemberIds = formData.getAll("youth_member_ids").map((value) =>
-      String(value ?? "").trim(),
-    );
+    const youthMemberIds = formData
+      .getAll("youth_member_ids")
+      .map((value) => String(value ?? "").trim());
 
     const result = await assignMentorToYouthMembersInternal({
       mentorMemberId,
@@ -865,7 +1017,8 @@ export async function assignMentorToYouthGroup(
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Mentor assignment failed.",
+      message:
+        error instanceof Error ? error.message : "Mentor assignment failed.",
     };
   }
 }
@@ -905,7 +1058,8 @@ export async function updateMentorshipSession(
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Session update failed.",
+      message:
+        error instanceof Error ? error.message : "Session update failed.",
     };
   }
 }
@@ -942,8 +1096,12 @@ export async function issueCompletionCertificate(
       .from(moduleSubmissions)
       .where(eq(moduleSubmissions.programMemberId, memberId));
 
-    const expectedModules = new Set(deliveries.map((delivery) => delivery.moduleId));
-    const submittedModules = new Set(submissions.map((submission) => submission.moduleId));
+    const expectedModules = new Set(
+      deliveries.map((delivery) => delivery.moduleId),
+    );
+    const submittedModules = new Set(
+      submissions.map((submission) => submission.moduleId),
+    );
 
     if (!expectedModules.size || submittedModules.size < expectedModules.size) {
       return {
@@ -1015,7 +1173,8 @@ export async function issueCompletionCertificate(
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Certificate issue failed.",
+      message:
+        error instanceof Error ? error.message : "Certificate issue failed.",
     };
   }
 }
@@ -1036,7 +1195,9 @@ export async function grantVerifiedStatus(
 
     revalidatePath("/admin/join-applications");
     revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
-    revalidatePath(`/admin/${member.role === "mentor" ? "mentors" : "mentees"}/${member.id}`);
+    revalidatePath(
+      `/admin/${member.role === "mentor" ? "mentors" : "mentees"}/${member.id}`,
+    );
     revalidatePath(`/admin/program-members/${member.id}`);
     revalidatePath("/dashboard");
     return { ok: true, message: "Login link sent." };
@@ -1064,7 +1225,9 @@ export async function sendProgramMemberLoginLinkAction(
 
     revalidatePath("/admin/mentors");
     revalidatePath("/admin/mentees");
-    revalidatePath(`/admin/${member.role === "mentor" ? "mentors" : "mentees"}/${member.id}`);
+    revalidatePath(
+      `/admin/${member.role === "mentor" ? "mentors" : "mentees"}/${member.id}`,
+    );
     revalidatePath(`/admin/program-members/${member.id}`);
     revalidatePath("/admin/join-applications");
     revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
@@ -1073,7 +1236,64 @@ export async function sendProgramMemberLoginLinkAction(
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Login link could not be sent.",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Login link could not be sent.",
+    };
+  }
+}
+
+export async function requestProgramMemberLoginLinkAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    const email = String(formData.get("email") ?? "")
+      .trim()
+      .toLowerCase();
+    const lastName = String(formData.get("lastName") ?? "").trim();
+
+    if (!email || !lastName) {
+      return { ok: false, message: "Email and last name are required." };
+    }
+
+    // Find the program member by email
+    const [member] = await db
+      .select()
+      .from(programMembers)
+      .where(eq(programMembers.email, email))
+      .limit(1);
+
+    if (!member) {
+      // Don’t leak existence
+      return { ok: false, message: "Invalid credentials." };
+    }
+
+    // Soft identity check with last name
+    const { lastName: expectedLastName } = splitName(member.fullName);
+    if (
+      !expectedLastName ||
+      expectedLastName.toLowerCase() !== lastName.toLowerCase()
+    ) {
+      return { ok: false, message: "Invalid credentials." };
+    }
+
+    // This does the real work: upsert user, update program_member, generate magic link
+    const { magicLinkUrl } = await ensureProgramMemberQuickLoginAccess(
+      member.id,
+    );
+
+    return {
+      ok: true,
+      message: "Redirecting…",
+      url: magicLinkUrl,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error ? error.message : "Could not sign you in.",
     };
   }
 }
@@ -1113,7 +1333,9 @@ export async function updateMentorWorkflowMilestone(formData: FormData) {
   await db
     .update(programMembers)
     .set(updates)
-    .where(and(eq(programMembers.id, memberId), eq(programMembers.role, "mentor")));
+    .where(
+      and(eq(programMembers.id, memberId), eq(programMembers.role, "mentor")),
+    );
 
   const [member] = await db
     .select({
@@ -1416,8 +1638,14 @@ export async function markSubmissionReviewed(
         module: programModules,
       })
       .from(moduleSubmissions)
-      .innerJoin(programMembers, eq(programMembers.id, moduleSubmissions.programMemberId))
-      .innerJoin(programModules, eq(programModules.id, moduleSubmissions.moduleId))
+      .innerJoin(
+        programMembers,
+        eq(programMembers.id, moduleSubmissions.programMemberId),
+      )
+      .innerJoin(
+        programModules,
+        eq(programModules.id, moduleSubmissions.moduleId),
+      )
       .where(eq(moduleSubmissions.id, submissionId))
       .limit(1);
 

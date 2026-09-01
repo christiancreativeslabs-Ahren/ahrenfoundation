@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { FadeUp, GradientOrb, SectionLabel } from "@/components/ui/custom";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import QuickLoginForm from "./quick-login-form";
 
 type LoginPageProps = {
   sectionLabel: string;
@@ -25,7 +26,7 @@ type LoginPageProps = {
 };
 
 // Emeke File
-export default async function LoginPage({
+export default async function QuickLoginPage({
   sectionLabel,
   heading,
   description,
@@ -83,7 +84,7 @@ export default async function LoginPage({
             color="mint"
           />
 
-          <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="relative z-10 lg:mt-[5vh] mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="max-w-2xl">
               <FadeUp>
                 <SectionLabel>{sectionLabel}</SectionLabel>
@@ -105,22 +106,6 @@ export default async function LoginPage({
                 <p className="max-w-xl text-[17px] leading-relaxed text-[#8892b0]">
                   {description}
                 </p>
-              </FadeUp>
-
-              <FadeUp delay={0.16} className="mt-8 grid gap-4 sm:grid-cols-3">
-                {benefits.map((item) => (
-                  <div key={item.title} className="glass rounded-2xl p-4">
-                    <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl grad-bg text-[#080d2e]">
-                      {item.icon}
-                    </div>
-                    <h2 className="mb-2 text-sm font-bold text-white">
-                      {item.title}
-                    </h2>
-                    <p className="text-sm leading-relaxed text-[#8892b0]">
-                      {item.text}
-                    </p>
-                  </div>
-                ))}
               </FadeUp>
 
               <FadeUp
@@ -146,7 +131,7 @@ export default async function LoginPage({
               <div className="relative">
                 <div className="absolute -left-6 top-10 hidden h-24 w-24 rounded-full border border-[rgba(0,201,255,0.18)] lg:block" />
                 <div className="absolute -right-4 bottom-12 hidden h-16 w-16 rounded-full border border-[rgba(0,255,157,0.18)] lg:block" />
-                <LoginForm
+                <QuickLoginForm
                   callbackURL={callbackURL}
                   newUserCallbackURL={newUserCallbackURL}
                   newUserLabel={newUserLabel}
