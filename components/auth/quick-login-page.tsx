@@ -71,7 +71,7 @@ export default async function QuickLoginPage({
     <>
       <Navbar />
       <main className="relative overflow-hidden bg-[#080d2e]">
-        <section className="relative min-h-screen pt-28 pb-16">
+        <section className="relative min-h-[82vh] pt-28 pb-16">
           <div className="absolute inset-0 grid-bg opacity-40" />
           <GradientOrb
             className="top-[-10%] right-[-8%]"

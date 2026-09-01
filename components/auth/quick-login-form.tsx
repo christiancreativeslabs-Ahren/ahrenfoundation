@@ -157,8 +157,7 @@ export default function QuickLoginForm({
               autoComplete="family-name"
             />
           </Field>
-
-          {error && (
+          {!state.ok && state.message && (
             <div
               className="rounded-xl border px-4 py-3 text-sm"
               style={{
@@ -167,10 +166,9 @@ export default function QuickLoginForm({
                 color: "#ffb4c0",
               }}
             >
-              {error}
+              {state.message}
             </div>
           )}
-
           <motion.button
             whileHover={{
               scale: 1.01,
