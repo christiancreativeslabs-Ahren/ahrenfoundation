@@ -8,10 +8,19 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
 import { programMembers } from "@/db/schema";
 import { submitWorkbookModuleAnswers } from "@/actions/workbook";
-import { getWorkbookModulePageData, renderWorkbookModuleHtml } from "@/lib/workbook";
+import {
+  getWorkbookModulePageData,
+  renderWorkbookModuleHtml,
+} from "@/lib/workbook";
 import { recordEngagementEvent } from "@/lib/workbook/service";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { HiddenInput, Textarea } from "@/components/ui/input-fields";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +39,11 @@ function Alert({
       ? "border-[#00ff9d]/20 bg-[#00ff9d]/10 text-[#d9fff0]"
       : "border-rose-300/20 bg-rose-500/10 text-rose-100";
 
-  return <div className={`rounded-2xl border px-4 py-3 text-sm ${styles}`}>{children}</div>;
+  return (
+    <div className={`rounded-2xl border px-4 py-3 text-sm ${styles}`}>
+      {children}
+    </div>
+  );
 }
 
 function dateLabel(value: Date | string | null | undefined) {
@@ -100,6 +113,7 @@ export default async function WorkbookModulePage({
     data.questions.map((question) => [question.id, question]),
   );
 
+  console.log("Workbook module page data:", { data });
   return (
     <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">
       <div className="mx-auto max-w-6xl space-y-8">
@@ -122,7 +136,9 @@ export default async function WorkbookModulePage({
           </p>
           <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="text-4xl font-black tracking-tight">{data.module.title}</h1>
+              <h1 className="text-4xl font-black tracking-tight">
+                {data.module.title}
+              </h1>
               {data.module.subtitle ? (
                 <p className="mt-3 max-w-3xl text-lg leading-8 text-[#7dd3fc]">
                   {data.module.subtitle}
@@ -157,15 +173,15 @@ export default async function WorkbookModulePage({
                   Workbook content
                 </CardTitle>
                 <CardDescription className="text-slate-300">
-                  Read the Workbook module carefully before answering the assessment questions below.
+                  Read the Workbook module carefully before answering the
+                  assessment questions below.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div
                   className="prose prose-invert max-w-none prose-p:leading-8 prose-p:text-slate-200 prose-headings:text-white prose-strong:text-white"
                   dangerouslySetInnerHTML={{
-                    __html:
-                      renderWorkbookModuleHtml(data.module),
+                    __html: renderWorkbookModuleHtml(data.module),
                   }}
                 />
               </CardContent>
@@ -175,16 +191,17 @@ export default async function WorkbookModulePage({
               <CardHeader>
                 <CardTitle className="text-lg">Assessment questions</CardTitle>
                 <CardDescription className="text-slate-300">
-                  Answer each question carefully. Your response will be saved to your Workbook record.
+                  Answer each question carefully. Your response will be saved to
+                  your Workbook record.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form
-                  action={submitWorkbookAction}
-                  className="space-y-5"
-                >
+                <form action={submitWorkbookAction} className="space-y-5">
                   <HiddenInput name="module_id" value={data.module.id} />
-                  <HiddenInput name="return_to" value={`/dashboard/workbook/${data.module.id}`} />
+                  <HiddenInput
+                    name="return_to"
+                    value={`/dashboard/workbook/${data.module.id}`}
+                  />
 
                   <div className="space-y-4">
                     {data.questions.map((question) => (
@@ -194,7 +211,9 @@ export default async function WorkbookModulePage({
                         </span>
                         <Textarea
                           name={`answer_${question.id}`}
-                          defaultValue={answersByQuestionId.get(question.id) ?? ""}
+                          defaultValue={
+                            answersByQuestionId.get(question.id) ?? ""
+                          }
                           className="min-h-32 border-white/10 bg-white/[0.04] text-white placeholder:text-slate-500"
                           placeholder="Write your answer here"
                         />
@@ -211,7 +230,8 @@ export default async function WorkbookModulePage({
                       Submit Workbook
                     </Button>
                     <p className="text-sm text-slate-400">
-                      You can review this page after submission if you need to revisit your answers.
+                      You can review this page after submission if you need to
+                      revisit your answers.
                     </p>
                   </div>
                 </form>
@@ -240,7 +260,13 @@ export default async function WorkbookModulePage({
               <CardContent className="space-y-3 text-sm text-slate-300">
                 {data.submission ? (
                   <>
-                    <p>Submitted on: {new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeStyle: "short" }).format(data.submission.submittedAt)}</p>
+                    <p>
+                      Submitted on:{" "}
+                      {new Intl.DateTimeFormat("en-NG", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      }).format(data.submission.submittedAt)}
+                    </p>
                     <div className="space-y-3">
                       {data.answers.map((answer) => {
                         const question = questionsById.get(answer.questionId);
@@ -249,7 +275,10 @@ export default async function WorkbookModulePage({
                         }
 
                         return (
-                          <div key={answer.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                          <div
+                            key={answer.id}
+                            className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                          >
                             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
                               Question {question.questionNumber}
                             </p>

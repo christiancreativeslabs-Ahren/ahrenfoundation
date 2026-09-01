@@ -7,11 +7,21 @@ import { APIError } from "@better-auth/core/error";
 import { sql } from "drizzle-orm";
 import type { BetterAuthPlugin } from "better-auth";
 import { db } from "@/db";
-import { accounts, emailEvents, programMembers, sessions, users, verifications } from "@/db/schema";
+import {
+  accounts,
+  emailEvents,
+  programMembers,
+  sessions,
+  users,
+  verifications,
+} from "@/db/schema";
 import { magicLoginEmail, passwordResetEmail, sendEmail } from "@/lib/email";
 import { getAdminEmails } from "@/lib/validations/join";
 
-const VERIFIED_ACCESS_STATUSES = new Set(["verified_member", "verified_mentor"]);
+const VERIFIED_ACCESS_STATUSES = new Set([
+  "verified_member",
+  "verified_mentor",
+]);
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
@@ -88,7 +98,12 @@ async function sendMagicLoginEmail(email: string, url: string) {
     throw loginBlockedError();
   }
 
-  const payload = magicLoginEmail(member.fullName, member.email, url, member.role);
+  const payload = magicLoginEmail(
+    member.fullName,
+    member.email,
+    url,
+    member.role,
+  );
 
   try {
     const result = await sendEmail(payload);
@@ -107,7 +122,8 @@ async function sendMagicLoginEmail(email: string, url: string) {
       recipientEmail: member.email,
       templateKey: payload.templateKey,
       status: "failed",
-      error: error instanceof Error ? error.message : "Magic login email failed.",
+      error:
+        error instanceof Error ? error.message : "Magic login email failed.",
       payload: { subject: payload.subject, source: "magic_login" },
     });
     throw error;
@@ -124,7 +140,8 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             return context.path === "/sign-in/email";
           },
           handler: createAuthMiddleware(async (ctx) => {
-            const email = typeof ctx.body?.email === "string" ? ctx.body.email : "";
+            const email =
+              typeof ctx.body?.email === "string" ? ctx.body.email : "";
             if (!email) return;
 
             const access = await isAllowedToSignIn(email);
@@ -138,7 +155,8 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             return context.path === "/sign-in/magic-link";
           },
           handler: createAuthMiddleware(async (ctx) => {
-            const email = typeof ctx.body?.email === "string" ? ctx.body.email : "";
+            const email =
+              typeof ctx.body?.email === "string" ? ctx.body.email : "";
             if (!email) return;
 
             const access = await isAllowedToSignIn(email);
@@ -168,7 +186,8 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             return context.path === "/callback/:id";
           },
           handler: createAuthMiddleware(async (ctx) => {
-            const setCookieHeader = ctx.context.responseHeaders?.get("set-cookie");
+            const setCookieHeader =
+              ctx.context.responseHeaders?.get("set-cookie");
             if (!setCookieHeader) return;
 
             const cookieName = ctx.context.authCookies.sessionToken.name;
@@ -177,9 +196,8 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             const sessionToken = sessionTokenCookie?.value?.split(".")[0];
             if (!sessionToken) return;
 
-            const sessionRecord = await ctx.context.internalAdapter.findSession(
-              sessionToken,
-            );
+            const sessionRecord =
+              await ctx.context.internalAdapter.findSession(sessionToken);
             const email = sessionRecord?.user.email;
             if (!email) return;
 
@@ -189,7 +207,9 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             await ctx.context.internalAdapter.deleteSession(sessionToken);
 
             if (!access.hasProgramMembership && sessionRecord?.user.id) {
-              await ctx.context.internalAdapter.deleteUser(sessionRecord.user.id);
+              await ctx.context.internalAdapter.deleteUser(
+                sessionRecord.user.id,
+              );
             }
 
             throw loginBlockedError();
@@ -198,6 +218,15 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
       ],
     },
   };
+}
+
+// Short-lived store (safe for concurrent requests)
+const pendingMagicLinks = new Map<string, string>();
+
+export function takeCapturedMagicLink(captureId: string): string | null {
+  const url = pendingMagicLinks.get(captureId) ?? null;
+  pendingMagicLinks.delete(captureId);
+  return url;
 }
 
 export const auth = betterAuth({
@@ -243,7 +272,14 @@ export const auth = betterAuth({
     magicLink({
       disableSignUp: true,
       expiresIn: 60 * 15,
-      sendMagicLink: async ({ email, url }) => {
+
+      sendMagicLink: async ({ email, url, metadata }) => {
+        // When captureId is present → only capture the URL, send nothing
+        if (metadata?.captureId) {
+          pendingMagicLinks.set(String(metadata.captureId), url);
+          return;
+        }
+
         await sendMagicLoginEmail(email, url);
       },
     }),
