@@ -122,6 +122,146 @@ export function getWorkbookModuleContentHtml(module: {
   return typeof contentHtml === "string" ? contentHtml : "";
 }
 
+function renderRichModuleHtml(module: any) {
+  const parts: string[] = [];
+
+  // Title + Subtitle
+  parts.push(
+    `<h2>Module ${module.moduleNumber}: ${escapeHtml(module.title)}</h2>`,
+  );
+  if (module.subtitle) {
+    parts.push(`<p><strong>${escapeHtml(module.subtitle)}</strong></p>`);
+  }
+
+  // Opening
+  if (module.openingCopy?.length) {
+    parts.push(paragraphs(module.openingCopy));
+  }
+
+  // Scriptures
+  if (module.scriptures?.length) {
+    parts.push(`<h3>Key Scriptures</h3>`);
+    parts.push(
+      `<ul>${module.scriptures
+        .map(
+          (s: any) =>
+            `<li><em>${escapeHtml(s.text)}</em> — ${escapeHtml(s.reference)}</li>`,
+        )
+        .join("")}</ul>`,
+    );
+  }
+
+  // Body sections
+  if (module.bodySections?.length) {
+    for (const section of module.bodySections) {
+      if (section.heading) {
+        parts.push(`<h3>${escapeHtml(section.heading)}</h3>`);
+      }
+      if (section.paragraphs?.length) {
+        parts.push(paragraphs(section.paragraphs));
+      }
+      if (section.bullets?.length) {
+        parts.push(
+          `<ul>${section.bullets
+            .map((b: string) => `<li>${escapeHtml(b)}</li>`)
+            .join("")}</ul>`,
+        );
+      }
+      if (section.closing) {
+        parts.push(`<p>${escapeHtml(section.closing)}</p>`);
+      }
+      // Table (Lies the World Tells You)
+      if (section.table) {
+        parts.push(renderTable(section.table));
+      }
+    }
+  }
+
+  // Reflection + Focus + Action (still useful)
+  if (module.reflection) {
+    parts.push(`<h3>Reflection</h3><p>${escapeHtml(module.reflection)}</p>`);
+  }
+  if (module.focus) {
+    parts.push(`<h3>Focus</h3><p>${escapeHtml(module.focus)}</p>`);
+  }
+
+  // This Week's Creative Growth Actions
+  if (module.thisWeeksActions) {
+    parts.push(`<h3>This Week's Creative Growth Actions</h3>`);
+    if (module.thisWeeksActions.intro) {
+      parts.push(`<p>${escapeHtml(module.thisWeeksActions.intro)}</p>`);
+    }
+    if (module.thisWeeksActions.items?.length) {
+      parts.push(
+        `<ol>${module.thisWeeksActions.items
+          .map((item: string) => `<li>${escapeHtml(item)}</li>`)
+          .join("")}</ol>`,
+      );
+    }
+  } else if (module.action) {
+    parts.push(
+      `<h3>Creative Growth Action</h3><p>${escapeHtml(module.action)}</p>`,
+    );
+  }
+
+  // Questions
+  if (module.questions?.length) {
+    parts.push(`<h3>Reflection Questions</h3>`);
+    parts.push(
+      `<ol>${module.questions
+        .map((q: string) => `<li>${escapeHtml(q)}</li>`)
+        .join("")}</ol>`,
+    );
+  }
+
+  // Prayer
+  if (module.prayer) {
+    parts.push(
+      `<h3>${escapeHtml(module.prayer.title || "A Prayer for Your Week")}</h3>`,
+    );
+    parts.push(`<p><em>${escapeHtml(module.prayer.text)}</em></p>`);
+  }
+
+  // Final Word
+  if (module.finalWord) {
+    parts.push(
+      `<h3>${escapeHtml(module.finalWord.title || "A Final Word")}</h3>`,
+    );
+    parts.push(`<p>${escapeHtml(module.finalWord.text)}</p>`);
+  }
+
+  // Closing
+  if (module.closing) {
+    parts.push(
+      `<h3>${escapeHtml(module.closing.title || "See You Next Week")}</h3>`,
+    );
+    parts.push(`<p>${escapeHtml(module.closing.text)}</p>`);
+    if (module.closing.signature) {
+      parts.push(
+        `<p><strong>${escapeHtml(module.closing.signature)}</strong></p>`,
+      );
+    }
+  }
+
+  return parts.filter(Boolean).join("");
+}
+
+function renderTable(table: { headers: string[]; rows: string[][] }) {
+  const headerRow = `<tr>${table.headers
+    .map((h) => `<th>${escapeHtml(h)}</th>`)
+    .join("")}</tr>`;
+  const bodyRows = table.rows
+    .map(
+      (row) =>
+        `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`,
+    )
+    .join("");
+  return `<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;margin:1em 0;">
+    <thead>${headerRow}</thead>
+    <tbody>${bodyRows}</tbody>
+  </table>`;
+}
+
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
@@ -146,18 +286,32 @@ function htmlToText(value: string) {
     .trim();
 }
 
-function paragraphs(value: string) {
-  return value
-    .split("\n")
+function paragraphs(value: string | string[] | null | undefined): string {
+  if (!value) return "";
+
+  const lines = Array.isArray(value) ? value : value.split("\n");
+
+  return lines
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => `<p>${escapeHtml(line)}</p>`)
     .join("");
 }
 
+// function paragraphs(value: string) {
+//   return value
+//     .split("\n")
+//     .map((line) => line.trim())
+//     .filter(Boolean)
+//     .map((line) => `<p>${escapeHtml(line)}</p>`)
+//     .join("");
+// }
+
 function coerceOpeningCopy(value: WorkbookImportModuleInput) {
   if (Array.isArray(value.openingCopy)) {
-    return value.openingCopy.map((line) => normalizeString(line)).filter(Boolean);
+    return value.openingCopy
+      .map((line) => normalizeString(line))
+      .filter(Boolean);
   }
 
   if (typeof value.openingCopy === "string") {
@@ -192,8 +346,14 @@ function coerceScriptures(value: WorkbookImportModuleInput) {
   const scriptureReference = normalizeString(value.scriptureReference);
   if (!scriptureText && !scriptureReference) return [];
 
-  const texts = scriptureText.split("\n").map((line) => line.trim()).filter(Boolean);
-  const references = scriptureReference.split(";").map((line) => line.trim()).filter(Boolean);
+  const texts = scriptureText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const references = scriptureReference
+    .split(";")
+    .map((line) => line.trim())
+    .filter(Boolean);
 
   return texts.map((text, index) => ({
     text,
@@ -201,13 +361,23 @@ function coerceScriptures(value: WorkbookImportModuleInput) {
   }));
 }
 
-function scriptureText(module: Pick<WorkbookImportModuleInput, "scriptures" | "scriptureText" | "scriptureReference">) {
+function scriptureText(
+  module: Pick<
+    WorkbookImportModuleInput,
+    "scriptures" | "scriptureText" | "scriptureReference"
+  >,
+) {
   return coerceScriptures(module as WorkbookImportModuleInput)
     .map((scripture) => scripture.text)
     .join("\n");
 }
 
-function scriptureReference(module: Pick<WorkbookImportModuleInput, "scriptures" | "scriptureText" | "scriptureReference">) {
+function scriptureReference(
+  module: Pick<
+    WorkbookImportModuleInput,
+    "scriptures" | "scriptureText" | "scriptureReference"
+  >,
+) {
   return coerceScriptures(module as WorkbookImportModuleInput)
     .map((scripture) => scripture.reference)
     .join("; ");
@@ -219,7 +389,9 @@ function defaultModuleByNumber(moduleNumber: number) {
   );
 }
 
-function normalizeImportedModule(input: WorkbookImportModuleInput): NormalizedWorkbookModule {
+function normalizeImportedModule(
+  input: WorkbookImportModuleInput,
+): NormalizedWorkbookModule {
   const moduleNumber = normalizeInteger(input.moduleNumber, 0);
   const fallback = defaultModuleByNumber(moduleNumber);
   const openingCopy = coerceOpeningCopy(input);
@@ -229,25 +401,64 @@ function normalizeImportedModule(input: WorkbookImportModuleInput): NormalizedWo
   const fallbackQuestions: WorkbookImportQuestionInput[] =
     fallback?.questions.map((prompt) => ({ prompt })) ?? [];
   const normalized: NormalizedWorkbookModule = {
-    moduleKey: normalizeString(input.moduleKey, fallback?.moduleKey ?? `module-${moduleNumber}`),
+    moduleKey: normalizeString(
+      input.moduleKey,
+      fallback?.moduleKey ?? `module-${moduleNumber}`,
+    ),
     moduleNumber,
-    weekNumber: normalizeInteger(input.weekNumber, fallback?.weekNumber ?? Math.ceil(moduleNumber / 2)),
-    sendOffsetDays: normalizeInteger(input.sendOffsetDays, fallback?.sendOffsetDays ?? Math.max(0, (moduleNumber - 1) * 4)),
-    sendDayLabel: normalizeString(input.sendDayLabel, fallback?.sendDayLabel ?? "Monday"),
+    weekNumber: normalizeInteger(
+      input.weekNumber,
+      fallback?.weekNumber ?? Math.ceil(moduleNumber / 2),
+    ),
+    sendOffsetDays: normalizeInteger(
+      input.sendOffsetDays,
+      fallback?.sendOffsetDays ?? Math.max(0, (moduleNumber - 1) * 4),
+    ),
+    sendDayLabel: normalizeString(
+      input.sendDayLabel,
+      fallback?.sendDayLabel ?? "Monday",
+    ),
     title: normalizeString(input.title, fallback?.title ?? "Untitled module"),
     subtitle: input.subtitle ?? fallback?.subtitle ?? null,
     subject: normalizeString(input.subject, fallback?.subject ?? input.title),
     previewText: input.previewText ?? fallback?.previewText ?? null,
-    openingCopy: openingCopy.length ? openingCopy : fallback?.openingCopy ?? [],
-    scriptureText: scriptureText({ scriptures, scriptureText: input.scriptureText, scriptureReference: input.scriptureReference }) || (fallback ? fallback.scriptures.map((scripture) => scripture.text).join("\n") : ""),
-    scriptureReference: scriptureReference({ scriptures, scriptureText: input.scriptureText, scriptureReference: input.scriptureReference }) || (fallback ? fallback.scriptures.map((scripture) => scripture.reference).join("; ") : ""),
-    reflection: normalizeString(input.reflection, fallback?.reflection ?? contentText),
-    focus: normalizeString(input.focus, fallback?.focus ?? input.summary ?? "Complete this workbook module."),
-    action: normalizeString(input.action, fallback?.action ?? "Complete the workbook questions for this module."),
+    openingCopy: openingCopy.length
+      ? openingCopy
+      : (fallback?.openingCopy ?? []),
+    scriptureText:
+      scriptureText({
+        scriptures,
+        scriptureText: input.scriptureText,
+        scriptureReference: input.scriptureReference,
+      }) ||
+      (fallback
+        ? fallback.scriptures.map((scripture) => scripture.text).join("\n")
+        : ""),
+    scriptureReference:
+      scriptureReference({
+        scriptures,
+        scriptureText: input.scriptureText,
+        scriptureReference: input.scriptureReference,
+      }) ||
+      (fallback
+        ? fallback.scriptures.map((scripture) => scripture.reference).join("; ")
+        : ""),
+    reflection: normalizeString(
+      input.reflection,
+      fallback?.reflection ?? contentText,
+    ),
+    focus: normalizeString(
+      input.focus,
+      fallback?.focus ?? input.summary ?? "Complete this workbook module.",
+    ),
+    action: normalizeString(
+      input.action,
+      fallback?.action ?? "Complete the workbook questions for this module.",
+    ),
     summary: input.summary ?? fallback?.focus ?? null,
     contentHtml: input.contentHtml ?? "",
     status: normalizeString(input.status, "published"),
-    scriptures: scriptures.length ? scriptures : fallback?.scriptures ?? [],
+    scriptures: scriptures.length ? scriptures : (fallback?.scriptures ?? []),
     questions: (input.questions ?? fallbackQuestions)
       .map((question) => ({
         prompt: normalizeString(question.prompt),
@@ -257,27 +468,50 @@ function normalizeImportedModule(input: WorkbookImportModuleInput): NormalizedWo
       .filter((question) => question.prompt),
   };
 
-  if (!normalized.moduleKey) throw new Error("Workbook module is missing moduleKey.");
-  if (!Number.isInteger(normalized.moduleNumber) || normalized.moduleNumber <= 0) {
-    throw new Error(`Workbook module "${normalized.moduleKey}" needs a positive moduleNumber.`);
+  if (!normalized.moduleKey)
+    throw new Error("Workbook module is missing moduleKey.");
+  if (
+    !Number.isInteger(normalized.moduleNumber) ||
+    normalized.moduleNumber <= 0
+  ) {
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" needs a positive moduleNumber.`,
+    );
   }
-  if (!normalized.title) throw new Error(`Workbook module "${normalized.moduleKey}" is missing a title.`);
+  if (!normalized.title)
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" is missing a title.`,
+    );
   if (!normalized.openingCopy.length) {
-    throw new Error(`Workbook module "${normalized.moduleKey}" is missing opening copy.`);
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" is missing opening copy.`,
+    );
   }
   if (!normalized.reflection) {
-    throw new Error(`Workbook module "${normalized.moduleKey}" is missing reflection content.`);
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" is missing reflection content.`,
+    );
   }
-  if (!normalized.focus) throw new Error(`Workbook module "${normalized.moduleKey}" is missing focus content.`);
-  if (!normalized.action) throw new Error(`Workbook module "${normalized.moduleKey}" is missing action content.`);
+  if (!normalized.focus)
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" is missing focus content.`,
+    );
+  if (!normalized.action)
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" is missing action content.`,
+    );
   if (!normalized.questions.length) {
-    throw new Error(`Workbook module "${normalized.moduleKey}" must include at least one question.`);
+    throw new Error(
+      `Workbook module "${normalized.moduleKey}" must include at least one question.`,
+    );
   }
 
   return normalized;
 }
 
-export function parseWorkbookImportDefinition(raw: string): WorkbookImportDefinition {
+export function parseWorkbookImportDefinition(
+  raw: string,
+): WorkbookImportDefinition {
   let parsed: unknown;
 
   try {
@@ -287,7 +521,9 @@ export function parseWorkbookImportDefinition(raw: string): WorkbookImportDefini
   }
 
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error("Workbook import JSON must be an object with a modules array.");
+    throw new Error(
+      "Workbook import JSON must be an object with a modules array.",
+    );
   }
 
   const source = parsed as Record<string, unknown>;
@@ -305,15 +541,23 @@ export function parseWorkbookImportDefinition(raw: string): WorkbookImportDefini
   const keys = new Set<string>();
   const numbers = new Set<number>();
   for (const module of modules) {
-    if (keys.has(module.moduleKey)) throw new Error(`Workbook module key "${module.moduleKey}" is duplicated.`);
-    if (numbers.has(module.moduleNumber)) throw new Error(`Workbook module number "${module.moduleNumber}" is duplicated.`);
+    if (keys.has(module.moduleKey))
+      throw new Error(
+        `Workbook module key "${module.moduleKey}" is duplicated.`,
+      );
+    if (numbers.has(module.moduleNumber))
+      throw new Error(
+        `Workbook module number "${module.moduleNumber}" is duplicated.`,
+      );
     keys.add(module.moduleKey);
     numbers.add(module.moduleNumber);
   }
 
   return {
     program:
-      source.program && typeof source.program === "object" && !Array.isArray(source.program)
+      source.program &&
+      typeof source.program === "object" &&
+      !Array.isArray(source.program)
         ? (source.program as WorkbookImportDefinition["program"])
         : undefined,
     modules,
@@ -324,7 +568,9 @@ export async function ensureAhrenWorkbookProgram() {
   return ensureAhrenWorkbookProgramCore();
 }
 
-export async function upsertWorkbookFromDefinition(definition: WorkbookImportDefinition) {
+export async function upsertWorkbookFromDefinition(
+  definition: WorkbookImportDefinition,
+) {
   const programInput = definition.program ?? {};
   const modules = definition.modules.map(normalizeImportedModule);
 
@@ -333,8 +579,14 @@ export async function upsertWorkbookFromDefinition(definition: WorkbookImportDef
     .values({
       slug: normalizeProgramSlug(programInput.slug),
       name: normalizeString(programInput.name, DEFAULT_WORKBOOK_PROGRAM.name),
-      summary: normalizeString(programInput.summary, DEFAULT_WORKBOOK_PROGRAM.summary),
-      startsAfterDays: normalizeInteger(programInput.startsAfterDays, AHREN_WORKBOOK_PROGRAM.startsAfterDays),
+      summary: normalizeString(
+        programInput.summary,
+        DEFAULT_WORKBOOK_PROGRAM.summary,
+      ),
+      startsAfterDays: normalizeInteger(
+        programInput.startsAfterDays,
+        AHREN_WORKBOOK_PROGRAM.startsAfterDays,
+      ),
       status: normalizeString(programInput.status, "published"),
       isActive: normalizeBoolean(programInput.isActive, true),
       payload: {
@@ -352,8 +604,14 @@ export async function upsertWorkbookFromDefinition(definition: WorkbookImportDef
       target: programs.slug,
       set: {
         name: normalizeString(programInput.name, DEFAULT_WORKBOOK_PROGRAM.name),
-        summary: normalizeString(programInput.summary, DEFAULT_WORKBOOK_PROGRAM.summary),
-        startsAfterDays: normalizeInteger(programInput.startsAfterDays, AHREN_WORKBOOK_PROGRAM.startsAfterDays),
+        summary: normalizeString(
+          programInput.summary,
+          DEFAULT_WORKBOOK_PROGRAM.summary,
+        ),
+        startsAfterDays: normalizeInteger(
+          programInput.startsAfterDays,
+          AHREN_WORKBOOK_PROGRAM.startsAfterDays,
+        ),
         status: normalizeString(programInput.status, "published"),
         isActive: normalizeBoolean(programInput.isActive, true),
         updatedAt: new Date(),
@@ -473,7 +731,12 @@ export async function getActiveWorkbookProgram() {
   const [program] = await db
     .select()
     .from(programs)
-    .where(and(eq(programs.slug, DEFAULT_WORKBOOK_PROGRAM.slug), eq(programs.isActive, true)))
+    .where(
+      and(
+        eq(programs.slug, DEFAULT_WORKBOOK_PROGRAM.slug),
+        eq(programs.isActive, true),
+      ),
+    )
     .orderBy(desc(programs.updatedAt))
     .limit(1);
 
@@ -571,7 +834,8 @@ export async function getWorkbookMemberDashboard(programMemberId: string) {
     return delivery.scheduledFor <= now || completedModuleIds.has(module.id);
   });
   const lockedModules = modules.filter(
-    (module) => !availableModules.some((available) => available.id === module.id),
+    (module) =>
+      !availableModules.some((available) => available.id === module.id),
   );
   const currentModule =
     availableModules.find((module) => !completedModuleIds.has(module.id)) ??
@@ -590,7 +854,10 @@ export async function getWorkbookMemberDashboard(programMemberId: string) {
   };
 }
 
-export async function getWorkbookModulePageData(moduleId: string, programMemberId: string) {
+export async function getWorkbookModulePageData(
+  moduleId: string,
+  programMemberId: string,
+) {
   const module = await getWorkbookModuleById(moduleId);
   if (!module) return null;
 
@@ -622,7 +889,8 @@ export async function getWorkbookModulePageData(moduleId: string, programMemberI
   ]);
 
   const isAvailable =
-    Boolean(delivery && delivery.scheduledFor <= new Date()) || Boolean(submission);
+    Boolean(delivery && delivery.scheduledFor <= new Date()) ||
+    Boolean(submission);
   if (!isAvailable) return null;
 
   const answers = submission
@@ -633,7 +901,12 @@ export async function getWorkbookModulePageData(moduleId: string, programMemberI
         .orderBy(asc(moduleSubmissionAnswers.createdAt))
     : [];
 
-  return { ...module, delivery: delivery ?? null, submission: submission ?? null, answers };
+  return {
+    ...module,
+    delivery: delivery ?? null,
+    submission: submission ?? null,
+    answers,
+  };
 }
 
 export async function getWorkbookSubmissionById(submissionId: string) {
@@ -645,8 +918,14 @@ export async function getWorkbookSubmissionById(submissionId: string) {
       program: programs,
     })
     .from(moduleSubmissions)
-    .innerJoin(programMembers, eq(programMembers.id, moduleSubmissions.programMemberId))
-    .innerJoin(programModules, eq(programModules.id, moduleSubmissions.moduleId))
+    .innerJoin(
+      programMembers,
+      eq(programMembers.id, moduleSubmissions.programMemberId),
+    )
+    .innerJoin(
+      programModules,
+      eq(programModules.id, moduleSubmissions.moduleId),
+    )
     .innerJoin(programs, eq(programs.id, programModules.programId))
     .where(eq(moduleSubmissions.id, submissionId))
     .limit(1);
@@ -656,28 +935,50 @@ export async function getWorkbookSubmissionById(submissionId: string) {
   const answers = await db
     .select({ answer: moduleSubmissionAnswers, question: moduleQuestions })
     .from(moduleSubmissionAnswers)
-    .innerJoin(moduleQuestions, eq(moduleQuestions.id, moduleSubmissionAnswers.questionId))
+    .innerJoin(
+      moduleQuestions,
+      eq(moduleQuestions.id, moduleSubmissionAnswers.questionId),
+    )
     .where(eq(moduleSubmissionAnswers.submissionId, submissionId))
     .orderBy(asc(moduleQuestions.questionNumber));
 
   return { ...row, answers };
 }
 
-export function renderWorkbookModuleHtml(module: typeof programModules.$inferSelect) {
+export function renderWorkbookModuleHtml(
+  module: any,
+  // module: typeof programModules.$inferSelect,
+) {
   const contentHtml = getWorkbookModuleContentHtml(module);
   if (contentHtml) return contentHtml;
 
-  const scriptures = module.scriptureText.split("\n").map((line) => line.trim()).filter(Boolean);
-  const references = module.scriptureReference.split(";").map((line) => line.trim()).filter(Boolean);
+  const m = module as any;
+  // New rich structure path
+  if (m.bodySections || m.thisWeeksActions || m.prayer) {
+    return renderRichModuleHtml(module);
+  }
+
+  const scriptures = module.scriptureText
+    .split("\n")
+    .map((line: any) => line.trim())
+    .filter(Boolean);
+  const references = module.scriptureReference
+    .split(";")
+    .map((line: any) => line.trim())
+    .filter(Boolean);
 
   return [
     `<h2>Module ${module.moduleNumber}: ${escapeHtml(module.title)}</h2>`,
-    module.subtitle ? `<p><strong>${escapeHtml(module.subtitle)}</strong></p>` : "",
+    module.subtitle
+      ? `<p><strong>${escapeHtml(module.subtitle)}</strong></p>`
+      : "",
     paragraphs(module.openingCopy),
     scriptures.length
       ? `<h3>Key Scriptures</h3><ul>${scriptures
-          .map((scripture, index) => {
-            const reference = references[index] ? ` - ${references[index]}` : "";
+          .map((scripture: any, index: any) => {
+            const reference = references[index]
+              ? ` - ${references[index]}`
+              : "";
             return `<li>${escapeHtml(`${scripture}${reference}`)}</li>`;
           })
           .join("")}</ul>`
@@ -685,8 +986,7 @@ export function renderWorkbookModuleHtml(module: typeof programModules.$inferSel
     `<h3>Reflection</h3><p>${escapeHtml(module.reflection)}</p>`,
     `<h3>Focus</h3><p>${escapeHtml(module.focus)}</p>`,
     `<h3>Creative Growth Action</h3><p>${escapeHtml(module.action)}</p>`,
-  ].filter(Boolean).join("");
+  ]
+    .filter(Boolean)
+    .join("");
 }
-
-
-

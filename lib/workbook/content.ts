@@ -3,6 +3,24 @@ export type ScriptureDefinition = {
   reference: string;
 };
 
+// export type WorkbookModuleDefinition = {
+//   moduleKey: string;
+//   moduleNumber: number;
+//   weekNumber: number;
+//   sendOffsetDays: number;
+//   sendDayLabel: "Monday" | "Friday";
+//   title: string;
+//   subtitle?: string;
+//   subject: string;
+//   previewText: string;
+//   openingCopy: string[];
+//   scriptures: ScriptureDefinition[];
+//   reflection: string;
+//   focus: string;
+//   action: string;
+//   questions: string[];
+// };
+
 export type WorkbookModuleDefinition = {
   moduleKey: string;
   moduleNumber: number;
@@ -19,6 +37,37 @@ export type WorkbookModuleDefinition = {
   focus: string;
   action: string;
   questions: string[];
+
+  // New rich content fields
+  bodySections?: BodySection[];
+  thisWeeksActions?: {
+    intro: string;
+    items: string[];
+  };
+  prayer?: {
+    title?: string;
+    text: string;
+  };
+  finalWord?: {
+    title?: string;
+    text: string;
+  };
+  closing?: {
+    title?: string;
+    text: string;
+    signature?: string;
+  };
+};
+
+export type BodySection = {
+  heading?: string;
+  paragraphs?: string[];
+  bullets?: string[];
+  closing?: string;
+  table?: {
+    headers: string[];
+    rows: string[][];
+  };
 };
 
 export type WorkbookProgramDefinition = {
@@ -36,6 +85,44 @@ export const AHREN_WORKBOOK_PROGRAM: WorkbookProgramDefinition = {
     "A flexible Workbook journey for Christian creatives to discover identity, partner with the Holy Spirit, build character, and align their skills with God's purpose.",
   startsAfterDays: 7,
   modules: [
+    // {
+    //   moduleKey: "module-1",
+    //   moduleNumber: 1,
+    //   weekNumber: 1,
+    //   sendOffsetDays: 0,
+    //   sendDayLabel: "Monday",
+    //   title: "You Were Created to Create",
+    //   subtitle: "Your Creative Identity",
+    //   subject:
+    //     "Ahren Christian Creativity Masterclass - Week 1: You Were Created to Create",
+    //   previewText:
+    //     "Your first Ahren module: discover your creative identity in God.",
+    //   openingCopy: [
+    //     "Welcome to the Ahren Foundation Christian Creativity Masterclass Program!",
+    //     "We are delighted to welcome you to this journey. Over the next 6 weeks, we will walk together - discovering your creativity, building practical skills, and uncovering the Kingdom purpose God has placed inside you.",
+    //     "You are not here by accident. God has something beautiful to build through you.",
+    //     "Now, let's begin.",
+    //   ],
+    //   scriptures: [
+    //     {
+    //       text: "In the beginning God created the heaven and the earth.",
+    //       reference: "Genesis 1:1 (KJV)",
+    //     },
+    //   ],
+    //   reflection:
+    //     "You are made in the image of the Creator. Creativity is not a hobby - it is your nature. Your skills are not an accident; they are an assignment.",
+    //   focus:
+    //     "Discovering your creative identity and understanding that your skills are not an accident.",
+    //   action:
+    //     "Notice something creative you do each day - even small things like solving a problem, writing a kind message, or planning something new. Write it down.",
+    //   questions: [
+    //     "What is one thing you have created - anything at all (code, design, meal, story, solution, a plan, a kind word)?",
+    //     "How did you feel when you made it?",
+    //     "What does it mean to you that you are made in the image of the Creator?",
+    //     "Have you ever believed the lie that you are not creative? What changed that belief?",
+    //     'Complete this sentence: "I am creative because God is creative. Today I will..."',
+    //   ],
+    // },
     {
       moduleKey: "module-1",
       moduleNumber: 1,
@@ -49,68 +136,276 @@ export const AHREN_WORKBOOK_PROGRAM: WorkbookProgramDefinition = {
       previewText:
         "Your first Ahren module: discover your creative identity in God.",
       openingCopy: [
-        "Welcome to the Ahren Foundation Christian Creativity Masterclass Program!",
-        "We are delighted to welcome you to this journey. Over the next 6 weeks, we will walk together - discovering your creativity, building practical skills, and uncovering the Kingdom purpose God has placed inside you.",
+        "Welcome to Ahren Foundation Christian Creativity Masterclass Program!",
+        "Hello Dear Creative.",
+        "I am so honoured that you have said yes to this journey. Over the next 6 weeks, we will walk together – discovering your creativity, learning practical skills, and uncovering the Kingdom purpose God has placed inside you.",
         "You are not here by accident. God has something beautiful to build through you.",
-        "Now, let's begin.",
+        "Now, let's begin. Let's start at the very beginning – not of this course, but of the Bible.",
       ],
       scriptures: [
         {
           text: "In the beginning God created the heaven and the earth.",
           reference: "Genesis 1:1 (KJV)",
         },
+        {
+          text: "So God created man in his own image, in the image of God created he him; male and female created he them.",
+          reference: "Genesis 1:27 (KJV)",
+        },
+        {
+          text: "And God saw every thing that he had made, and, behold, it was very good.",
+          reference: "Genesis 1:31 (KJV)",
+        },
+      ],
+      bodySections: [
+        {
+          heading: "Let Me Take You Back to the Very First Week of History",
+          paragraphs: [
+            "Imagine: there is nothing. No light. No sound. No earth. No sky. Just God – Father, Son, and Holy Spirit – in perfect love and community.",
+            "Then God speaks. “Let there be light.” And light appears.",
+            "He doesn't struggle. He doesn't try hard. He simply creates. Out of nothing, He makes everything. He separates waters from sky. He calls dry ground to appear. He fills the earth with grass, herbs, fruit trees, each seed carrying the power to reproduce. He puts the sun, moon, and stars in the sky – not for function only, but for beauty. He fills the oceans with creatures and the skies with birds.",
+            "After each day, He looks at what He has made and says, “It is good.”",
+            "But then comes the sixth day. God creates something different. He forms a man – not by speaking, but by shaping dust with His hands. He breathes His own breath into the man. And then He creates a woman from the man's rib – intimate, intentional, personal.",
+            "And here is the most amazing part: God says, “Let us make man in our image.”",
+            "Not after His image. Not like His image. In His image. The same way a child carries the likeness of their parent, you carry the likeness of God.",
+            "Do you know what that means? God is a Creator. Therefore, you are a creator.",
+            "Not because you say so. Not because you took a class. But because the Creator of the universe looked at you and said, “Let them be like Me.”",
+            "You were created to create.",
+          ],
+        },
+        {
+          heading: "Think about it",
+          bullets: [
+            "When you write a line of code that solves a problem, you are creating.",
+            "When you design a logo that communicates a message, you are creating.",
+            "When you write a story that makes someone feel understood, you are creating.",
+            "When you cook a meal from scratch, you are creating.",
+            "When you find a way to fix something broken, you are creating.",
+            "When you sing a song that lifts someone's spirit, you are creating.",
+          ],
+          closing:
+            "You do not have to be a painter or a musician to be creative. You just have to make something that was not there before.",
+        },
+        {
+          heading: "Lies the World Tells You About Creativity",
+          table: {
+            headers: ["Lie", "Truth"],
+            rows: [
+              [
+                "“You're not creative.”",
+                "You are made in the image of the Creator.",
+              ],
+              [
+                "“Only artists are creative.”",
+                "Engineers, coders, teachers, parents, and problem-solvers are creative.",
+              ],
+              [
+                "“Creativity is just for fun.”",
+                "Creativity is also how you glorify God and serve others.",
+              ],
+              [
+                "“You need a special talent.”",
+                "Creativity is an innate muscle. Use it, and it grows.",
+              ],
+              [
+                "“Copying is bad.”",
+                "Imitation is how we learn. Your unique voice makes it original.",
+              ],
+            ],
+          },
+        },
+        {
+          heading: "Why This Matters for Your Life",
+          paragraphs: [
+            "If you believe you are not creative, you will never try. You will wait for someone else to solve problems. You will only keep consuming instead of producing. You will hide your gift.",
+            "But if you believe you were made to create, everything changes.",
+          ],
+          bullets: [
+            "You will see problems as opportunities.",
+            "You will stop waiting for permission.",
+            "You will start building – even if it's small.",
+            "You will discover that making something is one of the most joyful, God-honouring things you can do.",
+          ],
+        },
       ],
       reflection:
-        "You are made in the image of the Creator. Creativity is not a hobby - it is your nature. Your skills are not an accident; they are an assignment.",
+        "You are made in the image of the Creator. Creativity is not a hobby – it is your nature. Your skills are not an accident; they are an assignment. God is a Creator. Therefore, you are a creator. You were created to create.",
       focus:
-        "Discovering your creative identity and understanding that your skills are not an accident.",
+        "Discovering your creative identity and understanding that you were made in the image of the Creator to create.",
+      thisWeeksActions: {
+        intro:
+          "Pick at least 5 of the 7 actions below to complete this week. You don't have to do them in order – just make sure you are practicing and reflecting.",
+        items: [
+          "Read Genesis 1 slowly. Notice how God creates with joy, not pressure. Let that sink in.",
+          "Name one thing you created today – even a text message that helped someone, a meal you prepared, or a problem you solved. Write it down.",
+          "Say out loud three times: “I am creative because God is creative.” Speak it until you believe it.",
+          "Ask a friend: “What is one creative thing you've seen me do?” Write down their answer.",
+          "Thank God for your creativity. Write a short prayer of thanks – just a few sentences from your heart.",
+          "Create something small this week – a sketch, a note, a plan, a simple design, a line of code, a recipe. Anything that did not exist before you made it.",
+          "Rest one day this weekend. Let the truth sink in: You are a creator.",
+        ],
+      },
       action:
-        "Notice something creative you do each day - even small things like solving a problem, writing a kind message, or planning something new. Write it down.",
+        "Pick at least 5 of the 7 Creative Growth Actions this week. Notice something creative you do each day – even small things like solving a problem, writing a kind message, or planning something new. Write it down. Create something small that did not exist before you made it.",
       questions: [
-        "What is one thing you have created - anything at all (code, design, meal, story, solution, a plan, a kind word)?",
+        "What is one thing you have created – anything at all (code, design, meal, story, solution, a plan, a kind word)?",
         "How did you feel when you made it?",
         "What does it mean to you that you are made in the image of the Creator?",
         "Have you ever believed the lie that you are not creative? What changed that belief?",
         'Complete this sentence: "I am creative because God is creative. Today I will..."',
       ],
+      prayer: {
+        title: "A Prayer for Your Week",
+        text: "Dear Father God, thank You for making me in Your image. I confess that I sometimes believe lies about my creativity. I have compared myself to others. I have hidden my ideas. But Your Word says I am made like You – a creator. Help me this week to see the creativity already inside me. Give me courage to start making something – even something small. Let my creation glorify you. In Jesus' name, Amen.",
+      },
+      finalWord: {
+        title: "A Final Word for This Week",
+        text: "You are not too young. You are not too old. You are not too ordinary. You are not too late. You are exactly where you need to be — and the God who spoke light into darkness lives in you. And he is still creating. Through you. So this week, don't wait for permission. Don't wait for the perfect time. Just begin. Start small. Start messy. Just start. Now go create something.",
+      },
+      closing: {
+        title: "See You Next Week",
+        text: "That's it for today. Take your time with the assignments, and don't rush. The goal is not perfection — it's presence. This Friday, we will dig deeper into what creativity really is and how you can become more creative — even if you've always thought you weren't the “creative type.” I'll be right here waiting for you. Keep creating.",
+        signature: "— Your Ahren Mentor",
+      },
     },
     {
       moduleKey: "module-2",
       moduleNumber: 2,
       weekNumber: 1,
-      sendOffsetDays: 4,
+      sendOffsetDays: 4, // Friday of Week 1
       sendDayLabel: "Friday",
       title: "What You Need to Know About Creativity",
-      subtitle: "How to Become More Creative",
+      subtitle: "And How to Become More Creative",
       subject:
         "Ahren Christian Creativity Masterclass - Week 1: What You Need to Know About Creativity",
       previewText:
-        "Creativity is a muscle. This module helps you begin practicing it.",
+        "Creativity is a muscle. Discover how God taught Bezalel — and how He can grow creativity in you.",
       openingCopy: [
-        "Welcome to the second module of Week 1!",
-        'Last time, we discovered that you were created to create. Now we ask the practical question: "How do I actually become more creative?"',
-        "The answer is simpler than you think: creativity is a muscle - you grow it by using it.",
+        "Hello and Welcome Back Creative!",
+        "Earlier this Monday, we discovered that you were created to create — because you are made in the image of the Creator. But maybe you still have questions: “If I'm supposed to be creative, why don't I feel creative?” “How do I actually become more creative?” “Is creativity something you learn, or is it just for special people?”",
+        "Those are great questions. And this week, we are going to answer them. Let's dive in.",
       ],
       scriptures: [
         {
-          text: "See, the LORD hath called by name Bezalel... and he hath filled him with the spirit of God, in wisdom, and in understanding, and in knowledge, and in all manner of workmanship.",
-          reference: "Exodus 35:30-31 (KJV)",
+          text: "And Moses said unto the children of Israel, See, the LORD hath called by name Bezalel… and he hath filled him with the spirit of God, in wisdom, in understanding, and in knowledge, and in all manner of workmanship.",
+          reference: "Exodus 35:30–31 (KJV)",
+        },
+        {
+          text: "Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.",
+          reference: "Proverbs 4:7 (KJV)",
+        },
+      ],
+      bodySections: [
+        {
+          heading: "Bezalel — The Man God Taught to Create",
+          paragraphs: [
+            "Let me introduce you to a man named Bezalel.",
+            "His name means “in the shadow of God.” And he appears in the book of Exodus at a very important moment. God is about to build the Tabernacle – a portable place of worship for the nation of Israel. It needed to be beautiful: gold, silver, intricate fabrics, carvings, and artistic designs.",
+            "So God chooses Bezalel.",
+            "But here is the key: God doesn't just assign him the work. God fills him with His Spirit, wisdom, understanding, and knowledge – in all manner of workmanship.",
+            "That means Bezalel was not born knowing how to do all this. God taught him. God equipped him. Creativity was not a natural gift for Bezalel alone – it was something God gave and grew in him.",
+            "And here is the beautiful part: God also gives Bezalel a helper, Oholiab, and teaches both of them to teach others (Exodus 35:34).",
+            "So here is the pattern:",
+          ],
+          bullets: [
+            "God calls you.",
+            "God equips you.",
+            "God teaches you.",
+            "Then you teach others.",
+          ],
+          closing:
+            "Creativity is not magic. It is not reserved for a select few. It is a gift that God grows in you as you walk with Him and practice. Creativity is a muscle. You grow it by using it. You were not born knowing how to write code, design a logo, compose a song, or build a business. You learned. And you can keep learning. The same is true for creativity. The more you practice, the more you try, fail, adjust, and try again – the more creative you become.",
+        },
+        {
+          heading: "Practical Steps to Become More Creative",
+          paragraphs: [
+            "Pick at least 3 of the following 7 steps to practice this week.",
+          ],
+          bullets: [
+            "Consume widely — read books, watch videos, listen to podcasts, explore within and outside your field. The best creators borrow from many places.",
+            "Keep a creative journal — every day, write one idea, one sketch, or one question. It doesn't have to be perfect. Just show up.",
+            "Practice constraints — limit yourself to build creativity. Example: “Design a logo using only two colours.” Constraints force you to think differently.",
+            "Ask “What if?” — take an existing solution and ask: “What if I changed this one thing?” Play with possibilities.",
+            "Solve small problems — look around your home, church, workplace, or school. What is one small problem you could solve with your skills? Do it.",
+            "Collaborate — work with someone else. Different perspectives spark new ideas.",
+            "Pray for ideas — invite the Holy Spirit into your creative process daily. He is your ultimate creative partner.",
+          ],
         },
       ],
       reflection:
-        "Bezalel was not born a master craftsman. God taught him. Creativity is not magic; it is a skill you can grow through curiosity, practice, and perseverance. The lies you have believed about creativity - that you either have it or you don't - are simply not true.",
+        "Creativity is a muscle. You grow it by using it. God taught Bezalel — He can teach you too. You were not born knowing how to create. You learned. And you can keep learning.",
       focus:
-        "Understanding what creativity really is and learning practical steps to grow it.",
+        "Understanding that creativity is a skill God grows in you, and learning practical ways to become more creative.",
+      thisWeeksActions: {
+        intro: "Pick at least 4 of the 6 actions below to complete this week.",
+        items: [
+          "Identify one myth you have believed about creativity. Write down the truth that replaces it.",
+          "Read Exodus 35:30–35 slowly. Notice that God taught Bezalel. He can teach you too.",
+          "Pick one practical step from the list above. Do it every day this week. Write down what you did.",
+          "Ask someone older or wiser in your field: “How did you grow your creativity?” Write their answer.",
+          "Spend 30 minutes learning something new – a tool, a technique, a skill – that you have never tried before.",
+          "Create something small every day for 3 days (even just 5 minutes per day). It can be a sketch, a line of code, a plan, a melody, or a solution to a tiny problem.",
+        ],
+      },
       action:
-        "Choose one small creative habit to practice every day this week, such as sketching, writing, coding, or designing. Do it for at least 15 minutes each day.",
+        "Pick at least 4 of the 6 Creative Growth Actions this week. Practice one practical step daily and create something small for 3 days.",
       questions: [
-        "Which myth about creativity have you believed most? Write the truth that replaces it.",
-        'Choose one practical step to become more creative, such as keeping a creative journal, practicing constraints, or asking "What if?". What step did you choose and why?',
-        "What did you learn from the story of Bezalel about how God teaches creativity?",
-        "What is one thing you can do this week to start practicing creativity daily?",
-        'Complete this sentence: "I used to think creativity was... Now I know it is..."',
+        "What myth about creativity have you believed in the past?",
+        "What truth from Bezalel’s story speaks most to you right now?",
+        "Which practical step will you practice this week?",
+        "What is one small thing you will create in the next 3 days?",
+        'Complete this sentence: "Creativity is a muscle. This week I will grow it by..."',
       ],
+      prayer: {
+        title: "A Prayer for Your Week",
+        text: "Lord, I thank You that You are still teaching me. I am not stuck. I am not too old or too slow. You taught Bezalel, and You can teach me. Open my eyes to see the creativity You have already placed inside me. Help me to practice, to fail without fear, and to grow. In Jesus' name, Amen.",
+      },
+      finalWord: {
+        title: "A Final Word for This Week",
+        text: "Creativity is not a special gene reserved for the lucky few. It is a gift God gives, a skill God grows, and a habit you build. You don't have to be perfect. You just have to start. So this week, stop waiting. Stop comparing. Stop listening to the lie that you are not creative. You are creative because God is creative. And He is still teaching you.",
+      },
+      closing: {
+        title: "See You Next Week",
+        text: "That's it for Week 1. Take your time with the assignments. The goal is not perfection — it's practice. Next week, we will explore the Holy Spirit as your creative partner — how He gives ideas, solves problems, and unlocks creativity you didn't know you had. Until then, keep creating. Keep practicing. Keep praying more in the Spirit. I'll be right here waiting for you.",
+        signature: "— Your Ahren Mentor",
+      },
     },
+    // {
+    //   moduleKey: "module-2",
+    //   moduleNumber: 2,
+    //   weekNumber: 1,
+    //   sendOffsetDays: 4,
+    //   sendDayLabel: "Friday",
+    //   title: "What You Need to Know About Creativity",
+    //   subtitle: "How to Become More Creative",
+    //   subject:
+    //     "Ahren Christian Creativity Masterclass - Week 1: What You Need to Know About Creativity",
+    //   previewText:
+    //     "Creativity is a muscle. This module helps you begin practicing it.",
+    //   openingCopy: [
+    //     "Welcome to the second module of Week 1!",
+    //     'Last time, we discovered that you were created to create. Now we ask the practical question: "How do I actually become more creative?"',
+    //     "The answer is simpler than you think: creativity is a muscle - you grow it by using it.",
+    //   ],
+    //   scriptures: [
+    //     {
+    //       text: "See, the LORD hath called by name Bezalel... and he hath filled him with the spirit of God, in wisdom, and in understanding, and in knowledge, and in all manner of workmanship.",
+    //       reference: "Exodus 35:30-31 (KJV)",
+    //     },
+    //   ],
+    //   reflection:
+    //     "Bezalel was not born a master craftsman. God taught him. Creativity is not magic; it is a skill you can grow through curiosity, practice, and perseverance. The lies you have believed about creativity - that you either have it or you don't - are simply not true.",
+    //   focus:
+    //     "Understanding what creativity really is and learning practical steps to grow it.",
+    //   action:
+    //     "Choose one small creative habit to practice every day this week, such as sketching, writing, coding, or designing. Do it for at least 15 minutes each day.",
+    //   questions: [
+    //     "Which myth about creativity have you believed most? Write the truth that replaces it.",
+    //     'Choose one practical step to become more creative, such as keeping a creative journal, practicing constraints, or asking "What if?". What step did you choose and why?',
+    //     "What did you learn from the story of Bezalel about how God teaches creativity?",
+    //     "What is one thing you can do this week to start practicing creativity daily?",
+    //     'Complete this sentence: "I used to think creativity was... Now I know it is..."',
+    //   ],
+    // },
     {
       moduleKey: "module-3",
       moduleNumber: 3,
@@ -614,5 +909,3 @@ export function getModuleDefinition(moduleKey: string) {
     (module) => module.moduleKey === moduleKey,
   );
 }
-
-

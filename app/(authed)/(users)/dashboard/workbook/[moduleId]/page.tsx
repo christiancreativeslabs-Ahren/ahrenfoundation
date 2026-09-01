@@ -8,6 +8,7 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
 import { programMembers } from "@/db/schema";
 import { submitWorkbookModuleAnswers } from "@/actions/workbook";
+import { AHREN_WORKBOOK_PROGRAM } from "@/lib/workbook/content";
 import {
   getWorkbookModulePageData,
   renderWorkbookModuleHtml,
@@ -113,7 +114,23 @@ export default async function WorkbookModulePage({
     data.questions.map((question) => [question.id, question]),
   );
 
-  console.log("Workbook module page data:", { data });
+  // console.log("Workbook module page data:", { data });
+
+  const loadedModule = (module: typeof data.module) => {
+    // console.log("Loaded module:", module);
+    if (module.moduleKey === "module-1") {
+      const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[0];
+      // console.log("Loaded module content:", { loadedModule, module });
+      return loadedModule;
+    } else if (module.moduleKey === "module-2") {
+      const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[1];
+      // console.log("Loaded module content:", { loadedModule, module });
+      return loadedModule;
+    }
+
+    return module;
+  };
+
   return (
     <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">
       <div className="mx-auto max-w-6xl space-y-8">
@@ -181,7 +198,7 @@ export default async function WorkbookModulePage({
                 <div
                   className="prose prose-invert max-w-none prose-p:leading-8 prose-p:text-slate-200 prose-headings:text-white prose-strong:text-white"
                   dangerouslySetInnerHTML={{
-                    __html: renderWorkbookModuleHtml(data.module),
+                    __html: renderWorkbookModuleHtml(loadedModule(data.module)),
                   }}
                 />
               </CardContent>
