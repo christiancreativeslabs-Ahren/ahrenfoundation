@@ -72,9 +72,13 @@ export default async function MemberDashboardPage() {
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">Verified dashboard pending</h2>
+                <h2 className="text-xl font-semibold">
+                  Verified dashboard pending
+                </h2>
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-200">
-                  Your profile is still under review. Once approved, you will see your Workbook, your assigned mentor, and only the information tied to your journey.
+                  Your profile is still under review. Once approved, you will
+                  see your Workbook, your assigned mentor, and only the
+                  information tied to your journey.
                 </p>
                 <Link
                   href="/training/apply"
@@ -115,7 +119,8 @@ export default async function MemberDashboardPage() {
               Welcome, {session.user.name || "member"}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
-              Your dashboard now shows only your assigned mentor and Workbook journey.
+              Your dashboard now shows only your assigned mentor and Workbook
+              journey.
             </p>
           </div>
           <SignOutButton />
@@ -127,11 +132,16 @@ export default async function MemberDashboardPage() {
             { label: "Status", value: statusLabel(member.status) },
             { label: "Current step", value: statusLabel(member.currentStep) },
           ].map((item) => (
-            <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div
+              key={item.label}
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+            >
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
                 {item.label}
               </p>
-              <p className="mt-3 text-lg font-semibold capitalize">{item.value}</p>
+              <p className="mt-3 text-lg font-semibold capitalize">
+                {item.value}
+              </p>
             </div>
           ))}
         </section>
@@ -148,18 +158,33 @@ export default async function MemberDashboardPage() {
                   <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
                     Mentor
                   </p>
-                  <p className="mt-2 text-lg font-semibold">{workspace.assignment.mentor.fullName}</p>
-                  <p className="mt-1 text-sm text-slate-300">{workspace.assignment.mentor.email}</p>
+                  <p className="mt-2 text-lg font-semibold">
+                    {workspace.assignment.mentor.fullName}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-300">
+                    {workspace.assignment.mentor.email}
+                  </p>
                 </div>
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    Assigned: <span className="text-white">{dateLabel(workspace.assignment.assignment.assignedAt)}</span>
+                    Assigned:{" "}
+                    <span className="text-white">
+                      {dateLabel(workspace.assignment.assignment.assignedAt)}
+                    </span>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    Sessions: <span className="text-white">{workspace.assignment.sessions.length}</span>
+                    Sessions:{" "}
+                    <span className="text-white">
+                      {workspace.assignment.sessions.length}
+                    </span>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    Notes: <span className="text-white">{workspace.assignment.assignment.notes ? "Available" : "None"}</span>
+                    Notes:{" "}
+                    <span className="text-white">
+                      {workspace.assignment.assignment.notes
+                        ? "Available"
+                        : "None"}
+                    </span>
                   </div>
                 </div>
                 <Link
@@ -172,7 +197,8 @@ export default async function MemberDashboardPage() {
               </div>
             ) : (
               <div className="mt-5 rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm leading-6 text-slate-300">
-                Your mentor assignment has not been created yet. Once admin links you to a mentor, the details will show here.
+                Your mentor assignment has not been created yet. Once admin
+                links you to a mentor, the details will show here.
               </div>
             )}
           </div>
@@ -180,17 +206,30 @@ export default async function MemberDashboardPage() {
           <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
             <div className="flex items-center gap-3">
               <BookOpen size={18} className="text-[#00ff9d]" />
-              <h2 className="text-xl font-bold">Workbook progress</h2>
+              <div>
+                <h2 className="text-xl font-bold">Workbook progress</h2>
+                <p className="mt-0.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#00c9ff]">
+                  The Creative Disciple
+                </p>
+              </div>
             </div>
+
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Program: <span className="text-white">{workbook.program?.name ?? "Workbook not published"}</span>
+                Program:{" "}
+                <span className="text-white">
+                  {workbook.program?.name ?? "Workbook not published"}
+                </span>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Available: <span className="text-white">{workbook.availableModules.length} / {totalModules}</span>
+                Available:{" "}
+                <span className="text-white">
+                  {workbook.availableModules.length} / {totalModules}
+                </span>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                Completed: <span className="text-white">{completedModules}</span>
+                Completed:{" "}
+                <span className="text-white">{completedModules}</span>
               </div>
             </div>
 

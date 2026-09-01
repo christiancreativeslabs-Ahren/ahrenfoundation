@@ -205,14 +205,14 @@ function renderRichModuleHtml(module: any) {
   }
 
   // Questions
-  if (module.questions?.length) {
-    parts.push(`<h3>Reflection Questions</h3>`);
-    parts.push(
-      `<ol>${module.questions
-        .map((q: string) => `<li>${escapeHtml(q)}</li>`)
-        .join("")}</ol>`,
-    );
-  }
+  // if (module.questions?.length) {
+  //   parts.push(`<h3>Reflection Questions</h3>`);
+  //   parts.push(
+  //     `<ol>${module.questions
+  //       .map((q: string) => `<li>${escapeHtml(q)}</li>`)
+  //       .join("")}</ol>`,
+  //   );
+  // }
 
   // Prayer
   if (module.prayer) {
