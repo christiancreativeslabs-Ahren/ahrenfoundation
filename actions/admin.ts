@@ -51,6 +51,7 @@ import {
 } from "@/lib/workbook/service";
 import { syncJoinApplicationProjection } from "@/lib/admin/join-applications";
 import { createCertificatePdf } from "@/lib/pdf";
+import { redirect } from "next/navigation";
 
 type ActionResult = {
   ok: boolean;
@@ -506,6 +507,149 @@ export async function reactivateProgramMemberAction(
   }
 }
 
+// export async function permanentlyDeleteProgramMemberAction(
+//   _previousState: ActionResult,
+//   formData: FormData,
+// ): Promise<ActionResult> {
+//   try {
+//     await requireAdmin();
+//     const memberId = value(formData, "program_member_id");
+//     const confirmation = value(formData, "confirmation");
+//     if (!memberId) return { ok: false, message: "Program member is required." };
+
+//     const [member] = await db
+//       .select()
+//       .from(programMembers)
+//       .where(eq(programMembers.id, memberId))
+//       .limit(1);
+
+//     if (!member) return { ok: false, message: "Program member was not found." };
+//     if (confirmation !== member.email) {
+//       return {
+//         ok: false,
+//         message: "Type the member email to confirm deletion.",
+//       };
+//     }
+
+//     const assignments = await db
+//       .select({ id: mentorAssignments.id })
+//       .from(mentorAssignments)
+//       .where(
+//         or(
+//           eq(mentorAssignments.youthMemberId, member.id),
+//           eq(mentorAssignments.mentorMemberId, member.id),
+//         ),
+//       );
+//     const assignmentIds = assignments.map((assignment) => assignment.id);
+//     const submissions = await db
+//       .select({ id: moduleSubmissions.id })
+//       .from(moduleSubmissions)
+//       .where(eq(moduleSubmissions.programMemberId, member.id));
+//     const submissionIds = submissions.map((submission) => submission.id);
+
+//     await db.transaction(async (tx) => {
+//       if (assignmentIds.length) {
+//         await tx
+//           .delete(mentorshipSessions)
+//           .where(inArray(mentorshipSessions.assignmentId, assignmentIds));
+//       }
+
+//       if (submissionIds.length) {
+//         await tx
+//           .delete(moduleSubmissionAnswers)
+//           .where(inArray(moduleSubmissionAnswers.submissionId, submissionIds));
+//       }
+
+//       await tx
+//         .delete(moduleSubmissions)
+//         .where(eq(moduleSubmissions.programMemberId, member.id));
+//       await tx
+//         .delete(emailEvents)
+//         .where(eq(emailEvents.programMemberId, member.id));
+//       await tx
+//         .delete(engagementEvents)
+//         .where(eq(engagementEvents.programMemberId, member.id));
+//       await tx
+//         .delete(certificates)
+//         .where(eq(certificates.programMemberId, member.id));
+//       await tx
+//         .delete(moduleDeliveries)
+//         .where(eq(moduleDeliveries.programMemberId, member.id));
+//       await tx
+//         .delete(programEnrollments)
+//         .where(eq(programEnrollments.programMemberId, member.id));
+//       await tx
+//         .delete(mentorAssignments)
+//         .where(
+//           or(
+//             eq(mentorAssignments.youthMemberId, member.id),
+//             eq(mentorAssignments.mentorMemberId, member.id),
+//           ),
+//         );
+//       await tx
+//         .delete(bulkEmailCampaignRecipients)
+//         .where(eq(bulkEmailCampaignRecipients.programMemberId, member.id));
+//       await tx
+//         .delete(projectShowcases)
+//         .where(eq(projectShowcases.programMemberId, member.id));
+//       await tx
+//         .delete(communityPosts)
+//         .where(eq(communityPosts.programMemberId, member.id));
+//       await tx.delete(programMembers).where(eq(programMembers.id, member.id));
+//       await tx
+//         .delete(joinApplicationListItems)
+//         .where(
+//           eq(
+//             joinApplicationListItems.joinApplicationId,
+//             member.joinApplicationId,
+//           ),
+//         );
+//       await tx
+//         .delete(joinApplications)
+//         .where(eq(joinApplications.id, member.joinApplicationId));
+
+//       if (member.userId) {
+//         const siblings = await tx
+//           .select({ id: programMembers.id })
+//           .from(programMembers)
+//           .where(eq(programMembers.userId, member.userId))
+//           .limit(1);
+
+//         if (!siblings.length) {
+//           await tx.delete(sessions).where(eq(sessions.userId, member.userId));
+//           await tx.delete(accounts).where(eq(accounts.userId, member.userId));
+//           await tx
+//             .delete(verifications)
+//             .where(eq(verifications.identifier, member.email));
+//           await tx.delete(users).where(eq(users.id, member.userId));
+//         }
+//       }
+//     });
+
+//     revalidatePath("/admin/mentors");
+//     revalidatePath("/admin/mentees");
+//     revalidatePath("/admin/join-applications");
+//     revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
+//   } catch (error) {
+//     return {
+//       ok: false,
+//       message:
+//         error instanceof Error ? error.message : "Permanent delete failed.",
+//     };
+//   }
+
+//   redirect("/admin/join-applications");
+
+//   //   return { ok: true, message: "Account permanently deleted." };
+//   // } catch (error) {
+//   //   return {
+//   //     ok: false,
+//   //     message:
+//   //       error instanceof Error ? error.message : "Permanent delete failed.",
+//   //   };
+//   // }
+// }
+
 export async function permanentlyDeleteProgramMemberAction(
   _previousState: ActionResult,
   formData: FormData,
@@ -523,7 +667,8 @@ export async function permanentlyDeleteProgramMemberAction(
       .limit(1);
 
     if (!member) return { ok: false, message: "Program member was not found." };
-    if (confirmation !== member.email) {
+
+    if (confirmation.toLowerCase() !== member.email.toLowerCase()) {
       return {
         ok: false,
         message: "Type the member email to confirm deletion.",
@@ -539,104 +684,106 @@ export async function permanentlyDeleteProgramMemberAction(
           eq(mentorAssignments.mentorMemberId, member.id),
         ),
       );
-    const assignmentIds = assignments.map((assignment) => assignment.id);
+    const assignmentIds = assignments.map((a) => a.id);
+
     const submissions = await db
       .select({ id: moduleSubmissions.id })
       .from(moduleSubmissions)
       .where(eq(moduleSubmissions.programMemberId, member.id));
-    const submissionIds = submissions.map((submission) => submission.id);
+    const submissionIds = submissions.map((s) => s.id);
 
-    await db.transaction(async (tx) => {
-      if (assignmentIds.length) {
-        await tx
-          .delete(mentorshipSessions)
-          .where(inArray(mentorshipSessions.assignmentId, assignmentIds));
+    // Sequential deletes (neon-http has no transaction support)
+    if (assignmentIds.length) {
+      await db
+        .delete(mentorshipSessions)
+        .where(inArray(mentorshipSessions.assignmentId, assignmentIds));
+    }
+
+    if (submissionIds.length) {
+      await db
+        .delete(moduleSubmissionAnswers)
+        .where(inArray(moduleSubmissionAnswers.submissionId, submissionIds));
+    }
+
+    await db
+      .delete(moduleSubmissions)
+      .where(eq(moduleSubmissions.programMemberId, member.id));
+    await db
+      .delete(emailEvents)
+      .where(eq(emailEvents.programMemberId, member.id));
+    await db
+      .delete(engagementEvents)
+      .where(eq(engagementEvents.programMemberId, member.id));
+    await db
+      .delete(certificates)
+      .where(eq(certificates.programMemberId, member.id));
+    await db
+      .delete(moduleDeliveries)
+      .where(eq(moduleDeliveries.programMemberId, member.id));
+    await db
+      .delete(programEnrollments)
+      .where(eq(programEnrollments.programMemberId, member.id));
+    await db
+      .delete(mentorAssignments)
+      .where(
+        or(
+          eq(mentorAssignments.youthMemberId, member.id),
+          eq(mentorAssignments.mentorMemberId, member.id),
+        ),
+      );
+    await db
+      .delete(bulkEmailCampaignRecipients)
+      .where(eq(bulkEmailCampaignRecipients.programMemberId, member.id));
+    await db
+      .delete(projectShowcases)
+      .where(eq(projectShowcases.programMemberId, member.id));
+    await db
+      .delete(communityPosts)
+      .where(eq(communityPosts.programMemberId, member.id));
+    await db.delete(programMembers).where(eq(programMembers.id, member.id));
+    await db
+      .delete(joinApplicationListItems)
+      .where(
+        eq(
+          joinApplicationListItems.joinApplicationId,
+          member.joinApplicationId,
+        ),
+      );
+    await db
+      .delete(joinApplications)
+      .where(eq(joinApplications.id, member.joinApplicationId));
+
+    if (member.userId) {
+      const siblings = await db
+        .select({ id: programMembers.id })
+        .from(programMembers)
+        .where(eq(programMembers.userId, member.userId))
+        .limit(1);
+
+      if (!siblings.length) {
+        await db.delete(sessions).where(eq(sessions.userId, member.userId));
+        await db.delete(accounts).where(eq(accounts.userId, member.userId));
+        await db
+          .delete(verifications)
+          .where(eq(verifications.identifier, member.email));
+        await db.delete(users).where(eq(users.id, member.userId));
       }
-
-      if (submissionIds.length) {
-        await tx
-          .delete(moduleSubmissionAnswers)
-          .where(inArray(moduleSubmissionAnswers.submissionId, submissionIds));
-      }
-
-      await tx
-        .delete(moduleSubmissions)
-        .where(eq(moduleSubmissions.programMemberId, member.id));
-      await tx
-        .delete(emailEvents)
-        .where(eq(emailEvents.programMemberId, member.id));
-      await tx
-        .delete(engagementEvents)
-        .where(eq(engagementEvents.programMemberId, member.id));
-      await tx
-        .delete(certificates)
-        .where(eq(certificates.programMemberId, member.id));
-      await tx
-        .delete(moduleDeliveries)
-        .where(eq(moduleDeliveries.programMemberId, member.id));
-      await tx
-        .delete(programEnrollments)
-        .where(eq(programEnrollments.programMemberId, member.id));
-      await tx
-        .delete(mentorAssignments)
-        .where(
-          or(
-            eq(mentorAssignments.youthMemberId, member.id),
-            eq(mentorAssignments.mentorMemberId, member.id),
-          ),
-        );
-      await tx
-        .delete(bulkEmailCampaignRecipients)
-        .where(eq(bulkEmailCampaignRecipients.programMemberId, member.id));
-      await tx
-        .delete(projectShowcases)
-        .where(eq(projectShowcases.programMemberId, member.id));
-      await tx
-        .delete(communityPosts)
-        .where(eq(communityPosts.programMemberId, member.id));
-      await tx.delete(programMembers).where(eq(programMembers.id, member.id));
-      await tx
-        .delete(joinApplicationListItems)
-        .where(
-          eq(
-            joinApplicationListItems.joinApplicationId,
-            member.joinApplicationId,
-          ),
-        );
-      await tx
-        .delete(joinApplications)
-        .where(eq(joinApplications.id, member.joinApplicationId));
-
-      if (member.userId) {
-        const siblings = await tx
-          .select({ id: programMembers.id })
-          .from(programMembers)
-          .where(eq(programMembers.userId, member.userId))
-          .limit(1);
-
-        if (!siblings.length) {
-          await tx.delete(sessions).where(eq(sessions.userId, member.userId));
-          await tx.delete(accounts).where(eq(accounts.userId, member.userId));
-          await tx
-            .delete(verifications)
-            .where(eq(verifications.identifier, member.email));
-          await tx.delete(users).where(eq(users.id, member.userId));
-        }
-      }
-    });
+    }
 
     revalidatePath("/admin/mentors");
     revalidatePath("/admin/mentees");
     revalidatePath("/admin/join-applications");
-
-    return { ok: true, message: "Account permanently deleted." };
+    revalidatePath(`/admin/join-applications/${member.joinApplicationId}`);
   } catch (error) {
+    console.error("PERMANENT DELETE FAILED:", error);
     return {
       ok: false,
       message:
         error instanceof Error ? error.message : "Permanent delete failed.",
     };
   }
+
+  redirect("/admin/join-applications");
 }
 
 async function getMemberJoinApplicationPath(memberId: string) {
@@ -1244,6 +1391,63 @@ export async function sendProgramMemberLoginLinkAction(
   }
 }
 
+// export async function requestProgramMemberLoginLinkAction(
+//   _prev: ActionResult,
+//   formData: FormData,
+// ): Promise<ActionResult> {
+//   try {
+//     const email = String(formData.get("email") ?? "")
+//       .trim()
+//       .toLowerCase();
+//     const lastName = String(formData.get("lastName") ?? "").trim();
+
+//     if (!email || !lastName) {
+//       return { ok: false, message: "Email and last name are required." };
+//     }
+
+//     // Find the program member by email
+//     const [member] = await db
+//       .select()
+//       .from(programMembers)
+//       .where(eq(programMembers.email, email))
+//       .limit(1);
+
+//     console.log("member First", member);
+
+//     if (!member) {
+//       // Don’t leak existence
+//       return { ok: false, message: "Invalid credentials down." };
+//     }
+
+//     // Soft identity check with last name
+//     const { lastName: expectedLastName } = splitName(member.fullName);
+
+//     if (
+//       !expectedLastName ||
+//       expectedLastName.toLowerCase() !== lastName.toLowerCase()
+//     ) {
+//       return { ok: false, message: "Invalid credentials up." };
+//     }
+
+//     // This does the real work: upsert user, update program_member, generate magic link
+//     const { magicLinkUrl } = await ensureProgramMemberQuickLoginAccess(
+//       member.id,
+//     );
+
+//     return {
+//       ok: true,
+//       message: "Redirecting…",
+//       url: magicLinkUrl,
+//     };
+//   } catch (error) {
+//     return {
+//       ok: false,
+//       message:
+//         error instanceof Error ? error.message : "Could not sign you in.",
+//     };
+//   }
+// }
+
 export async function requestProgramMemberLoginLinkAction(
   _prev: ActionResult,
   formData: FormData,
@@ -1258,19 +1462,124 @@ export async function requestProgramMemberLoginLinkAction(
       return { ok: false, message: "Email and last name are required." };
     }
 
-    // Find the program member by email
-    const [member] = await db
+    // Case-insensitive member lookup
+    const members = await db
       .select()
       .from(programMembers)
       .where(eq(programMembers.email, email))
       .limit(1);
 
+    let member = members[0] ?? null;
+
     if (!member) {
-      // Don’t leak existence
-      return { ok: false, message: "Invalid credentials." };
+      // Fallback: application exists but no program member yet
+      const applications = await db
+        .select()
+        .from(joinApplications)
+        .where(eq(joinApplications.email, email))
+        .limit(1);
+
+      const application = applications[0];
+
+      console.error("=== requestProgramMemberLoginLinkAction ===", {
+        email,
+        lastName,
+        applications,
+        members,
+        member,
+      });
+
+      if (!application) {
+        return { ok: false, message: "Invalid credentials down." };
+      }
+
+      const { lastName: expectedLastName } = splitName(application.fullName);
+      if (
+        !expectedLastName ||
+        expectedLastName.toLowerCase() !== lastName.toLowerCase()
+      ) {
+        return { ok: false, message: "Invalid credentials up." };
+      }
+
+      // Create missing user + program member
+      const { firstName, lastName: parsedLastName } = splitName(
+        application.fullName,
+      );
+      const now = new Date();
+      const normalizedEmail = application.email.toLowerCase();
+
+      const [user] = await db
+        .insert(users)
+        .values({
+          email: normalizedEmail,
+          name: application.fullName,
+          firstName,
+          lastName: parsedLastName,
+          emailVerified: true,
+        })
+        .onConflictDoUpdate({
+          target: users.email,
+          set: {
+            name: application.fullName,
+            firstName,
+            lastName: parsedLastName,
+            emailVerified: true,
+            updatedAt: now,
+          },
+        })
+        .returning({ id: users.id });
+
+      const inserted = await db
+        .insert(programMembers)
+        .values({
+          joinApplicationId: application.id,
+          userId: user.id,
+          role: application.applicationType,
+          fullName: application.fullName,
+          email: normalizedEmail,
+          status:
+            application.applicationType === "mentor"
+              ? "verified_mentor"
+              : "verified_member",
+          currentStep: "dashboard_access",
+          verifiedAt: now,
+          loginCredentialsSentAt: now,
+          payload: (application.payload as Record<string, unknown>) ?? {},
+        })
+        .onConflictDoNothing()
+        .returning();
+
+      member = inserted[0] ?? null;
+
+      if (!member) {
+        // Race: someone else created it — re-fetch
+        const [existing] = await db
+          .select()
+          .from(programMembers)
+          .where(eq(programMembers.joinApplicationId, application.id))
+          .limit(1);
+        member = existing ?? null;
+      }
+
+      if (!member) {
+        return { ok: false, message: "Could not prepare your account." };
+      }
+
+      if (member.role === "youth") {
+        await enrollMemberInWorkbookProgram(member.id, now);
+        await syncMemberWorkbookDeliveries(member.id);
+      }
+
+      await syncJoinApplicationProjection(application.id);
     }
 
-    // Soft identity check with last name
+    console.error("=== requestProgramMemberLoginLinkAction ===", {
+      email,
+      lastName,
+      members,
+      member,
+    });
+    // Last-name check for existing member path
     const { lastName: expectedLastName } = splitName(member.fullName);
     if (
       !expectedLastName ||
@@ -1279,7 +1588,6 @@ export async function requestProgramMemberLoginLinkAction(
       return { ok: false, message: "Invalid credentials." };
     }
 
-    // This does the real work: upsert user, update program_member, generate magic link
     const { magicLinkUrl } = await ensureProgramMemberQuickLoginAccess(
       member.id,
     );
@@ -1290,10 +1598,10 @@ export async function requestProgramMemberLoginLinkAction(
       url: magicLinkUrl,
     };
   } catch (error) {
+    console.error("requestProgramMemberLoginLinkAction error:", error);
     return {
       ok: false,
-      message:
-        error instanceof Error ? error.message : "Could not sign you in.",
+      message: "Could not sign you in. Please try again.",
     };
   }
 }

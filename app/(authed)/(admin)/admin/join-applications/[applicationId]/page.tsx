@@ -10,6 +10,7 @@ import {
   updateMentorWorkflowMilestone,
   updateMentorshipSession,
   updateJoinApplicationStatus,
+  permanentlyDeleteProgramMemberAction,
 } from "@/actions/admin";
 import {
   formatAdminDate,
@@ -56,6 +57,20 @@ const initialActionState = { ok: false, message: "" };
 async function reviewApplicationAction(formData: FormData) {
   "use server";
   await updateJoinApplicationStatus(initialActionState, formData);
+}
+
+async function permanentlyDeleteMemberAction(formData: FormData) {
+  "use server";
+  const result = await permanentlyDeleteProgramMemberAction(
+    initialActionState,
+    formData,
+  );
+  if (!result.ok) {
+    // This will surface in the server terminal
+    console.error("Delete action result:", result.message);
+    // Force the error to be visible in the browser for now
+    throw new Error(result.message);
+  }
 }
 
 async function syncDeliveriesAction(formData: FormData) {
@@ -121,13 +136,7 @@ function DetailItem({
     </div>
   );
 }
-function DetailList({
-  label,
-  values,
-}: {
-  label: string;
-  values: string[];
-}) {
+function DetailList({ label, values }: { label: string; values: string[] }) {
   return (
     <div className="rounded-lg border border-white/10 bg-white/5 p-4">
       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
@@ -136,7 +145,11 @@ function DetailList({
       <div className="mt-3 flex flex-wrap gap-2">
         {values.length ? (
           values.map((value) => (
-            <Badge key={value} variant="outline" className="border-white/15 text-white">
+            <Badge
+              key={value}
+              variant="outline"
+              className="border-white/15 text-white"
+            >
               {value}
             </Badge>
           ))
@@ -201,9 +214,14 @@ export default async function JoinApplicationDetailPage({
         status: item.delivery.status,
         scheduledFor: formatDate(item.delivery.scheduledFor),
         sentAt: item.delivery.sentAt ? formatDate(item.delivery.sentAt) : null,
-        failedAt: item.delivery.failedAt ? formatDate(item.delivery.failedAt) : null,
+        failedAt: item.delivery.failedAt
+          ? formatDate(item.delivery.failedAt)
+          : null,
       }))
     : [];
+
+
+    // console.log("Module deliveries:", detail);
 
   return (
     <div className="space-y-6">
@@ -235,7 +253,10 @@ export default async function JoinApplicationDetailPage({
                   value={detail.application.id}
                 />
                 <HiddenInput name="status" value="approved" />
-                <Button type="submit" className="bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e]">
+                <Button
+                  type="submit"
+                  className="bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e]"
+                >
                   Approve
                 </Button>
               </form>
@@ -255,7 +276,11 @@ export default async function JoinApplicationDetailPage({
                   value={detail.application.id}
                 />
                 <HiddenInput name="status" value="rejected" />
-                <Button type="submit" variant="outline" className="border-white/15 bg-transparent text-white hover:bg-white/10">
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="border-white/15 bg-transparent text-white hover:bg-white/10"
+                >
                   Reject
                 </Button>
               </form>
@@ -263,15 +288,27 @@ export default async function JoinApplicationDetailPage({
           </div>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-4">
-          <DetailItem label="Application status" value={detail.application.status} />
-          <DetailItem label="Applicant type" value={detail.application.applicationType} />
+          <DetailItem
+            label="Application status"
+            value={detail.application.status}
+          />
+          <DetailItem
+            label="Applicant type"
+            value={detail.application.applicationType}
+          />
           <DetailItem
             label="Current step"
-            value={detail.member?.currentStep?.replaceAll("_", " ") ?? "Application review"}
+            value={
+              detail.member?.currentStep?.replaceAll("_", " ") ??
+              "Application review"
+            }
           />
           <DetailItem
             label="Member decision"
-            value={detail.member?.status?.replaceAll("_", " ") ?? "No member record yet"}
+            value={
+              detail.member?.status?.replaceAll("_", " ") ??
+              "No member record yet"
+            }
           />
         </CardContent>
       </Card>
@@ -286,7 +323,10 @@ export default async function JoinApplicationDetailPage({
         <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <DetailItem label="Full name" value={detail.application.fullName} />
           <DetailItem label="Email address" value={detail.application.email} />
-          <DetailItem label="Phone number" value={detail.application.phoneNumber} />
+          <DetailItem
+            label="Phone number"
+            value={detail.application.phoneNumber}
+          />
           <DetailItem label="Location" value={detail.application.location} />
           <DetailItem
             label="Consent"
@@ -310,45 +350,104 @@ export default async function JoinApplicationDetailPage({
       <Card className="border-white/10 bg-white/[0.03] text-white">
         <CardHeader>
           <CardTitle className="text-lg">
-            {isYouth ? "Prospective mentee profile" : "Mentor application profile"}
+            {isYouth
+              ? "Prospective mentee profile"
+              : "Mentor application profile"}
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           {isYouth ? (
             <>
-              <DetailItem label="Age range" value={getString(payload.ageRange)} />
+              <DetailItem
+                label="Age range"
+                value={getString(payload.ageRange)}
+              />
               <DetailItem label="Sex" value={getString(payload.sex)} />
-              <DetailList label="Current skills and interests" values={getStringArray(payload.skills)} />
-              <DetailItem label="Other skill" value={getString(payload.skillsOther)} />
-              <DetailItem label="Skills to learn" value={getString(payload.skillsToLearn)} />
-              <DetailList label="Availability" values={getStringArray(payload.availability)} />
-              <DetailItem label="Why they want to join" value={getString(payload.whyJoin)} />
+              <DetailList
+                label="Current skills and interests"
+                values={getStringArray(payload.skills)}
+              />
+              <DetailItem
+                label="Other skill"
+                value={getString(payload.skillsOther)}
+              />
+              <DetailItem
+                label="Skills to learn"
+                value={getString(payload.skillsToLearn)}
+              />
+              <DetailList
+                label="Availability"
+                values={getStringArray(payload.availability)}
+              />
+              <DetailItem
+                label="Why they want to join"
+                value={getString(payload.whyJoin)}
+              />
             </>
           ) : (
             <>
-              <DetailItem label="Profession or industry" value={getString(payload.profession)} />
-              <DetailItem label="Years of experience" value={getString(payload.yearsExperience)} />
-              <DetailList label="Areas of expertise" values={getStringArray(payload.expertise)} />
-              <DetailItem label="Other expertise" value={getString(payload.otherExpertise)} />
-              <DetailItem label="Why they want to mentor" value={getString(payload.mentorshipReason)} />
-              <DetailItem label="Commitment level" value={getString(payload.commitment)} />
-              <DetailItem label="Preferred mentorship format" value={getString(payload.preferredFormat)} />
+              <DetailItem
+                label="Profession or industry"
+                value={getString(payload.profession)}
+              />
+              <DetailItem
+                label="Years of experience"
+                value={getString(payload.yearsExperience)}
+              />
+              <DetailList
+                label="Areas of expertise"
+                values={getStringArray(payload.expertise)}
+              />
+              <DetailItem
+                label="Other expertise"
+                value={getString(payload.otherExpertise)}
+              />
+              <DetailItem
+                label="Why they want to mentor"
+                value={getString(payload.mentorshipReason)}
+              />
+              <DetailItem
+                label="Commitment level"
+                value={getString(payload.commitment)}
+              />
+              <DetailItem
+                label="Preferred mentorship format"
+                value={getString(payload.preferredFormat)}
+              />
             </>
           )}
 
           {isYouth ? (
             <>
               <DetailItem label="Born again response" value={faith.bornAgain} />
-              <DetailItem label="Holy Spirit response" value={faith.holySpirit} />
-              <DetailItem label="Testimony" value={getString(payload.testimony)} />
+              <DetailItem
+                label="Holy Spirit response"
+                value={faith.holySpirit}
+              />
+              <DetailItem
+                label="Testimony"
+                value={getString(payload.testimony)}
+              />
             </>
           ) : (
             <>
               <DetailItem label="Born again response" value={faith.bornAgain} />
-              <DetailItem label="Holy Spirit response" value={faith.holySpirit} />
-              <DetailItem label="Dependence on the Holy Spirit" value={faith.dependency} />
-              <DetailItem label="Testimony" value={getString(payload.testimony)} />
-              <DetailItem label="Church or ministry" value={getString(payload.church)} />
+              <DetailItem
+                label="Holy Spirit response"
+                value={faith.holySpirit}
+              />
+              <DetailItem
+                label="Dependence on the Holy Spirit"
+                value={faith.dependency}
+              />
+              <DetailItem
+                label="Testimony"
+                value={getString(payload.testimony)}
+              />
+              <DetailItem
+                label="Church or ministry"
+                value={getString(payload.church)}
+              />
             </>
           )}
         </CardContent>
@@ -369,7 +468,11 @@ export default async function JoinApplicationDetailPage({
             />
             <DetailItem
               label="Program enrollments"
-              value={detail.enrollments.length ? String(detail.enrollments.length) : "None"}
+              value={
+                detail.enrollments.length
+                  ? String(detail.enrollments.length)
+                  : "None"
+              }
             />
             <DetailItem
               label="Welcome emails"
@@ -464,16 +567,27 @@ export default async function JoinApplicationDetailPage({
           <CardHeader>
             <CardTitle className="text-lg">Member journey</CardTitle>
             <CardDescription className="text-slate-300">
-              Active Workbook progress, deliveries, submissions, and follow-up actions.
+              Active Workbook progress, deliveries, submissions, and follow-up
+              actions.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
             <DetailItem label="Role" value={member.role} />
-            <DetailItem label="Status" value={member.status?.replaceAll("_", " ")} />
-            <DetailItem label="Verified" value={member.verifiedAt ? formatDate(member.verifiedAt) : "No"} />
+            <DetailItem
+              label="Status"
+              value={member.status?.replaceAll("_", " ")}
+            />
+            <DetailItem
+              label="Verified"
+              value={member.verifiedAt ? formatDate(member.verifiedAt) : "No"}
+            />
             <DetailItem
               label="Certificate"
-              value={member.certificateIssuedAt ? formatDate(member.certificateIssuedAt) : "Not issued"}
+              value={
+                member.certificateIssuedAt
+                  ? formatDate(member.certificateIssuedAt)
+                  : "Not issued"
+              }
             />
             <DetailItem
               label="Completion"
@@ -489,15 +603,29 @@ export default async function JoinApplicationDetailPage({
             />
             <DetailItem
               label="Next scheduled"
-              value={memberJourney.nextScheduled ? formatDate(memberJourney.nextScheduled.delivery.scheduledFor) : "No pending send"}
+              value={
+                memberJourney.nextScheduled
+                  ? formatDate(
+                      memberJourney.nextScheduled.delivery.scheduledFor,
+                    )
+                  : "No pending send"
+              }
             />
             <DetailItem
               label="Enrollments"
-              value={detail.enrollments.length ? String(detail.enrollments.length) : "None"}
+              value={
+                detail.enrollments.length
+                  ? String(detail.enrollments.length)
+                  : "None"
+              }
             />
             <DetailItem
               label="Welcome emails"
-              value={detail.welcomeEmails.length ? `${detail.welcomeEmails.length} logged` : "No email events yet"}
+              value={
+                detail.welcomeEmails.length
+                  ? `${detail.welcomeEmails.length} logged`
+                  : "No email events yet"
+              }
             />
             <DetailItem
               label="Latest welcome email"
@@ -532,7 +660,8 @@ export default async function JoinApplicationDetailPage({
                     {
                       label: "Post-assignment screening",
                       milestone: "post_assignment_screening",
-                      detail: "Marks mentor ready for final verification review.",
+                      detail:
+                        "Marks mentor ready for final verification review.",
                     },
                   ].map((item) => (
                     <form
@@ -546,7 +675,12 @@ export default async function JoinApplicationDetailPage({
                       <p className="mt-2 min-h-10 text-xs leading-relaxed text-slate-400">
                         {item.detail}
                       </p>
-                      <Button type="submit" size="sm" variant="secondary" className="mt-4">
+                      <Button
+                        type="submit"
+                        size="sm"
+                        variant="secondary"
+                        className="mt-4"
+                      >
                         Save milestone
                       </Button>
                     </form>
@@ -563,21 +697,30 @@ export default async function JoinApplicationDetailPage({
                   <TableHead className="text-slate-400">Module</TableHead>
                   <TableHead className="text-slate-400">Delivery</TableHead>
                   <TableHead className="text-slate-400">Engagement</TableHead>
-                  <TableHead className="min-w-[360px] text-slate-400">Latest assignment</TableHead>
+                  <TableHead className="min-w-[360px] text-slate-400">
+                    Latest assignment
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {memberJourney.moduleProgress.map((item) => {
-                  const latestSubmission = memberJourney.latestSubmissionByModule.get(item.module.id);
+                  const latestSubmission =
+                    memberJourney.latestSubmissionByModule.get(item.module.id);
                   const latestAnswers = latestSubmission
-                    ? memberJourney.answersBySubmission.get(latestSubmission.id) ?? []
+                    ? (memberJourney.answersBySubmission.get(
+                        latestSubmission.id,
+                      ) ?? [])
                     : [];
 
                   return (
-                    <TableRow key={item.delivery.id} className="border-white/10 align-top">
+                    <TableRow
+                      key={item.delivery.id}
+                      className="border-white/10 align-top"
+                    >
                       <TableCell>
                         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#00c9ff]">
-                          Week {item.module.weekNumber} - Module {item.module.moduleNumber}
+                          Week {item.module.weekNumber} - Module{" "}
+                          {item.module.moduleNumber}
                         </p>
                         <p className="mt-2 font-medium">{item.module.title}</p>
                         <p className="mt-1 text-xs text-slate-400">
@@ -585,41 +728,95 @@ export default async function JoinApplicationDetailPage({
                         </p>
                       </TableCell>
                       <TableCell className="space-y-2 text-sm text-slate-300">
-                        <Badge variant="outline" className="border-white/15 text-cyan-200">
+                        <Badge
+                          variant="outline"
+                          className="border-white/15 text-cyan-200"
+                        >
                           {item.delivery.status}
                         </Badge>
-                        <p>Scheduled: {formatDate(item.delivery.scheduledFor)}</p>
+                        <p>
+                          Scheduled: {formatDate(item.delivery.scheduledFor)}
+                        </p>
                         <p>Sent: {formatDate(item.delivery.sentAt)}</p>
                         <p>Failed: {formatDate(item.delivery.failedAt)}</p>
-                        <p>Email status: {memberJourney.latestEmailEventByDelivery.get(item.delivery.id)?.status || "-"}</p>
+                        <p>
+                          Email status:{" "}
+                          {memberJourney.latestEmailEventByDelivery.get(
+                            item.delivery.id,
+                          )?.status || "-"}
+                        </p>
                       </TableCell>
                       <TableCell className="space-y-2 text-sm text-slate-300">
-                        <p>Opened: {item.delivery.openedAt ? formatDate(item.delivery.openedAt) : "No"}</p>
-                        <p>Clicked: {item.delivery.clickedAt ? formatDate(item.delivery.clickedAt) : "No"}</p>
-                        <p>Started: {item.delivery.assignmentStartedAt ? formatDate(item.delivery.assignmentStartedAt) : "No"}</p>
-                        <p>Submitted: {item.delivery.assignmentSubmittedAt ? formatDate(item.delivery.assignmentSubmittedAt) : "No"}</p>
+                        <p>
+                          Opened:{" "}
+                          {item.delivery.openedAt
+                            ? formatDate(item.delivery.openedAt)
+                            : "No"}
+                        </p>
+                        <p>
+                          Clicked:{" "}
+                          {item.delivery.clickedAt
+                            ? formatDate(item.delivery.clickedAt)
+                            : "No"}
+                        </p>
+                        <p>
+                          Started:{" "}
+                          {item.delivery.assignmentStartedAt
+                            ? formatDate(item.delivery.assignmentStartedAt)
+                            : "No"}
+                        </p>
+                        <p>
+                          Submitted:{" "}
+                          {item.delivery.assignmentSubmittedAt
+                            ? formatDate(item.delivery.assignmentSubmittedAt)
+                            : "No"}
+                        </p>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-3">
                           <div className="flex flex-wrap gap-2">
                             <form action={retryDeliveryAction}>
-                              <HiddenInput name="delivery_id" value={item.delivery.id} />
-                              <Button type="submit" size="sm" variant="outline" className="border-white/15 bg-transparent text-white hover:bg-white/10">
+                              <HiddenInput
+                                name="delivery_id"
+                                value={item.delivery.id}
+                              />
+                              <Button
+                                type="submit"
+                                size="sm"
+                                variant="outline"
+                                className="border-white/15 bg-transparent text-white hover:bg-white/10"
+                              >
                                 Retry
                               </Button>
                             </form>
                             <form action={cancelDeliveryAction}>
-                              <HiddenInput name="delivery_id" value={item.delivery.id} />
-                              <Button type="submit" size="sm" variant="outline" className="border-white/15 bg-transparent text-white hover:bg-white/10">
+                              <HiddenInput
+                                name="delivery_id"
+                                value={item.delivery.id}
+                              />
+                              <Button
+                                type="submit"
+                                size="sm"
+                                variant="outline"
+                                className="border-white/15 bg-transparent text-white hover:bg-white/10"
+                              >
                                 Cancel
                               </Button>
                             </form>
                           </div>
-                          <form action={rescheduleDeliveryAction} className="flex flex-wrap gap-2">
-                            <HiddenInput name="delivery_id" value={item.delivery.id} />
+                          <form
+                            action={rescheduleDeliveryAction}
+                            className="flex flex-wrap gap-2"
+                          >
+                            <HiddenInput
+                              name="delivery_id"
+                              value={item.delivery.id}
+                            />
                             <DateTimeInput
                               name="scheduled_for"
-                              defaultValue={toDateTimeLocal(item.delivery.scheduledFor)}
+                              defaultValue={toDateTimeLocal(
+                                item.delivery.scheduledFor,
+                              )}
                               className="h-8 rounded-md text-xs"
                             />
                             <Button type="submit" size="sm" variant="secondary">
@@ -629,7 +826,8 @@ export default async function JoinApplicationDetailPage({
                           {latestSubmission ? (
                             <div className="space-y-3">
                               <p className="text-xs font-semibold text-[#00ff9d]">
-                                Submitted {formatDate(latestSubmission.submittedAt)}
+                                Submitted{" "}
+                                {formatDate(latestSubmission.submittedAt)}
                               </p>
                               <div className="space-y-3">
                                 {latestAnswers.map((answer) => (
@@ -648,7 +846,9 @@ export default async function JoinApplicationDetailPage({
                               </div>
                             </div>
                           ) : (
-                            <p className="text-sm text-slate-400">No assignment submitted yet.</p>
+                            <p className="text-sm text-slate-400">
+                              No assignment submitted yet.
+                            </p>
                           )}
                         </div>
                       </TableCell>
@@ -657,7 +857,10 @@ export default async function JoinApplicationDetailPage({
                 })}
                 {!memberJourney.moduleProgress.length ? (
                   <TableRow className="border-white/10">
-                    <TableCell colSpan={4} className="py-8 text-center text-sm text-slate-400">
+                    <TableCell
+                      colSpan={4}
+                      className="py-8 text-center text-sm text-slate-400"
+                    >
                       No Workbook modules have been scheduled for this member.
                     </TableCell>
                   </TableRow>
@@ -673,7 +876,8 @@ export default async function JoinApplicationDetailPage({
           <CardHeader>
             <CardTitle className="text-lg">Monthly virtual sessions</CardTitle>
             <CardDescription className="text-slate-300">
-              Track the 3 monthly mentor sessions without leaving this applicant record.
+              Track the 3 monthly mentor sessions without leaving this applicant
+              record.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -732,7 +936,8 @@ export default async function JoinApplicationDetailPage({
         <CardHeader>
           <CardTitle className="text-lg">Email history</CardTitle>
           <CardDescription className="text-slate-300">
-            Welcome and application-related email activity tied to this applicant email.
+            Welcome and application-related email activity tied to this
+            applicant email.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -743,10 +948,16 @@ export default async function JoinApplicationDetailPage({
                 className="rounded-lg border border-white/10 bg-white/5 p-4"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="outline" className="border-white/15 text-cyan-200">
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 text-cyan-200"
+                  >
                     {event.templateKey}
                   </Badge>
-                  <Badge variant="outline" className="border-white/15 text-white">
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 text-white"
+                  >
                     {event.status}
                   </Badge>
                 </div>
@@ -768,6 +979,54 @@ export default async function JoinApplicationDetailPage({
           )}
         </CardContent>
       </Card>
+
+      {detail.member ? (
+        <Card className="border-red-500/30 bg-red-950/20 text-white">
+          <CardHeader>
+            <CardTitle className="text-lg text-red-300">
+              Danger zone — permanent delete
+            </CardTitle>
+            <CardDescription className="text-slate-300">
+              Permanently removes this program member, their join application,
+              workbook deliveries/submissions, mentorship data, certificates,
+              community content, and (when no other memberships share the
+              account) the user login record. This cannot be undone.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form
+              action={permanentlyDeleteMemberAction}
+              className="flex flex-col gap-4 sm:flex-row sm:items-end"
+            >
+              <HiddenInput name="program_member_id" value={detail.member.id} />
+              <div className="flex-1 space-y-2">
+                <label
+                  htmlFor="delete-confirmation"
+                  className="text-[11px] font-bold uppercase tracking-[0.18em] text-red-300"
+                >
+                  Type the member email to confirm ({detail.member.email})
+                </label>
+                <input
+                  id="delete-confirmation"
+                  name="confirmation"
+                  type="email"
+                  required
+                  placeholder={detail.member.email}
+                  autoComplete="off"
+                  className="h-10 w-full rounded-md border border-red-500/40 bg-[#080d2e] px-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-red-400/50"
+                />
+              </div>
+              <Button
+                type="submit"
+                variant="outline"
+                className="border-red-500/50 bg-red-600/20 text-red-200 hover:bg-red-600/40 hover:text-white"
+              >
+                Permanently delete account
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      ) : null}
     </div>
   );
 }

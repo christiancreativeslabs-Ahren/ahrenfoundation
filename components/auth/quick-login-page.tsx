@@ -45,7 +45,7 @@ export default async function QuickLoginPage({
   });
 
   if (session?.user) {
-    console.log("User is already signed in:", session.user);
+    // console.log("User is already signed in:", session.user);
     // redirect(signedInRedirect);
   }
 
