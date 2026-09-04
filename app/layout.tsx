@@ -3,12 +3,13 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+import { GoogleAnalytics } from "@next/third-parties/google";
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Ahren Foundation — Tech, Creativity & Purpose",
-  description: "A youth development platform where Christian creatives find purpose, community, and opportunity — building a global network of believers in tech.",
+  description:
+    "A youth development platform where Christian creatives find purpose, community, and opportunity — building a global network of believers in tech.",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -17,15 +18,27 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
-  openGraph: { title: "Ahren Foundation", description: "Tech, Creativity & Purpose", type: "website" },
+  openGraph: {
+    title: "Ahren Foundation",
+    description: "Tech, Creativity & Purpose",
+    type: "website",
+  },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
           rel="stylesheet"
@@ -34,6 +47,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <Providers>{children}</Providers>
       </body>
+
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
     </html>
   );
 }
