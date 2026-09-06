@@ -118,18 +118,29 @@ export default async function WorkbookModulePage({
 
   const loadedModule = (module: typeof data.module) => {
     // console.log("Loaded module:", module);
-    if (module.moduleKey === "module-1") {
-      const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[0];
-      // console.log("Loaded module content:", { loadedModule, module });
-      return loadedModule;
-    } else if (module.moduleKey === "module-2") {
-      const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[1];
-      // console.log("Loaded module content:", { loadedModule, module });
-      return loadedModule;
+    switch (module.moduleKey) {
+      case "module-1":
+        return AHREN_WORKBOOK_PROGRAM.modules[0];
+      case "module-2":
+        return AHREN_WORKBOOK_PROGRAM.modules[1];
+      case "module-3":
+        return AHREN_WORKBOOK_PROGRAM.modules[2];
+      default:
+        return module;
     }
-
-    return module;
   };
+  //   if (module.moduleKey === "module-1") {
+  //     const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[0];
+  //     // console.log("Loaded module content:", { loadedModule, module });
+  //     return loadedModule;
+  //   } else if (module.moduleKey === "module-2") {
+  //     const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[1];
+  //     // console.log("Loaded module content:", { loadedModule, module });
+  //     return loadedModule;
+  //   }
+
+  //   return module;
+  // };
 
   return (
     <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">

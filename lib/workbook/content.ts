@@ -410,55 +410,227 @@ export const AHREN_WORKBOOK_PROGRAM: WorkbookProgramDefinition = {
       moduleKey: "module-3",
       moduleNumber: 3,
       weekNumber: 2,
-      sendOffsetDays: 7,
+      sendOffsetDays: 7, // Monday of Week 2
       sendDayLabel: "Monday",
       title: "The Holy Spirit",
       subtitle: "Your Creativity Partner",
       subject:
-        "Ahren Christian Creativity Masterclass - Week 2: The Holy Spirit - Your Creativity Partner",
+        "Ahren Christian Creativity Masterclass - Week 2: The Holy Spirit — Your Creativity Partner",
       previewText:
-        "You do not have to create alone. The Holy Spirit is your creative partner.",
+        "You don't have to create alone. Meet the Holy Spirit as your daily creative partner.",
       openingCopy: [
-        "Welcome to Week 2!",
-        "Last week, we discovered that you were created to create - that creativity is your nature because you are made in the image of the Creator. This week, we go deeper into the source of all creativity: the Holy Spirit.",
-        "You don't have to figure it out alone. The Holy Spirit is not just for prayer meetings or Sunday services. He is your idea generator, problem solver, and creative coach. Before you open your laptop, open your heart to Him.",
+        "Hello and Welcome Back Creative!",
+        "Last Friday, we learned that creativity is not magic — it is a muscle you can grow. You discovered practical steps to become more creative, and you started practicing.",
+        "But here is the best news: you don't have to do this alone.",
+        "There is a Person — the Holy Spirit — who wants to be your creative partner. He is the one who gave Bezalel wisdom, understanding, and knowledge. He is the one who inspired the writers of the Bible. He is the one who gives you ideas, solves your problems, and opens doors you could never open on your own. He already lives in you as a child of God.",
+        "This week, you are going to know him as your daily creative companion. Let's dive in.",
       ],
       scriptures: [
+        {
+          text: "Ye are of God, little children, and have overcome them: because greater is he that is in you, than he that is in the world.",
+          reference: "1 John 4:4 (KJV)",
+        },
         {
           text: "But the Comforter, which is the Holy Ghost, whom the Father will send in my name, he shall teach you all things, and bring all things to your remembrance, whatsoever I have said unto you.",
           reference: "John 14:26 (KJV)",
         },
+        {
+          text: "For who hath known the mind of the Lord, that he may instruct him? But we have the mind of Christ.",
+          reference: "1 Corinthians 2:16 (KJV)",
+        },
+        {
+          text: "But ye shall receive power, after that the Holy Ghost is come upon you.",
+          reference: "Acts 1:8 (KJV)",
+        },
+      ],
+      bodySections: [
+        {
+          heading: "Bezalel — Filled with the Spirit",
+          paragraphs: [
+            "Do you remember Bezalel from last week? God chose him to build the Tabernacle — a beautiful, intricate, creative project.",
+            "But here is what makes Bezalel special:",
+            "“And he hath filled him with the spirit of God, in wisdom, in understanding, and in knowledge, and in all manner of workmanship.” — Exodus 35:31 (KJV)",
+            "God didn't just give Bezalel a list of instructions. He filled him with the Holy Spirit — and that Spirit gave him wisdom, understanding, and knowledge. That means:",
+          ],
+          bullets: [
+            "Wisdom — to know what to do",
+            "Understanding — to know why it matters",
+            "Knowledge — to know how to do it",
+          ],
+          closing:
+            "Bezalel didn't have a degree in architecture or design. He had the Holy Spirit. And that was enough. The Holy Spirit is your creative partner. He is not just for prayer meetings, Sunday services, or “spiritual” moments. He is for your weekly work sessions. He is for your design projects. He is for your business ideas. He is for your writing, your music, your content, your videos, your problem-solving and more.",
+        },
+        {
+          heading: "Fellowship Through God's Word (The Bible)",
+          paragraphs: [
+            "The Bible contains God's word. It is God's living voice to you. As you consistently read, study and meditate on God's word, you hear God speak to you. The Holy Spirit uses the Word to:",
+          ],
+          bullets: [
+            "Renew your mind — Romans 12:2 – “Be ye transformed by the renewing of your mind.”",
+            "Reveal God's nature — As you read, you learn who God is and how He works.",
+            "Guide your steps — Psalm 119:105 – “Thy word is a lamp unto my feet, and a light unto my path.”",
+            "Inspire creativity — The stories, principles, and promises in the Scriptures are raw material for creative ideas.",
+          ],
+        },
+        {
+          heading: "Fellowship Through Prayer",
+          paragraphs: [
+            "Prayer is a two-way conversation. When you pray, you talk to God. And when you listen, He speaks to you. Through prayer, especially praying in the Spirit, the Holy Spirit:",
+          ],
+          bullets: [
+            "Aligns your heart with God's will",
+            "Reveals hidden things – ideas, solutions, and strategies",
+            "Strengthens your spirit – you become more sensitive to His leading",
+            "Breaks creative blocks – many breakthroughs come while praying",
+          ],
+          closing:
+            "When you spend time with God's Word and pray consistently, you are cultivating intimacy with the Holy Spirit. And from that intimacy, creativity flows naturally. You begin to think God's thoughts, see problems from His perspective, and receive solutions that you could never come up with on your own. “If ye abide in me, and my words abide in you, ye shall ask what ye will, and it shall be done unto you.” — John 15:7 (KJV). Abiding means staying connected — through reading, praying, listening, and obeying. When you abide, creativity flows.",
+        },
+        {
+          heading: "Lies the World Tells You About the Holy Spirit",
+          table: {
+            headers: ["Lie", "Truth"],
+            rows: [
+              [
+                "“The Holy Spirit is just for pastors and missionaries.”",
+                "He lives in every believer, and He wants to work through your daily life.",
+              ],
+              [
+                "“The Holy Spirit only speaks about spiritual things.”",
+                "He cares about your work, your skills, your projects — because they are His too.",
+              ],
+              [
+                "“I don't need the Holy Spirit for creative work.”",
+                "Without Him, you rely on your own strength. With Him, you tap into divine wisdom.",
+              ],
+              [
+                "“I can't hear Him.”",
+                "He speaks through peace, impressions, Scripture, and wise counsel. Practice listening.",
+              ],
+            ],
+          },
+        },
+        {
+          heading: "How the Holy Spirit Helps Your Creativity",
+          table: {
+            headers: ["What He Does", "What That Means for You"],
+            rows: [
+              [
+                "Teaches you all things",
+                "He teaches you how to code, design, write, or solve problems in ways you didn't know.",
+              ],
+              [
+                "Brings things to your remembrance",
+                "He reminds you of that tutorial, that verse, that idea you had before.",
+              ],
+              [
+                "Guides you into truth",
+                "He shows you what is true — including the truth that you are creative, capable, and called.",
+              ],
+              [
+                "Gives you power",
+                "You are not working in your own strength. You have supernatural enablement.",
+              ],
+              [
+                "Gives you the mind of Christ",
+                "You can see problems from God's perspective — and find solutions you wouldn't see alone.",
+              ],
+            ],
+          },
+        },
       ],
       reflection:
-        "The Holy Spirit is with you - not just in church, but in your daily work. He teaches you, guides you, and gives you ideas you could never have on your own. Partnering with Him is the key to unlocking divine creativity. As you fellowship with God through His Word and prayer, you cultivate intimacy with the Holy Spirit, and from that intimacy, creativity flows naturally.",
+        "The Holy Spirit is your creative partner. He is not just for prayer meetings — He is for your weekly work sessions, design projects, business ideas, writing, music, content, videos, and problem-solving. When you abide in Him, creativity flows.",
       focus:
-        "Learning to invite the Holy Spirit into your creative work and daily tasks.",
+        "Knowing the Holy Spirit as your daily creative companion and learning to partner with Him in your work.",
+      thisWeeksActions: {
+        intro: "Pick at least 4 of the 6 actions below to complete this week.",
+        items: [
+          "Before you start any creative task this week, pause and pray: “Holy Spirit, help me.” Do this at least 5 times this week.",
+          "Read John 14–16 meditatively. Notice what Jesus says about the Holy Spirit. Write down one promise that stands out to you.",
+          "Ask the Holy Spirit for one idea this week. Write down what comes to mind — even if it seems small.",
+          "Journal about your work — ask yourself: “Am I relying on my own strength, or am I inviting the Holy Spirit into my work?”",
+          "Ask a friend: “When have you experienced the Holy Spirit's help in your creative work?” Write their answer.",
+          "For one day, pray before every task — even small ones. Notice if you feel calmer, clearer, or more confident.",
+        ],
+      },
       action:
-        'Before you start any creative task this week, pause and pray: "Holy Spirit, help me." Notice what changes - even in small ways.',
+        "Pick at least 4 of the 6 Creative Growth Actions this week. Practice inviting the Holy Spirit before your creative tasks.",
       questions: [
-        "Before this week, what did you think about the Holy Spirit in relation to creativity? Has that changed?",
-        'What did you experience when you started taking a moment to pray "Holy Spirit, help me" before working?',
-        "How does the Holy Spirit teach, guide, and give you ideas for your creative work?",
-        "What is one promise from John 14-16 that encouraged you most about the Holy Spirit?",
-        'Complete this sentence: "Holy Spirit, I need You in my coding, design, writing, or creativity because..."',
+        "How have you typically related to the Holy Spirit in your creative work so far?",
+        "Which truth about the Holy Spirit stands out to you the most this week?",
+        "What is one practical way you will invite the Holy Spirit into your work this week?",
+        "Have you ever experienced a creative breakthrough after praying? What happened?",
+        'Complete this sentence: "The Holy Spirit is my creative partner. This week I will..."',
       ],
+      prayer: {
+        title: "A Prayer for Your Week",
+        text: "Holy Spirit, welcome into my work. I confess that I have often tried to do things in my own strength. I sometimes forget that You are always with me — not just in church, but in my daily tasks. Today, I invite You into my creativity. Teach me. Guide me. Give me ideas I could never have on my own. I trust You to help me build what will last for eternity. In Jesus' name, Amen.",
+      },
+      finalWord: {
+        title: "A Final Word for Today",
+        text: "The Holy Spirit is a Person — and He is with you right now. He doesn't just want to help you pray. He wants to help you create. He wants to help you solve problems. He wants to give you ideas that will impact lives for Jesus Christ. So this week, don't work alone. Don't struggle with your own strength. Don't settle for what you can do on your own. Partner with the Holy Spirit.",
+      },
+      closing: {
+        title: "See You on Friday",
+        text: "That's it for today. Take your time with the assignments. Practice inviting the Holy Spirit before every task — even the small ones. Next week, we will explore praying in tongues and fellowshipping with God as fuel for divine creativity — how this spiritual exercise can release ideas, break stagnation, and build your creative capacity. Until then, keep creating — but don't create alone. I'll be right here waiting for you.",
+        signature: "— Your Ahren Mentor",
+      },
     },
+    // {
+    //   moduleKey: "module-3",
+    //   moduleNumber: 3,
+    //   weekNumber: 2,
+    //   sendOffsetDays: 7,
+    //   sendDayLabel: "Monday",
+    //   title: "The Holy Spirit",
+    //   subtitle: "Your Creativity Partner",
+    //   subject:
+    //     "Ahren Christian Creativity Masterclass - Week 2: The Holy Spirit - Your Creativity Partner",
+    //   previewText:
+    //     "You do not have to create alone. The Holy Spirit is your creative partner.",
+    //   openingCopy: [
+    //     "Welcome to Week 2!",
+    //     "Last week, we discovered that you were created to create - that creativity is your nature because you are made in the image of the Creator. This week, we go deeper into the source of all creativity: the Holy Spirit.",
+    //     "You don't have to figure it out alone. The Holy Spirit is not just for prayer meetings or Sunday services. He is your idea generator, problem solver, and creative coach. Before you open your laptop, open your heart to Him.",
+    //   ],
+    //   scriptures: [
+    //     {
+    //       text: "But the Comforter, which is the Holy Ghost, whom the Father will send in my name, he shall teach you all things, and bring all things to your remembrance, whatsoever I have said unto you.",
+    //       reference: "John 14:26 (KJV)",
+    //     },
+    //   ],
+    //   reflection:
+    //     "The Holy Spirit is with you - not just in church, but in your daily work. He teaches you, guides you, and gives you ideas you could never have on your own. Partnering with Him is the key to unlocking divine creativity. As you fellowship with God through His Word and prayer, you cultivate intimacy with the Holy Spirit, and from that intimacy, creativity flows naturally.",
+    //   focus:
+    //     "Learning to invite the Holy Spirit into your creative work and daily tasks.",
+    //   action:
+    //     'Before you start any creative task this week, pause and pray: "Holy Spirit, help me." Notice what changes - even in small ways.',
+    //   questions: [
+    //     "Before this week, what did you think about the Holy Spirit in relation to creativity? Has that changed?",
+    //     'What did you experience when you started taking a moment to pray "Holy Spirit, help me" before working?',
+    //     "How does the Holy Spirit teach, guide, and give you ideas for your creative work?",
+    //     "What is one promise from John 14-16 that encouraged you most about the Holy Spirit?",
+    //     'Complete this sentence: "Holy Spirit, I need You in my coding, design, writing, or creativity because..."',
+    //   ],
+    // },
     {
       moduleKey: "module-4",
       moduleNumber: 4,
       weekNumber: 2,
-      sendOffsetDays: 11,
+      sendOffsetDays: 11, // Friday of Week 2
       sendDayLabel: "Friday",
-      title: "Praying in Tongues and Fellowshipping with God",
+      title: "Praying in Tongues & Fellowshipping With God",
       subtitle: "Fuel for Divine Creativity",
       subject:
-        "Ahren Christian Creativity Masterclass - Week 2: Praying in Tongues and Fellowshipping with God",
+        "Ahren Christian Creativity Masterclass - Week 2: Praying in Tongues & Fellowshipping With God",
       previewText:
-        "Build a consistent prayer and fellowship life that fuels creativity.",
+        "Discover how praying in tongues and fellowshipping with God becomes fuel for divine creativity.",
       openingCopy: [
-        "Welcome to the second module of Week 2!",
-        "Last time, we learned that the Holy Spirit is your creative partner. But how do you actually partner with Him in a practical, daily way? This module answers that question.",
-        "Praying in tongues is not just a spiritual exercise - it is a direct line to divine creativity. When you pray in the Spirit, your spirit is built up, and the Holy Spirit bypasses your intellectual limitations to pray God's perfect will.",
+        "Hello and Welcome Back Creative!",
+        "On Monday, we discovered that the Holy Spirit is your creative partner — and that you don't have to create alone.",
+        "But here is the question many young believers ask: “How do I actually partner with the Holy Spirit in my daily life and creative work?” One powerful answer is found in a gift that God has given to every believer who asks: praying in tongues.",
+        "This week, we are going to explore how praying in tongues and fellowshipping with God can become fuel for your creativity — breaking mental blocks, releasing divine ideas, and building your capacity to create. Let's dive in.",
       ],
       scriptures: [
         {
@@ -469,38 +641,242 @@ export const AHREN_WORKBOOK_PROGRAM: WorkbookProgramDefinition = {
           text: "But ye, beloved, building up yourselves on your most holy faith, praying in the Holy Ghost.",
           reference: "Jude 1:20 (KJV)",
         },
+        {
+          text: "Likewise the Spirit also helpeth our infirmities: for we know not what we should pray for as we ought: but the Spirit itself maketh intercession for us with groanings which cannot be uttered.",
+          reference: "Romans 8:26 (KJV)",
+        },
+        {
+          text: "Abide in me, and I in you. As the branch cannot bear fruit of itself, except it abide in the vine; no more can ye, except ye abide in me.",
+          reference: "John 15:4 (KJV)",
+        },
+      ],
+      bodySections: [
+        {
+          heading: "The Early Church — Praying in the Spirit",
+          paragraphs: [
+            "Turn with me to the book of Acts.",
+            "The disciples were hiding in an upper room — afraid, confused, and unsure of their next step. But then the Holy Spirit came upon them, and they began to speak in other tongues (Acts 2:4). That was just the beginning.",
+            "From that moment on, we see the disciples:",
+          ],
+          bullets: [
+            "Preaching with boldness",
+            "Healing the sick",
+            "Writing epistles that would become Scripture",
+            "Planting churches across the known world",
+            "Building communities that turned the world upside down",
+          ],
+          closing:
+            "How did they do it? They were ordinary men and women — fishermen, tax collectors, tentmakers. But they were filled with the Spirit and praying in the Spirit. Paul says that praying in tongues edifies (builds up) the believer. It builds up your spirit. When your spirit is built up, your creative capacity grows. Think of it this way: your spirit is the engine of your creativity. When your spirit is weak, your creativity stalls. When your spirit is strengthened, your creativity flows. Praying in tongues is fuel for divine creativity.",
+        },
+        {
+          heading: "When you pray in tongues",
+          bullets: [
+            "Your spirit is strengthened",
+            "Your mind is cleared",
+            "Your creativity is unlocked",
+            "Your soul is refreshed",
+            "Your faith is built up",
+          ],
+          closing:
+            "Many believers testify that after praying in tongues for 15–20 minutes, fresh ideas come. Solutions appear. Blocks break. Creativity flows. That is because you are not just speaking words — you are allowing the Holy Spirit to pray through you, bypassing your intellectual limitations and speaking God's perfect will.",
+        },
+        {
+          heading: "How Praying in Tongues Fuels Creativity",
+          table: {
+            headers: ["How It Helps", "Explanation"],
+            rows: [
+              [
+                "Edifies your spirit",
+                "Your human spirit is strengthened, making you more sensitive to divine ideas.",
+              ],
+              [
+                "Bypasses mental blocks",
+                "When you don't know how to solve a problem, the Spirit prays through you, releasing breakthrough.",
+              ],
+              [
+                "Releases divine wisdom",
+                "1 Corinthians 2:10 — the Spirit searches all things, even the deep things of God.",
+              ],
+              [
+                "Breaks creative stagnation",
+                "Many testify that fresh ideas and solutions come while or after praying in tongues.",
+              ],
+              [
+                "Increases your capacity",
+                "You become a larger vessel — able to carry more of God's creativity and purpose.",
+              ],
+              [
+                "Quietens the noise",
+                "Praying in tongues often stills anxiety, fear, and overthinking, allowing you to hear God's voice clearly.",
+              ],
+            ],
+          },
+        },
+        {
+          heading: "Practical Ways to Fellowship with God Regularly",
+          table: {
+            headers: ["Activity", "Frequency", "Creative Benefit"],
+            rows: [
+              [
+                "Praying in tongues",
+                "Daily (start with 15–30 minutes)",
+                "Builds spiritual sensitivity and releases ideas",
+              ],
+              [
+                "Worship (singing or listening)",
+                "Daily",
+                "Opens your heart to receive from God",
+              ],
+              [
+                "Scripture meditation",
+                "Daily",
+                "God's words become raw materials for creative solutions (Joshua 1:8)",
+              ],
+              [
+                "Quiet listening",
+                "After prayer — sit in silence",
+                "Learn to recognise His “still small voice” (1 Kings 19:12)",
+              ],
+              [
+                "Journaling what you hear",
+                "Every time",
+                "Capture divine ideas before you forget",
+              ],
+              [
+                "Fellowship with other believers",
+                "Weekly",
+                "Encouragement, accountability, and fresh perspectives",
+              ],
+            ],
+          },
+        },
+        {
+          heading: "Lies the World Tells You About Praying in Tongues",
+          table: {
+            headers: ["Lie", "Truth"],
+            rows: [
+              [
+                "“Speaking in tongues is not for today.”",
+                "It is a gift for every believer (Acts 2:39).",
+              ],
+              [
+                "“It's just emotional noise.”",
+                "It is a Spirit-given language that builds your spirit and releases divine creativity.",
+              ],
+              [
+                "“Only pastors or missionaries should pray in tongues.”",
+                "Every believer can and should — it builds you up (1 Corinthians 14:4).",
+              ],
+              [
+                "“It's not practical for daily life.”",
+                "It is one of the most practical tools you have for clarity, peace, and creative breakthrough.",
+              ],
+            ],
+          },
+        },
       ],
       reflection:
-        "Praying in tongues edifies your spirit and releases divine creativity. Regular fellowship with God - prayer, His Word, and worship - keeps your creative well full. Many breakthrough ideas come while praying in the Spirit.",
+        "Praying in tongues is fuel for divine creativity. It builds up your spirit, clears your mind, unlocks creativity, and releases divine wisdom. Your spirit is the engine of your creativity — when it is strengthened, creativity flows.",
       focus:
-        "Building a consistent prayer and fellowship life to fuel your creativity.",
+        "Learning to use praying in tongues and consistent fellowship with God as practical fuel for creativity and breakthrough.",
+      thisWeeksActions: {
+        intro: "Pick at least 4 of the 6 actions below to complete this week.",
+        items: [
+          "Set aside 15–30 minutes each day to pray in tongues. Do this for at least 5 days this week.",
+          "After praying, sit in silence for 2–3 minutes. Write down any thought, impression, or idea that comes — even if it seems random or small.",
+          "Read Romans 8:26–27 and 1 Corinthians 14:1–5 slowly. Notice how Paul connects praying in the Spirit with edification (building up).",
+          "Ask a mature believer you respect: “How has praying in tongues helped your creativity or work?” Write down their answer.",
+          "Before any creative task this week, pray in tongues for 5 minutes first. Notice if anything feels different — clearer, calmer, or more focused.",
+          "Journal for one day: “What did I experience when I prayed in tongues today?”",
+        ],
+      },
       action:
-        "Set aside 15-30 minutes each day to pray in tongues. After praying, sit in silence for 2-3 minutes and write down any thoughts or impressions that come.",
+        "Pick at least 4 of the 6 Creative Growth Actions this week. Practice praying in tongues daily and notice the difference in your creativity.",
       questions: [
-        "What did you experience when you prayed in tongues this week - even if nothing dramatic happened?",
-        "Did any new idea, solution, or clarity come to you during or after praying in tongues?",
-        "How does praying in tongues build up your spirit and release divine creativity?",
-        "What practical steps can you take to fellowship with God more consistently through His Word and prayer?",
-        'Complete this sentence: "Praying in tongues is fuel for my creativity because..."',
+        "What has been your experience (or hesitation) with praying in tongues so far?",
+        "Which benefit of praying in tongues stands out to you the most?",
+        "How can you practically build a daily rhythm of fellowship with God this week?",
+        "What creative blocks are you currently facing that you want the Holy Spirit to help with?",
+        'Complete this sentence: "Praying in tongues is fuel for my creativity. This week I will..."',
       ],
+      prayer: {
+        title: "A Prayer for Your Week",
+        text: "Holy Spirit, I want to know You more. I want to partner with You — not just in my spiritual life, but in my daily work. Teach me to pray in tongues more consistently. Let that prayer become the furnace where creative ideas are forged. I want to partner with You so that my creativity flows from Your heart, not just my mind. Build my spirit. Open my ears. Release Your ideas through me. In Jesus' name, Amen.",
+      },
+      finalWord: {
+        title: "A Final Word for This Week",
+        text: "Praying in tongues is not mysterious or strange — it is practical. It builds you up. It clears your mind. It releases divine wisdom. You don't have to understand every word you pray — because it is not about your understanding. It is about your spirit connecting with God's Spirit. And from that connection, creativity flows. So this week, don't just work hard. Pray hard. And see what God does through your hands.",
+      },
+      closing: {
+        title: "See You Next Week",
+        text: "That's it for Week 2. Take your time with the assignments. The goal is not performance — it is connection with God. Next week, we will explore developing godly character — why your talent opens doors, but your character keeps them open. Until then, keep praying in the Spirit — and keep creating. I'll be right here waiting for you.",
+        signature: "— Your Ahren Mentor",
+      },
     },
+
+    // {
+    //   moduleKey: "module-4",
+    //   moduleNumber: 4,
+    //   weekNumber: 2,
+    //   sendOffsetDays: 11,
+    //   sendDayLabel: "Friday",
+    //   title: "Praying in Tongues and Fellowshipping with God",
+    //   subtitle: "Fuel for Divine Creativity",
+    //   subject:
+    //     "Ahren Christian Creativity Masterclass - Week 2: Praying in Tongues and Fellowshipping with God",
+    //   previewText:
+    //     "Build a consistent prayer and fellowship life that fuels creativity.",
+    //   openingCopy: [
+    //     "Welcome to the second module of Week 2!",
+    //     "Last time, we learned that the Holy Spirit is your creative partner. But how do you actually partner with Him in a practical, daily way? This module answers that question.",
+    //     "Praying in tongues is not just a spiritual exercise - it is a direct line to divine creativity. When you pray in the Spirit, your spirit is built up, and the Holy Spirit bypasses your intellectual limitations to pray God's perfect will.",
+    //   ],
+    //   scriptures: [
+    //     {
+    //       text: "He that speaketh in an unknown tongue edifieth himself.",
+    //       reference: "1 Corinthians 14:4 (KJV)",
+    //     },
+    //     {
+    //       text: "But ye, beloved, building up yourselves on your most holy faith, praying in the Holy Ghost.",
+    //       reference: "Jude 1:20 (KJV)",
+    //     },
+    //   ],
+    //   reflection:
+    //     "Praying in tongues edifies your spirit and releases divine creativity. Regular fellowship with God - prayer, His Word, and worship - keeps your creative well full. Many breakthrough ideas come while praying in the Spirit.",
+    //   focus:
+    //     "Building a consistent prayer and fellowship life to fuel your creativity.",
+    //   action:
+    //     "Set aside 15-30 minutes each day to pray in tongues. After praying, sit in silence for 2-3 minutes and write down any thoughts or impressions that come.",
+    //   questions: [
+    //     "What did you experience when you prayed in tongues this week - even if nothing dramatic happened?",
+    //     "Did any new idea, solution, or clarity come to you during or after praying in tongues?",
+    //     "How does praying in tongues build up your spirit and release divine creativity?",
+    //     "What practical steps can you take to fellowship with God more consistently through His Word and prayer?",
+    //     'Complete this sentence: "Praying in tongues is fuel for my creativity because..."',
+    //   ],
+    // },
+
     {
       moduleKey: "module-5",
       moduleNumber: 5,
       weekNumber: 3,
-      sendOffsetDays: 14,
+      sendOffsetDays: 14, // Monday of Week 3
       sendDayLabel: "Monday",
-      title: "Developing Your Faith in God and Your Character",
+      title: "Developing Your Faith in God & Your Character as a Person",
+      subtitle: "The Foundation",
       subject:
-        "Ahren Christian Creativity Masterclass - Week 3: Developing Your Faith in God and Your Character",
+        "Ahren Christian Creativity Masterclass - Week 3: Developing Your Faith & Character",
       previewText:
-        "Talent can open doors, but faith and character keep them open.",
+        "Your talent opens doors. Your faith and character keep them open. Build the foundation every creator needs.",
       openingCopy: [
-        "Welcome to Week 3!",
-        "Over the past two weeks, we have discovered your creative identity and learned to partner with the Holy Spirit. This week, we turn to a foundational truth: your talent will open doors, but your faith and character will keep them open.",
-        "Your creativity is a gift. But without faith and character, it will eventually fail you. Faith anchors you. Character keeps you. And together, they carry you into your purpose.",
+        "Hello and Welcome Back Creative!",
+        "Over the last two weeks, we've discovered something powerful:",
       ],
       scriptures: [
+        {
+          text: "Now faith is the substance of things hoped for, the evidence of things not seen.",
+          reference: "Hebrews 11:1 (KJV)",
+        },
         {
           text: "But without faith it is impossible to please him: for he that cometh to God must believe that he is, and that he is a rewarder of them that diligently seek him.",
           reference: "Hebrews 11:6 (KJV)",
@@ -509,57 +885,493 @@ export const AHREN_WORKBOOK_PROGRAM: WorkbookProgramDefinition = {
           text: "A good name is rather to be chosen than great riches, and loving favour rather than silver and gold.",
           reference: "Proverbs 22:1 (KJV)",
         },
+        {
+          text: "He that is faithful in that which is least is faithful also in much: and he that is unjust in the least is unjust also in much.",
+          reference: "Luke 16:10 (KJV)",
+        },
+        {
+          text: "And beside this, giving all diligence, add to your faith virtue; and to virtue knowledge.",
+          reference: "2 Peter 1:5 (KJV)",
+        },
+        {
+          text: "Let no man despise thy youth, but be thou an example of the believers, in word, in manner of living, in charity, in spirit, in faith, in purity.",
+          reference: "1 Timothy 4:12 (KJV)",
+        },
+        {
+          text: "But the fruit of the Spirit is love, joy, peace, longsuffering, gentleness, goodness, faith, meekness, temperance: against such there is no law.",
+          reference: "Galatians 5:22–23 (KJV)",
+        },
+      ],
+      bodySections: [
+        {
+          heading: "",
+          bullets: [
+            "You are a creator, made in God's image.",
+            "Creativity is a muscle you can grow.",
+            "The Holy Spirit is your creative partner.",
+            "Praying in tongues fuels divine creativity.",
+          ],
+          closing:
+            "But here is an important question: “If I have all this — creativity, the Holy Spirit, and spiritual gifts — what could stop me from fulfilling my purpose?” The answer, sadly, is often faith and character. Your talent can open doors. But your faith and character determine whether you stay in the room — or get thrown out. This week, we are going to build the foundation that every creator needs: faith in God and godly character. Let's dive in.",
+        },
+        {
+          heading: "Samson — Great Talent",
+          paragraphs: [
+            "Let me introduce you to Samson.",
+            "Samson had everything a person could want, talent-wise. He was:",
+          ],
+          bullets: [
+            "Set apart from birth (a Nazarite)",
+            "Filled with supernatural strength",
+            "Raised by godly parents",
+            "Chosen by God to deliver Israel from the Philistines",
+          ],
+          closing:
+            "He performed incredible feats: killing a lion with his bare hands, defeating a thousand men with a donkey's jawbone, and carrying off the city gates of Gaza. But Samson had two fatal flaws: he lacked consistent discipline and he could not control himself. He didn't trust God to guide his decisions. He relied on his own strength. He gave in to his desires. He broke his vows. He compromised with the enemy. He ended up betrayed, blinded, and broken — all because his faith and character did not keep up with his talent. His story is a warning: talent without faith and character leads to destruction. What you build with your gift can be torn down by your flaws. Your talent will open doors. Your faith and character will keep them open.",
+        },
+        {
+          heading: "Faith in God",
+          bullets: [
+            "Believing Him — trusting that He is who He says He is",
+            "Trusting His promises — holding onto His Word even when you don't see the outcome",
+            "Depending on Him — not relying only on your own strength",
+            "Walking with Him — daily relationship, not just Sunday religion",
+            "Obedience — doing what He says, even when it doesn't make sense",
+          ],
+        },
+        {
+          heading: "Character as a Person",
+          bullets: [
+            "Integrity — doing the right thing even when no one is watching",
+            "Reliability — keeping your word and showing up on time",
+            "Honesty — telling the truth even when it costs you",
+            "Humility — not thinking you are better than others",
+            "Self-control — managing your appetites, emotions, and tongue",
+            "Faithfulness — staying committed even when it is hard",
+          ],
+          closing:
+            "Faith in God is your foundation. Character is what you build on it. Without faith, you have no anchor. Without character, you have no credibility.",
+        },
+        {
+          heading: "Lies the World Tells You About Faith & Character",
+          table: {
+            headers: ["Lie", "Truth"],
+            rows: [
+              [
+                "“Faith is just for Sunday.”",
+                "Faith is for every day — for your work, your relationships, and your creativity.",
+              ],
+              [
+                "“I can do it on my own.”",
+                "Without faith in God, you will eventually burn out or fall.",
+              ],
+              [
+                "“No one will find out.”",
+                "God sees everything. And even if no one else finds out, you will know — and it will shape you.",
+              ],
+              [
+                "“Just this once won't hurt.”",
+                "One compromise leads to another. Small choices shape your character.",
+              ],
+              [
+                "“I can be successful without faith and character.”",
+                "You can gain the world, but you will lose yourself.",
+              ],
+              [
+                "“Faith and character are for old people.”",
+                "They are built in your youth. Every choice matters.",
+              ],
+            ],
+          },
+        },
+        {
+          heading:
+            "Why Your Faith in God & Your Character Matters for Your Creativity",
+          table: {
+            headers: ["Area", "Why It Matters"],
+            rows: [
+              [
+                "Your reputation",
+                "People won't trust your work if they can't trust your word or your walk with God.",
+              ],
+              [
+                "Your relationships",
+                "Creativity thrives in safe, honest relationships. Faith and character build trust.",
+              ],
+              [
+                "Your spiritual sensitivity",
+                "Sin and unbelief dull your hearing. Faith and character keep your heart tender to the Holy Spirit.",
+              ],
+              [
+                "Your longevity",
+                "Talent fades. Faith in God and Godly character last. They carry you through dry seasons.",
+              ],
+              [
+                "Your witness",
+                "Your faith-walk and Godly character reveals Jesus Christ more than your talent or skills ever will.",
+              ],
+              [
+                "Your creativity flow",
+                "When you trust God, you are less anxious — and creativity flows better.",
+              ],
+            ],
+          },
+        },
       ],
       reflection:
-        "Samson had incredible talent - but his character could not keep up with his gift. He ended up broken and alone. Your talent will open doors, but your faith and character will keep them open. Build them now - while you are young, while it is easier, and while you still have time.",
-      focus: "Building faith and character that outlast your talent.",
+        "Your talent will open doors. Your faith and character will keep them open. Faith in God is your foundation. Character is what you build on it. Without faith, you have no anchor. Without character, you have no credibility.",
+      focus:
+        "Building the foundation of faith in God and godly character so that your creativity can last and bring lasting impact.",
+      thisWeeksActions: {
+        intro: "Pick at least 5 of the 7 actions below to complete this week.",
+        items: [
+          "Read Judges 13–16 and Hebrews 11 slowly. Notice how Samson's choices led to his downfall — and how faith sustained others.",
+          "Read Hebrews 11:1–6 every morning this week. Let it sink in: “Without faith it is impossible to please Him.”",
+          "Identify one area where you struggle with faith (e.g., trusting God with your future, believing He cares about your work, relying on your own strength). Write down one step you will take to grow.",
+          "Identify one area where you struggle with character (e.g., honesty, punctuality, self-control, keeping promises). Write down one step you will take to grow.",
+          "Keep one promise this week — even if it costs you something. At the end of the week, write down how it felt.",
+          "Ask a trusted friend: “What is one area of faith or character I need to work on?” Write down their answer without getting defensive.",
+          "Journal: “What small compromises am I making that could lead to big problems?”",
+        ],
+      },
       action:
-        "Identify one area where you struggle with faith or character. Write down one small step you will take this week to grow in that area.",
+        "Pick at least 5 of the 7 Creative Growth Actions this week. Focus on growing in one area of faith and one area of character.",
       questions: [
-        "What is one area where you struggle with faith - even in small ways?",
-        "What is one area where you struggle with character - even in small ways?",
-        "How does Samson's story challenge you about the importance of character?",
-        "What is one specific action you will take this week to grow in faith or character?",
-        'Complete this sentence: "Faith and character are the foundation of my creativity because..."',
+        "Where has talent opened doors for you, but character (or lack of it) affected the outcome?",
+        "What area of faith do you most need to grow in right now?",
+        "What area of character do you most need to grow in right now?",
+        "What small compromise are you currently making that could lead to bigger problems later?",
+        'Complete this sentence: "My talent opens doors. My faith and character will keep them open. This week I will..."',
       ],
+      prayer: {
+        title: "A Prayer for Your Week",
+        text: "Lord Jesus Christ, I confess that I have sometimes valued my talent and skills more than my faith and character. I sometimes focus on what I can build, not on who I am becoming. Please forgive me Lord. Help me to trust You more — even when I don't understand. Help me to always be honest, reliable, and humble — even when no one is watching. I want to be a person of strong faith in you and integrity. In Jesus' name, Amen.",
+      },
+      finalWord: {
+        title: "A Final Word for Today",
+        text: "Samson had strength, but no self-control. He had a calling, but no discipline. Do not be like Samson. Your creativity is a gift. But without faith in God and Godly character, it will eventually fail you. Build them now — while you are young, while it is easier, and while you still have time. Faith in God anchors you. Godly Character keeps you. And together, they carry you into your purpose.",
+      },
+      closing: {
+        title: "See You on Friday",
+        text: "That's it for today. Take your time with the assignments. The goal is not perfection — it is growth. Next week, we will explore building a creativity lifestyle through daily habits — how small, consistent actions create a life of creative impact. Until then, build your faith. Build your character. They matter more than you know. I'll be right here waiting for you.",
+        signature: "— Your Ahren Mentor",
+      },
     },
+
+    // {
+    //   moduleKey: "module-5",
+    //   moduleNumber: 5,
+    //   weekNumber: 3,
+    //   sendOffsetDays: 14,
+    //   sendDayLabel: "Monday",
+    //   title: "Developing Your Faith in God and Your Character",
+    //   subject:
+    //     "Ahren Christian Creativity Masterclass - Week 3: Developing Your Faith in God and Your Character",
+    //   previewText:
+    //     "Talent can open doors, but faith and character keep them open.",
+    //   openingCopy: [
+    //     "Welcome to Week 3!",
+    //     "Over the past two weeks, we have discovered your creative identity and learned to partner with the Holy Spirit. This week, we turn to a foundational truth: your talent will open doors, but your faith and character will keep them open.",
+    //     "Your creativity is a gift. But without faith and character, it will eventually fail you. Faith anchors you. Character keeps you. And together, they carry you into your purpose.",
+    //   ],
+    //   scriptures: [
+    //     {
+    //       text: "But without faith it is impossible to please him: for he that cometh to God must believe that he is, and that he is a rewarder of them that diligently seek him.",
+    //       reference: "Hebrews 11:6 (KJV)",
+    //     },
+    //     {
+    //       text: "A good name is rather to be chosen than great riches, and loving favour rather than silver and gold.",
+    //       reference: "Proverbs 22:1 (KJV)",
+    //     },
+    //   ],
+    //   reflection:
+    //     "Samson had incredible talent - but his character could not keep up with his gift. He ended up broken and alone. Your talent will open doors, but your faith and character will keep them open. Build them now - while you are young, while it is easier, and while you still have time.",
+    //   focus: "Building faith and character that outlast your talent.",
+    //   action:
+    //     "Identify one area where you struggle with faith or character. Write down one small step you will take this week to grow in that area.",
+    //   questions: [
+    //     "What is one area where you struggle with faith - even in small ways?",
+    //     "What is one area where you struggle with character - even in small ways?",
+    //     "How does Samson's story challenge you about the importance of character?",
+    //     "What is one specific action you will take this week to grow in faith or character?",
+    //     'Complete this sentence: "Faith and character are the foundation of my creativity because..."',
+    //   ],
+    // },
+
     {
       moduleKey: "module-6",
       moduleNumber: 6,
       weekNumber: 3,
-      sendOffsetDays: 18,
+      sendOffsetDays: 18, // Friday of Week 3
       sendDayLabel: "Friday",
       title: "Building a Creativity Lifestyle",
-      subtitle: "Daily Habits and Personal Development",
+      subtitle: "Daily Habits & Personal Development",
       subject:
-        "Ahren Christian Creativity Masterclass - Week 3: Building a Creativity Lifestyle - Daily Habits and Personal Development",
+        "Ahren Christian Creativity Masterclass - Week 3: Building a Creativity Lifestyle",
       previewText:
-        "Creativity is built through small consistent actions repeated over time.",
+        "Creativity is not a one-time event. It is a lifestyle. Build it through daily habits and intentional personal development.",
       openingCopy: [
-        "Welcome to the second module of Week 3!",
-        'Now that we have established the importance of faith and character, we turn to a practical question: "How do I actually live this out - day by day?"',
-        "Creativity is not a one-time event. It is a lifestyle. Small, consistent actions, repeated over time, create a creative life. Personal development is not a luxury - it is the fuel that keeps your creativity growing.",
+        "Hello and Welcome Back Creative!",
+        "Over the last few weeks, we have laid a strong foundation:",
       ],
       scriptures: [
         {
           text: "Whatsoever ye do, do it heartily, as to the Lord, and not unto men.",
           reference: "Colossians 3:23 (KJV)",
         },
+        {
+          text: "The thoughts of the diligent tend only to plenteousness; but of every one that is hasty only to want.",
+          reference: "Proverbs 21:5 (KJV)",
+        },
+        {
+          text: "And let us not be weary in well doing: for in due season we shall reap, if we faint not.",
+          reference: "Galatians 6:9 (KJV)",
+        },
+        {
+          text: "I will bless the LORD at all times: his praise shall continually be in my mouth.",
+          reference: "Psalm 34:1 (KJV)",
+        },
+        {
+          text: "But grow in grace, and in the knowledge of our Lord and Saviour Jesus Christ.",
+          reference: "2 Peter 3:18 (KJV)",
+        },
+        {
+          text: "Iron sharpeneth iron; so a man sharpeneth the countenance of his friend.",
+          reference: "Proverbs 27:17 (KJV)",
+        },
+      ],
+      bodySections: [
+        {
+          heading: "",
+          bullets: [
+            "You were created to create.",
+            "Creativity is a skill you can grow.",
+            "The Holy Spirit is your creative partner.",
+            "Praying in tongues fuels divine creativity.",
+            "Faith in God and godly character are your foundation.",
+          ],
+          closing:
+            "Now comes the question: “How do I actually live this out — day by day?” This week, we are going to talk about building a creativity lifestyle through daily habits and personal development. Not a one-time event. Not a project you start and abandon. A lifestyle — a way of living that makes creativity a natural part of who you are, while continuously growing as a person. Let's dive in.",
+        },
+        {
+          heading: "Daniel — A Daily Man Who Grew Continually",
+          paragraphs: [
+            "Let me introduce you to Daniel.",
+            "Daniel was a young man living in a foreign land — far from home, surrounded by people who did not believe in his God. He could have given up. He could have compromised. He could have stayed the same person he was when he arrived.",
+            "But Daniel had a daily lifestyle — and a commitment to personal growth.",
+            "Three times a day, he knelt and prayed — even when it was illegal (Daniel 6:10). He didn't pray only when he felt like it. He didn't pray only when he was in trouble. He prayed daily.",
+            "But Daniel also grew. He learned the language and literature of Babylon (Daniel 1:4). He developed wisdom and understanding that exceeded his peers. He stayed humble, sought God, and kept growing — even after he became a ruler in the kingdom.",
+            "And here is the result: God gave him wisdom, favour, and influence in a kingdom that tried to kill him. Daniel's daily habits and commitment to personal growth carried him through decades of service, from a young exile to an old statesman.",
+            "The same is true for you. Your creativity is not built in one big moment. It is built in the daily moments. And your person is not shaped by one grand decision — it is shaped by the daily choices you make to grow.",
+            "Creativity is not a one-time event. It is a lifestyle. And personal development is the fuel that keeps it growing.",
+            "Think about it:",
+          ],
+          bullets: [
+            "A musician doesn't become a musician by performing once. They practice consistently and continually learn new techniques.",
+            "A fullstack developer doesn't become a developer by building one project. They write code consistently and continually learn new languages or techniques.",
+            "A writer doesn't become an author by writing one chapter. They write consistently and continually study to improve their craft.",
+            "A designer doesn't become a designer by creating one logo. They design consistently and continually expand their knowledge to improve in their skills.",
+          ],
+          closing:
+            "Your creativity grows through daily habits. And your person grows through intentional personal development — reading, learning, seeking feedback, and becoming more like Jesus Christ. The secret is not trying harder. The secret is showing up consistently and choosing to grow up spiritually and in every aspect of your life — even when you don't feel spiritual or creative, even when you're tired, even when it feels pointless.",
+        },
+        {
+          heading:
+            "Lies the World Tells You About Habits & Personal Development",
+          table: {
+            headers: ["Lie", "Truth"],
+            rows: [
+              [
+                "“I need to feel inspired to create.”",
+                "Inspiration is a by-product of action. Show up, and inspiration often follows.",
+              ],
+              [
+                "“One day I'll have time to grow.”",
+                "Time is never found — it is made. You have to protect it.",
+              ],
+              [
+                "“It doesn't matter if I skip one day.”",
+                "One day becomes two. Two becomes a week. Consistency is everything.",
+              ],
+              [
+                "“I'm not disciplined enough.”",
+                "Discipline is a muscle. You grow it by using it — starting small.",
+              ],
+              [
+                "“My work has to be perfect.”",
+                "Perfect is the enemy of done. Done is better than perfect.",
+              ],
+              [
+                "“I don't need to learn new things.”",
+                "Growth is the sign of life. Without growth, you stagnate.",
+              ],
+              [
+                "“Personal development is just for some other professionals.”",
+                "It is for every believer — you are called to grow in every area of life.",
+              ],
+            ],
+          },
+        },
+        {
+          heading:
+            "Simple Daily Habits That Build Your Creativity & Personal Development",
+          paragraphs: [
+            "Here are 9 daily habits that can transform your creative life and your person. Pick at least 4 to practice this week.",
+          ],
+          table: {
+            headers: ["Habit", "Why It Works"],
+            rows: [
+              [
+                "Pray first",
+                "Before you create, invite the Holy Spirit into your work. This sets the tone for your whole day.",
+              ],
+              [
+                "Create for 15 minutes",
+                "Even 15 minutes a day adds up. Write a paragraph, sketch a design, write a line of code, plan your project.",
+              ],
+              [
+                "Consume something new",
+                "Read an article, watch a tutorial, listen to a podcast. Feed your mind with new ideas.",
+              ],
+              [
+                "Journal one idea",
+                "Write down one idea every day if possible — even if it seems silly. This trains your brain to generate ideas.",
+              ],
+              [
+                "Read a book chapter weekly",
+                "Read something that helps you grow — in faith, skill, or character.",
+              ],
+              [
+                "Review your progress",
+                "Look back at your week. What worked? What didn't? Adjust and keep going.",
+              ],
+              [
+                "Rest intentionally",
+                "Creativity requires rest. Take a Sabbath — a real break — every week.",
+              ],
+              [
+                "Pray in tongues",
+                "Spend 15–30 minutes daily praying in the Spirit. This builds your spirit and releases creative breakthroughs.",
+              ],
+              [
+                "Ask for feedback",
+                "Ask someone you trust: “What could I improve?” Feedback is the shortcut to growth.",
+              ],
+            ],
+          },
+        },
+        {
+          heading: "How Personal Development Fuels Your Creativity",
+          table: {
+            headers: ["Area of Growth", "How It Helps Your Creativity"],
+            rows: [
+              [
+                "Spiritual growth",
+                "You hear God more clearly — and He is the source of all good divine ideas.",
+              ],
+              [
+                "Skill growth",
+                "You can build better, bolder, faster, and more creatively.",
+              ],
+              [
+                "Character growth",
+                "Your reputation opens doors — and keeps them open.",
+              ],
+              [
+                "Relational growth",
+                "You learn from others, and others learn from you.",
+              ],
+              [
+                "Emotional growth",
+                "You handle failure, criticism, and setbacks with grace.",
+              ],
+              [
+                "Physical growth",
+                "You have energy, focus, and stamina to keep creating.",
+              ],
+            ],
+          },
+        },
       ],
       reflection:
-        "Daniel had an excellent spirit - not occasionally, but daily. He prayed three times a day, even when it was illegal. His daily habits carried him through decades of service. The same is true for you. Creativity is not built in one big moment. It is built in the daily moments.",
+        "Creativity is not a one-time event. It is a lifestyle. Personal development is the fuel that keeps it growing. The secret is not trying harder — it is showing up consistently and choosing to grow, even when you don't feel like it.",
       focus:
-        "Building daily creative habits and committing to personal development.",
+        "Building a sustainable creativity lifestyle through consistent daily habits and intentional personal development.",
+      thisWeeksActions: {
+        intro: "Pick at least 5 of the 8 actions below to complete this week.",
+        items: [
+          "Choose one daily creative habit (like writing, sketching, coding, designing or any other creative habit of your choice) — and practice it every day for at least 15 minutes.",
+          "Set a specific time for your daily creative habit — e.g., 8 AM, right after breakfast, or before bed. Write it down.",
+          "Track your habit — put a “✔” in your calendar every day you practice. This helps you see your consistency.",
+          "Read one chapter of a book that helps you grow — in faith, skill, or character. Write down one thing you learned.",
+          "Ask someone for feedback on something you created. Write down what they said — even if it's hard to hear.",
+          "Pray in tongues for at least 10 minutes every day this week. Notice if anything feels different — calmer, clearer, or more focused.",
+          "Rest intentionally for one full day this weekend. No work. No screen time if possible. Let your mind rest.",
+          "Journal: “What is one area of my life I need to grow in — and what can I do about it this week?”",
+        ],
+      },
       action:
-        "Choose one small creative or tech habit to practice every day this week, minimum 15 minutes per day. Track your consistency and notice what changes.",
+        "Pick at least 5 of the 8 Creative Growth Actions this week. Choose one daily creative habit and practice it consistently for at least 15 minutes a day.",
       questions: [
-        "Which daily creative habit did you choose to practice this week?",
-        "How many days did you practice it out of 7? What helped or hindered you?",
-        "What did you learn about yourself through this habit?",
-        "How does personal development fuel your creativity?",
-        'Complete this sentence: "Creativity is not a one-time event. It is a..."',
+        "What daily creative habit will you commit to this week?",
+        "What time of day will you protect for that habit?",
+        "Which area of personal development (spiritual, skill, character, relational, emotional, or physical) do you most need to grow in right now?",
+        "What usually stops you from being consistent — and how will you overcome it this week?",
+        'Complete this sentence: "Creativity is a lifestyle. This week I will show up by..."',
       ],
+      prayer: {
+        title: "A Prayer for Your Week",
+        text: "Lord, I want to build a creative life — not just a creative moment. Help me to show up every day, even when I don't feel motivated. Help me to see that small actions, repeated over time, create something lasting. And help me to keep growing — in my faith, my skills, my character, and my relationships. Give me the discipline to practice, the wisdom to learn, and the grace to keep going even when it feels hard. In Jesus' name, Amen.",
+      },
+      finalWord: {
+        title: "A Final Word for This Week",
+        text: "Creativity is not built in a day. It is built daily. It is built in the 15 minutes you set aside to practice. It is built in the prayer you pray before you start. It is built in the small steps you take — even when no one is watching. And personal development is not a luxury. It is a necessity. Do not despise small beginnings. Do not wait for the “perfect time.” There is no perfect time. There is only now. Show up today. Show up tomorrow. And that lifestyle will impact many lives and glorify Jesus Christ.",
+      },
+      closing: {
+        title: "See You Next Week",
+        text: "That's it for Week 3. Take your time with the assignments. The goal is not perfection — it is consistency and growth. Next week, we will explore developing your creativity personality — how your unique traits shape the way you create, and how to own your creative style. Until then, stay consistent. Keep growing. And keep creating. I'll be right here waiting for you.",
+        signature: "— Your Ahren Mentor",
+      },
     },
+
+    // {
+    //   moduleKey: "module-6",
+    //   moduleNumber: 6,
+    //   weekNumber: 3,
+    //   sendOffsetDays: 18,
+    //   sendDayLabel: "Friday",
+    //   title: "Building a Creativity Lifestyle",
+    //   subtitle: "Daily Habits and Personal Development",
+    //   subject:
+    //     "Ahren Christian Creativity Masterclass - Week 3: Building a Creativity Lifestyle - Daily Habits and Personal Development",
+    //   previewText:
+    //     "Creativity is built through small consistent actions repeated over time.",
+    //   openingCopy: [
+    //     "Welcome to the second module of Week 3!",
+    //     'Now that we have established the importance of faith and character, we turn to a practical question: "How do I actually live this out - day by day?"',
+    //     "Creativity is not a one-time event. It is a lifestyle. Small, consistent actions, repeated over time, create a creative life. Personal development is not a luxury - it is the fuel that keeps your creativity growing.",
+    //   ],
+    //   scriptures: [
+    //     {
+    //       text: "Whatsoever ye do, do it heartily, as to the Lord, and not unto men.",
+    //       reference: "Colossians 3:23 (KJV)",
+    //     },
+    //   ],
+    //   reflection:
+    //     "Daniel had an excellent spirit - not occasionally, but daily. He prayed three times a day, even when it was illegal. His daily habits carried him through decades of service. The same is true for you. Creativity is not built in one big moment. It is built in the daily moments.",
+    //   focus:
+    //     "Building daily creative habits and committing to personal development.",
+    //   action:
+    //     "Choose one small creative or tech habit to practice every day this week, minimum 15 minutes per day. Track your consistency and notice what changes.",
+    //   questions: [
+    //     "Which daily creative habit did you choose to practice this week?",
+    //     "How many days did you practice it out of 7? What helped or hindered you?",
+    //     "What did you learn about yourself through this habit?",
+    //     "How does personal development fuel your creativity?",
+    //     'Complete this sentence: "Creativity is not a one-time event. It is a..."',
+    //   ],
+    // },
+
     {
       moduleKey: "module-7",
       moduleNumber: 7,
