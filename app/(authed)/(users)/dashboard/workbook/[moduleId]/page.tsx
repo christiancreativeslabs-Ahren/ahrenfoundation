@@ -125,6 +125,26 @@ export default async function WorkbookModulePage({
         return AHREN_WORKBOOK_PROGRAM.modules[1];
       case "module-3":
         return AHREN_WORKBOOK_PROGRAM.modules[2];
+
+      case "module-4":
+        return AHREN_WORKBOOK_PROGRAM.modules[3];
+
+      case "module-5":
+        return AHREN_WORKBOOK_PROGRAM.modules[4];
+      case "module-6":
+        return AHREN_WORKBOOK_PROGRAM.modules[5];
+      case "module-7":
+        return AHREN_WORKBOOK_PROGRAM.modules[6];
+      case "module-8":
+        return AHREN_WORKBOOK_PROGRAM.modules[7];
+      case "module-9":
+        return AHREN_WORKBOOK_PROGRAM.modules[8];
+      case "module-10":
+        return AHREN_WORKBOOK_PROGRAM.modules[9];
+      case "module-11":
+        return AHREN_WORKBOOK_PROGRAM.modules[10];
+      case "module-12":
+        return AHREN_WORKBOOK_PROGRAM.modules[11];
       default:
         return module;
     }
