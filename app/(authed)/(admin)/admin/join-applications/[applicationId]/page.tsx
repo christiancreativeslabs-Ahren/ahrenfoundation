@@ -67,7 +67,7 @@ async function permanentlyDeleteMemberAction(formData: FormData) {
   );
   if (!result.ok) {
     // This will surface in the server terminal
-    console.error("Delete action result:", result.message);
+    // console.error("Delete action result:", result.message);
     // Force the error to be visible in the browser for now
     throw new Error(result.message);
   }
@@ -220,8 +220,7 @@ export default async function JoinApplicationDetailPage({
       }))
     : [];
 
-
-    // console.log("Module deliveries:", detail);
+  // console.log("Module deliveries:", detail);
 
   return (
     <div className="space-y-6">

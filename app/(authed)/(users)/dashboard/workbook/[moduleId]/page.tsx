@@ -114,10 +114,8 @@ export default async function WorkbookModulePage({
     data.questions.map((question) => [question.id, question]),
   );
 
-  // console.log("Workbook module page data:", { data });
 
   const loadedModule = (module: typeof data.module) => {
-    // console.log("Loaded module:", module);
     switch (module.moduleKey) {
       case "module-1":
         return AHREN_WORKBOOK_PROGRAM.modules[0];
@@ -149,18 +147,6 @@ export default async function WorkbookModulePage({
         return module;
     }
   };
-  //   if (module.moduleKey === "module-1") {
-  //     const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[0];
-  //     // console.log("Loaded module content:", { loadedModule, module });
-  //     return loadedModule;
-  //   } else if (module.moduleKey === "module-2") {
-  //     const loadedModule = AHREN_WORKBOOK_PROGRAM.modules[1];
-  //     // console.log("Loaded module content:", { loadedModule, module });
-  //     return loadedModule;
-  //   }
-
-  //   return module;
-  // };
 
   return (
     <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">

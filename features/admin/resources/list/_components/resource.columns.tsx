@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import type { ResourceListRow } from "@/lib/admin/resources";
+import { ResourceRowActions } from "./resource-row-actions";
 
 export function formatResourceStatus(isPublished: boolean) {
   return isPublished ? "Published" : "Draft";
@@ -34,7 +35,9 @@ export function buildResourceColumns(input: {
       header: "Resource",
       cell: ({ row }) => (
         <div className="space-y-1">
-          <div className="font-semibold tracking-tight text-white">{row.original.title}</div>
+          <div className="font-semibold tracking-tight text-white">
+            {row.original.title}
+          </div>
           <div className="max-w-[32rem] text-xs leading-5 text-[#8892b0]">
             {row.original.summary || "No summary provided"}
           </div>
@@ -45,7 +48,10 @@ export function buildResourceColumns(input: {
       accessorKey: "audience",
       header: "Audience",
       cell: ({ row }) => (
-        <Badge variant="outline" className="border-cyan-400/15 bg-[#00c9ff]/10 capitalize text-[#00c9ff]">
+        <Badge
+          variant="outline"
+          className="border-cyan-400/15 bg-[#00c9ff]/10 capitalize text-[#00c9ff]"
+        >
           {row.original.audience}
         </Badge>
       ),
@@ -53,7 +59,9 @@ export function buildResourceColumns(input: {
     {
       accessorKey: "category",
       header: "Category",
-      cell: ({ row }) => <span className="text-sm text-white">{row.original.category}</span>,
+      cell: ({ row }) => (
+        <span className="text-sm text-white">{row.original.category}</span>
+      ),
     },
     {
       accessorKey: "isPublished",
@@ -84,6 +92,18 @@ export function buildResourceColumns(input: {
             timeStyle: "short",
           }).format(new Date(row.original.createdAt))}
         </span>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <ResourceRowActions
+          resourceId={row.original.resourceId}
+          isPublished={row.original.isPublished}
+          title={row.original.title}
+          url={row.original.url}
+        />
       ),
     },
   ];

@@ -35,7 +35,7 @@
     ".next/types/**/*.ts",
     "**/*.mts",
     ".next/dev/types/**/*.ts"
-  ],
+,     "features/admin/resources/list/_components/resource.columns copy.txt", "features/admin/resources/list/_components/resource-pdf-viewer copy.txt"  ],
   "exclude": [
     "node_modules",
     "__refs"

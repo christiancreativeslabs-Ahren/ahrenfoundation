@@ -1866,7 +1866,7 @@ export const AHREN_WORKBOOK_PROGRAM: WorkbookProgramDefinition = {
       moduleKey: "module-3",
       moduleNumber: 3,
       weekNumber: 2,
-      sendOffsetDays: 7, // Monday of Week 2
+      sendOffsetDays: 6, // Monday of Week 2
       sendDayLabel: "Monday",
       title: "The Holy Spirit",
       subtitle: "Your Creativity Partner",

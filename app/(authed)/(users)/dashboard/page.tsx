@@ -123,7 +123,7 @@ export default async function MemberDashboardPage() {
               journey.
             </p>
           </div>
-          <SignOutButton />
+          <SignOutButton redirectTo="/hub/onboarding" />
         </header>
 
         <section className="grid gap-4 md:grid-cols-3">

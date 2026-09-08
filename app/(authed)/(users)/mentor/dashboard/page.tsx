@@ -28,7 +28,10 @@ function reviewStatus(row: {
 }) {
   const payload = row.latestSubmission?.submission.payload;
   if (!payload || typeof payload !== "object") return "No submission";
-  return String(payload.mentorReviewStatus ?? "Needs review").replaceAll("_", " ");
+  return String(payload.mentorReviewStatus ?? "Needs review").replaceAll(
+    "_",
+    " ",
+  );
 }
 
 export default async function MentorDashboardPage() {
@@ -68,10 +71,11 @@ export default async function MentorDashboardPage() {
               Welcome, {session.user.name || "mentor"}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
-              Review assigned mentees, Workbook submissions, feedback, and mentorship sessions from one focused workspace.
+              Review assigned mentees, Workbook submissions, feedback, and
+              mentorship sessions from one focused workspace.
             </p>
           </div>
-          <SignOutButton />
+          <SignOutButton redirectTo="/mentor/onboarding" />
         </header>
 
         <MentorWorkspaceNav />
@@ -85,7 +89,10 @@ export default async function MentorDashboardPage() {
             { label: "Sessions", value: String(data.totalSessions) },
             { label: "Completed", value: String(data.completedSessions) },
           ].map((item) => (
-            <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+            <div
+              key={item.label}
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+            >
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
                 {item.label}
               </p>
@@ -102,7 +109,8 @@ export default async function MentorDashboardPage() {
                   Review queue
                 </p>
                 <h2 className="mt-2 text-2xl font-bold">
-                  {data.needsReviewCount} Workbook submission{data.needsReviewCount === 1 ? "" : "s"} need mentor review
+                  {data.needsReviewCount} Workbook submission
+                  {data.needsReviewCount === 1 ? "" : "s"} need mentor review
                 </h2>
               </div>
               <Link
@@ -122,18 +130,28 @@ export default async function MentorDashboardPage() {
               <Users size={18} className="text-[#00ff9d]" />
               <h2 className="text-xl font-bold">Assigned mentees</h2>
             </div>
-            <Link href="/mentor/mentees" className="text-sm font-semibold text-[#00c9ff] hover:text-[#00ff9d]">
+            <Link
+              href="/mentor/mentees"
+              className="text-sm font-semibold text-[#00c9ff] hover:text-[#00ff9d]"
+            >
               View all mentees
             </Link>
           </div>
 
           <div className="mt-6 grid gap-5 lg:grid-cols-2">
             {data.assignments.slice(0, 4).map((row) => (
-              <div key={row.assignment.id} className="rounded-2xl border border-white/10 bg-[#0d1538] p-5">
+              <div
+                key={row.assignment.id}
+                className="rounded-2xl border border-white/10 bg-[#0d1538] p-5"
+              >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-lg font-semibold">{row.mentee.fullName}</p>
-                    <p className="mt-1 text-sm text-slate-300">{row.mentee.email}</p>
+                    <p className="text-lg font-semibold">
+                      {row.mentee.fullName}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {row.mentee.email}
+                    </p>
                   </div>
                   <span className="rounded-full bg-white/5 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-300">
                     {reviewStatus(row)}
@@ -142,22 +160,32 @@ export default async function MentorDashboardPage() {
 
                 <div className="mt-4 grid gap-3 text-sm text-slate-300 sm:grid-cols-2">
                   <div>
-                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">Assigned</span>
+                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">
+                      Assigned
+                    </span>
                     {dateLabel(row.assignment.assignedAt)}
                   </div>
                   <div>
-                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">Sessions</span>
+                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">
+                      Sessions
+                    </span>
                     {row.sessionCount}
                   </div>
                   <div>
-                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">Latest Workbook</span>
+                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">
+                      Latest Workbook
+                    </span>
                     {row.latestSubmission
                       ? `Module ${row.latestSubmission.module.moduleNumber}`
                       : "No submission yet"}
                   </div>
                   <div>
-                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">Submitted</span>
-                    {row.latestSubmission ? dateLabel(row.latestSubmission.submission.submittedAt) : "-"}
+                    <span className="block text-[11px] uppercase tracking-[0.18em] text-[#00c9ff]">
+                      Submitted
+                    </span>
+                    {row.latestSubmission
+                      ? dateLabel(row.latestSubmission.submission.submittedAt)
+                      : "-"}
                   </div>
                 </div>
 
@@ -183,7 +211,8 @@ export default async function MentorDashboardPage() {
 
             {!data.assignments.length ? (
               <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-5 text-sm leading-6 text-slate-300">
-                No mentees have been assigned to you yet. Once admin links a mentee to your account, they will appear here.
+                No mentees have been assigned to you yet. Once admin links a
+                mentee to your account, they will appear here.
               </div>
             ) : null}
           </div>
