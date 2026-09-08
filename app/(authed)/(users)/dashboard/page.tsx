@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { ArrowRight, BookOpen, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Library,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/db";
@@ -146,7 +152,7 @@ export default async function MemberDashboardPage() {
           ))}
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] items-start">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
             <div className="flex items-center gap-3">
               <Users size={18} className="text-[#00ff9d]" />
@@ -201,6 +207,22 @@ export default async function MemberDashboardPage() {
                 links you to a mentor, the details will show here.
               </div>
             )}
+          </div>
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
+            <div className="flex items-center gap-3">
+              <Library size={18} className="text-[#00ff9d]" />
+              <h2 className="text-xl font-bold">Resources</h2>
+            </div>
+            <p className="mt-4 text-sm leading-6 text-slate-300">
+              Guides, templates, and materials published for your journey.
+            </p>
+            <Link
+              href="/dashboard/resources"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#080d2e] transition-transform hover:scale-[1.02]"
+            >
+              Browse resources
+              <ArrowRight size={14} />
+            </Link>
           </div>
 
           <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
