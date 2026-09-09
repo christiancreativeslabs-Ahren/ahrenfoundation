@@ -37,6 +37,7 @@ export const users = pgTable(
   (table) => [uniqueIndex("user_email_idx").on(table.email)]
 );
 
+
 export const sessions = pgTable(
   "session",
   {

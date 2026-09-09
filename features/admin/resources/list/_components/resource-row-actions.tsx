@@ -67,7 +67,10 @@ export function ResourceRowActions({
               size="sm"
               className="h-8 px-2 text-[#00c9ff] hover:bg-white/10"
               title="View PDF"
-              onClick={() => setViewerOpen(true)}
+              // onClick={() => setViewerOpen(true)}
+              onClick={() => {
+                window.open(`/api/resources/view/${resourceId}`, "_blank");
+              }}
             >
               <FileText className="h-4 w-4" />
             </Button>

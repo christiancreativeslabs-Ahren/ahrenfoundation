@@ -117,7 +117,10 @@ export default async function MemberResourcesPage() {
                 <div className="mt-5">
                   {resource.url && isPdf(resource.url) ? (
                     <Link
-                      href={`/dashboard/resources/${resource.id}`}
+                      // href={`/dashboard/resources/${resource.id}`}
+                      href={`/api/resources/view/${resource.id}`}
+                      // https://www.ahrenfoundation.org/api/resources/view/jtgu1d14u7g70sfljxmonq88
+                      target="_blank"
                       className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[#080d2e]"
                     >
                       <FileText size={14} />

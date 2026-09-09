@@ -68,9 +68,10 @@ export function ResourceCard({ resource }: { resource: ResourceListRow }) {
 
             {resource.url ? (
               isPdf ? (
-                <button
-                  type="button"
-                  onClick={() => setViewerOpen(true)}
+                <a
+                  href={`/api/resources/view/${resource.resourceId}`}
+                  target="_blank"
+                  rel="noreferrer"
                   className={cn(
                     buttonVariants({ variant: "outline", size: "sm" }),
                     "h-8 border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]",
@@ -78,8 +79,19 @@ export function ResourceCard({ resource }: { resource: ResourceListRow }) {
                 >
                   <FileText className="mr-2 h-4 w-4" />
                   View PDF
-                </button>
+                </a>
               ) : (
+                // <button
+                //   type="button"
+                //   onClick={() => setViewerOpen(true)}
+                //   className={cn(
+                //     buttonVariants({ variant: "outline", size: "sm" }),
+                //     "h-8 border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]",
+                //   )}
+                // >
+                //   <FileText className="mr-2 h-4 w-4" />
+                //   View PDF
+                // </button>
                 <a
                   href={resource.url}
                   target="_blank"
