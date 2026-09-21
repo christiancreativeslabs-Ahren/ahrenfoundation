@@ -34,9 +34,8 @@ export const users = pgTable(
     lastName: text("last_name"),
     image: text("image"),
   },
-  (table) => [uniqueIndex("user_email_idx").on(table.email)]
+  (table) => [uniqueIndex("user_email_idx").on(table.email)],
 );
-
 
 export const sessions = pgTable(
   "session",
@@ -55,7 +54,7 @@ export const sessions = pgTable(
   (table) => [
     uniqueIndex("session_token_idx").on(table.token),
     index("session_user_id_idx").on(table.userId),
-  ]
+  ],
 );
 
 export const accounts = pgTable(
@@ -84,10 +83,10 @@ export const accounts = pgTable(
   (table) => [
     uniqueIndex("account_provider_account_idx").on(
       table.providerId,
-      table.accountId
+      table.accountId,
     ),
     index("account_user_id_idx").on(table.userId),
-  ]
+  ],
 );
 
 export const verifications = pgTable(
@@ -100,7 +99,7 @@ export const verifications = pgTable(
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     identifier: text("identifier").notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)]
+  (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
 export const trainingApplicationSettings = pgTable(
@@ -109,13 +108,17 @@ export const trainingApplicationSettings = pgTable(
     key: text("key").primaryKey(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
-    applicationsOpenAt: timestamp("applications_open_at", { withTimezone: true }),
-    applicationsCloseAt: timestamp("applications_close_at", { withTimezone: true }),
+    applicationsOpenAt: timestamp("applications_open_at", {
+      withTimezone: true,
+    }),
+    applicationsCloseAt: timestamp("applications_close_at", {
+      withTimezone: true,
+    }),
     forceClosed: boolean("force_closed").notNull().default(false),
     closedTitle: text("closed_title").notNull().default("Applications Closed."),
     closedMessageHtml: text("closed_message_html").notNull().default(""),
   },
-  (table) => [index("training_application_settings_key_idx").on(table.key)]
+  (table) => [index("training_application_settings_key_idx").on(table.key)],
 );
 
 export const joinApplications = pgTable(
@@ -147,7 +150,7 @@ export const joinApplications = pgTable(
     index("join_application_type_idx").on(table.applicationType),
     index("join_application_email_idx").on(table.email),
     index("join_application_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const joinApplicationListItems = pgTable(
@@ -184,7 +187,7 @@ export const joinApplicationListItems = pgTable(
     index("join_application_list_type_idx").on(table.applicationType),
     index("join_application_list_member_idx").on(table.programMemberId),
     index("join_application_list_user_idx").on(table.userId),
-  ]
+  ],
 );
 
 export const programMembers = pgTable(
@@ -221,13 +224,13 @@ export const programMembers = pgTable(
   },
   (table) => [
     uniqueIndex("program_member_join_application_idx").on(
-      table.joinApplicationId
+      table.joinApplicationId,
     ),
     index("program_member_user_id_idx").on(table.userId),
     index("program_member_role_idx").on(table.role),
     index("program_member_status_idx").on(table.status),
     index("program_member_email_idx").on(table.email),
-  ]
+  ],
 );
 
 export const programs = pgTable(
@@ -248,7 +251,7 @@ export const programs = pgTable(
     uniqueIndex("program_slug_idx").on(table.slug),
     index("program_status_idx").on(table.status),
     index("program_active_idx").on(table.isActive),
-  ]
+  ],
 );
 
 /*
@@ -380,7 +383,6 @@ export const workbookSubmissionAnswers = pgTable(
 );
 */
 
-
 export const programModules = pgTable(
   "program_module",
   {
@@ -412,15 +414,15 @@ export const programModules = pgTable(
   (table) => [
     uniqueIndex("program_module_program_key_idx").on(
       table.programId,
-      table.moduleKey
+      table.moduleKey,
     ),
     uniqueIndex("program_module_program_number_idx").on(
       table.programId,
-      table.moduleNumber
+      table.moduleNumber,
     ),
     index("program_module_program_idx").on(table.programId),
     index("program_module_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const programEnrollments = pgTable(
@@ -446,12 +448,12 @@ export const programEnrollments = pgTable(
   (table) => [
     uniqueIndex("program_enrollment_member_program_idx").on(
       table.programMemberId,
-      table.programId
+      table.programId,
     ),
     index("program_enrollment_member_idx").on(table.programMemberId),
     index("program_enrollment_program_idx").on(table.programId),
     index("program_enrollment_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const moduleDeliveries = pgTable(
@@ -489,13 +491,13 @@ export const moduleDeliveries = pgTable(
   (table) => [
     uniqueIndex("module_delivery_enrollment_module_idx").on(
       table.enrollmentId,
-      table.moduleId
+      table.moduleId,
     ),
     uniqueIndex("module_delivery_access_token_idx").on(table.accessToken),
     index("module_delivery_status_idx").on(table.status),
     index("module_delivery_scheduled_for_idx").on(table.scheduledFor),
     index("module_delivery_member_idx").on(table.programMemberId),
-  ]
+  ],
 );
 
 export const moduleQuestions = pgTable(
@@ -515,10 +517,10 @@ export const moduleQuestions = pgTable(
   (table) => [
     uniqueIndex("module_question_module_number_idx").on(
       table.moduleId,
-      table.questionNumber
+      table.questionNumber,
     ),
     index("module_question_module_idx").on(table.moduleId),
-  ]
+  ],
 );
 
 export const moduleSubmissions = pgTable(
@@ -550,7 +552,7 @@ export const moduleSubmissions = pgTable(
     index("module_submission_module_idx").on(table.moduleId),
     index("module_submission_delivery_idx").on(table.deliveryId),
     index("module_submission_member_idx").on(table.programMemberId),
-  ]
+  ],
 );
 
 export const moduleSubmissionAnswers = pgTable(
@@ -570,10 +572,10 @@ export const moduleSubmissionAnswers = pgTable(
   (table) => [
     uniqueIndex("module_submission_answer_question_idx").on(
       table.submissionId,
-      table.questionId
+      table.questionId,
     ),
     index("module_submission_answer_submission_idx").on(table.submissionId),
-  ]
+  ],
 );
 
 export const engagementEvents = pgTable(
@@ -584,11 +586,11 @@ export const engagementEvents = pgTable(
     updatedAt: updatedAt(),
     programMemberId: text("program_member_id").references(
       () => programMembers.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     enrollmentId: text("enrollment_id").references(
       () => programEnrollments.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     moduleId: text("module_id").references(() => programModules.id, {
       onDelete: "set null",
@@ -606,7 +608,7 @@ export const engagementEvents = pgTable(
     index("engagement_event_module_idx").on(table.moduleId),
     index("engagement_event_delivery_idx").on(table.deliveryId),
     index("engagement_event_type_idx").on(table.eventType),
-  ]
+  ],
 );
 
 export const mentorAssignments = pgTable(
@@ -632,7 +634,7 @@ export const mentorAssignments = pgTable(
     index("mentor_assignment_youth_idx").on(table.youthMemberId),
     index("mentor_assignment_mentor_idx").on(table.mentorMemberId),
     index("mentor_assignment_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const mentorshipSessions = pgTable(
@@ -654,10 +656,10 @@ export const mentorshipSessions = pgTable(
   (table) => [
     uniqueIndex("mentorship_session_assignment_number_idx").on(
       table.assignmentId,
-      table.sessionNumber
+      table.sessionNumber,
     ),
     index("mentorship_session_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const certificates = pgTable(
@@ -679,7 +681,7 @@ export const certificates = pgTable(
   (table) => [
     uniqueIndex("certificate_number_idx").on(table.certificateNumber),
     index("certificate_member_idx").on(table.programMemberId),
-  ]
+  ],
 );
 
 export const emailEvents = pgTable(
@@ -690,11 +692,11 @@ export const emailEvents = pgTable(
     updatedAt: updatedAt(),
     programMemberId: text("program_member_id").references(
       () => programMembers.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     enrollmentId: text("enrollment_id").references(
       () => programEnrollments.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     moduleId: text("module_id").references(() => programModules.id, {
       onDelete: "set null",
@@ -720,7 +722,7 @@ export const emailEvents = pgTable(
     index("email_event_recipient_idx").on(table.recipientEmail),
     index("email_event_template_idx").on(table.templateKey),
     index("email_event_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const bulkEmailCampaigns = pgTable(
@@ -754,7 +756,7 @@ export const bulkEmailCampaigns = pgTable(
     index("bulk_email_campaign_audience_idx").on(table.audienceType),
     index("bulk_email_campaign_scheduled_for_idx").on(table.scheduledFor),
     index("bulk_email_campaign_created_by_idx").on(table.createdByUserId),
-  ]
+  ],
 );
 
 export const bulkEmailCampaignAttachments = pgTable(
@@ -775,7 +777,7 @@ export const bulkEmailCampaignAttachments = pgTable(
   },
   (table) => [
     index("bulk_email_campaign_attachment_campaign_idx").on(table.campaignId),
-  ]
+  ],
 );
 
 export const bulkEmailCampaignRecipients = pgTable(
@@ -789,11 +791,11 @@ export const bulkEmailCampaignRecipients = pgTable(
       .references(() => bulkEmailCampaigns.id, { onDelete: "cascade" }),
     programMemberId: text("program_member_id").references(
       () => programMembers.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     joinApplicationId: text("join_application_id").references(
       () => joinApplications.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     recipientName: text("recipient_name").notNull(),
     recipientEmail: text("recipient_email").notNull(),
@@ -808,7 +810,7 @@ export const bulkEmailCampaignRecipients = pgTable(
     index("bulk_email_campaign_recipient_email_idx").on(table.recipientEmail),
     index("bulk_email_campaign_recipient_status_idx").on(table.status),
     index("bulk_email_campaign_recipient_member_idx").on(table.programMemberId),
-  ]
+  ],
 );
 
 export const dashboardResources = pgTable(
@@ -828,7 +830,7 @@ export const dashboardResources = pgTable(
     index("dashboard_resource_audience_idx").on(table.audience),
     index("dashboard_resource_category_idx").on(table.category),
     index("dashboard_resource_published_idx").on(table.isPublished),
-  ]
+  ],
 );
 
 export const projectShowcases = pgTable(
@@ -842,7 +844,7 @@ export const projectShowcases = pgTable(
     }),
     programMemberId: text("program_member_id").references(
       () => programMembers.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     title: text("title").notNull(),
     summary: text("summary").notNull(),
@@ -854,7 +856,7 @@ export const projectShowcases = pgTable(
     index("project_showcase_user_idx").on(table.userId),
     index("project_showcase_member_idx").on(table.programMemberId),
     index("project_showcase_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const communityPosts = pgTable(
@@ -868,7 +870,7 @@ export const communityPosts = pgTable(
     }),
     programMemberId: text("program_member_id").references(
       () => programMembers.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
     channel: text("channel").notNull().default("verified_members"),
     body: text("body").notNull(),
@@ -879,7 +881,7 @@ export const communityPosts = pgTable(
     index("community_post_member_idx").on(table.programMemberId),
     index("community_post_channel_idx").on(table.channel),
     index("community_post_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const communityEvents = pgTable(
@@ -900,7 +902,7 @@ export const communityEvents = pgTable(
     index("community_event_audience_idx").on(table.audience),
     index("community_event_starts_at_idx").on(table.startsAt),
     index("community_event_status_idx").on(table.status),
-  ]
+  ],
 );
 
 export const opportunities = pgTable(
@@ -920,9 +922,32 @@ export const opportunities = pgTable(
     index("opportunity_audience_idx").on(table.audience),
     index("opportunity_type_idx").on(table.type),
     index("opportunity_status_idx").on(table.status),
-  ]
+  ],
 );
 
-
-
-
+export const blogPosts = pgTable(
+  "blog_post",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    createdByUserId: text("created_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    title: text("title").notNull(),
+    slug: text("slug").notNull(),
+    excerpt: text("excerpt"),
+    contentHtml: text("content_html").notNull().default(""),
+    coverImageUrl: text("cover_image_url"),
+    coverImageCaption: text("cover_image_caption"),
+    status: text("status").notNull().default("draft"), // draft | published | archived
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    authorName: text("author_name"),
+  },
+  (table) => [
+    uniqueIndex("blog_post_slug_idx").on(table.slug),
+    index("blog_post_status_idx").on(table.status),
+    index("blog_post_published_at_idx").on(table.publishedAt),
+    index("blog_post_created_by_user_idx").on(table.createdByUserId),
+  ],
+);

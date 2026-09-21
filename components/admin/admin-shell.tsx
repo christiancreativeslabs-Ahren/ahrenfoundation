@@ -15,6 +15,7 @@ import {
   UserRoundCheck,
   UserRoundPlus,
   Send,
+  Newspaper,
 } from "lucide-react";
 import SignOutButton from "@/components/auth/sign-out-button";
 import {
@@ -99,6 +100,11 @@ const navGroups = [
   {
     label: "Community",
     items: [
+      {
+        href: "/admin/blog",
+        label: "Blog",
+        icon: Newspaper, // or Newspaper if you import it
+      },
       {
         href: "/admin/resources",
         label: "Resources",
