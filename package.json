@@ -59,6 +59,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^10",
     "eslint-config-next": "16.2.9",
+    "lightningcss-darwin-arm64": "1.32.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",
     "typescript": "^6"
