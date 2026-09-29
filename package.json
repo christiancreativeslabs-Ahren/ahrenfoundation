@@ -15,6 +15,7 @@
     "db:seed:admin": "tsx ./db/seeds/admin-auth-user.ts",
     "db:seed:mentors": "tsx ./db/seeds/mentors.ts",
     "db:seed:workbook": "tsx ./db/seeds/workbook.seed.ts",
+    "db:seed:showcase": "tsx ./db/seeds/showcase-taxonomy.ts",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },

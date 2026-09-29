@@ -196,7 +196,8 @@ export const BLOGS = [
     date: "April 10, 2026",
     tag: "Faith & Tech",
     title: "Why Believers Belong in the Tech Space",
-    excerpt: "The marketplace is a mission field. Discover how coding, design, and innovation can become acts of worship and powerful tools for the Great Commission.",
+    excerpt:
+      "The marketplace is a mission field. Discover how coding, design, and innovation can become acts of worship and powerful tools for the Great Commission.",
     readTime: "5 min read",
     author: "Emmanuel Akin-Williams",
   },
@@ -205,7 +206,8 @@ export const BLOGS = [
     date: "March 28, 2026",
     tag: "CCLabs",
     title: "How Christian Creatives Labs Are Changing Communities",
-    excerpt: "Inside the collaborative spaces where young believers are building Christ-centered apps for discipleship, ministry administration, and global missions.",
+    excerpt:
+      "Inside the collaborative spaces where young believers are building Christ-centered apps for discipleship, ministry administration, and global missions.",
     readTime: "7 min read",
     author: "Ahren Foundation",
   },
@@ -214,7 +216,8 @@ export const BLOGS = [
     date: "March 12, 2026",
     tag: "Spirit-Led",
     title: "The Holy Spirit as Our Ultimate Creative Director",
-    excerpt: "What does it look like to genuinely collaborate with the Holy Spirit in your craft? Reflections from our mentors and creative team on building in His strength.",
+    excerpt:
+      "What does it look like to genuinely collaborate with the Holy Spirit in your craft? Reflections from our mentors and creative team on building in His strength.",
     readTime: "6 min read",
     author: "Emmanuel Shiawoya",
   },
@@ -223,7 +226,8 @@ export const BLOGS = [
     date: "February 20, 2026",
     tag: "Fellowship",
     title: "Believers in Tech Fellowship: Faith, Fun & Real Connection",
-    excerpt: "Our Believers in Tech Fellowship is more than networking. It's a place where faith-driven technologists find genuine community, collaborate, and grow together in purpose.",
+    excerpt:
+      "Our Believers in Tech Fellowship is more than networking. It's a place where faith-driven technologists find genuine community, collaborate, and grow together in purpose.",
     readTime: "4 min read",
     author: "Ahren Foundation",
   },
@@ -257,7 +261,6 @@ export const NAV_LINKS = [
   { label: "Community Hub", href: "/hub" },
   { label: "Partner With Us", href: "/partners" },
   { label: "Blog", href: "/blog" },
+  { label: "The Showcase", href: "/showcase" },
   { label: "Contact Us", href: "/contact" },
 ];
-
-

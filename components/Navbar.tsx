@@ -19,7 +19,17 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  const isActive = (href: string) => {
+    if (href === "/blog") {
+      return pathname === "/blog" || pathname.startsWith("/blog/");
+    }
+
+    return pathname === href;
+  };
 
   // Split nav: left links + right CTA
   const mainLinks = NAV_LINKS;
@@ -36,8 +46,14 @@ export default function Navbar() {
       >
         <nav className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-            <motion.div whileHover={{ scale: 1.05, rotate: 2 }} transition={{ type: "spring", stiffness: 400 }}>
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 group flex-shrink-0"
+          >
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: 2 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
               <Image
                 src="/assets/logo-icon-color.png"
                 alt="Ahren Foundation"
@@ -47,7 +63,10 @@ export default function Navbar() {
               />
             </motion.div>
             <div className="flex flex-col leading-none">
-              <span className="font-display font-bold text-white text-[14px] tracking-tight" style={{ fontFamily: "var(--font-display, Syne, sans-serif)" }}>
+              <span
+                className="font-display font-bold text-white text-[14px] tracking-tight"
+                style={{ fontFamily: "var(--font-display, Syne, sans-serif)" }}
+              >
                 Ahren Foundation
               </span>
               <span className="text-[9px] grad-text font-semibold tracking-widest uppercase hidden sm:block">
@@ -59,7 +78,9 @@ export default function Navbar() {
           {/* Desktop nav — scrollable horizontally if needed */}
           <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
             {mainLinks.map((link) => {
-              const active = pathname === link.href;
+              // const active = pathname === link.href;
+
+              const active = isActive(link.href);
               return (
                 <Link key={link.href} href={link.href}>
                   <motion.span
@@ -75,7 +96,11 @@ export default function Navbar() {
                         layoutId="nav-active"
                         className="absolute inset-0 rounded-lg"
                         style={{ background: "rgba(0,201,255,0.08)" }}
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 380,
+                          damping: 30,
+                        }}
                       />
                     )}
                   </motion.span>
@@ -88,7 +113,10 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link href="/hub">
               <motion.button
-                whileHover={{ scale: 1.04, boxShadow: "0 0 28px rgba(0,201,255,0.35)" }}
+                whileHover={{
+                  scale: 1.04,
+                  boxShadow: "0 0 28px rgba(0,201,255,0.35)",
+                }}
                 whileTap={{ scale: 0.97 }}
                 className="grad-bg text-[#080d2e] font-bold text-[13px] px-5 py-2.5 rounded-full transition-all duration-200"
               >
@@ -117,7 +145,10 @@ export default function Navbar() {
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-40 flex flex-col pt-20 px-6 pb-10 lg:hidden overflow-y-auto"
-            style={{ background: "rgba(8,13,46,0.98)", backdropFilter: "blur(24px)" }}
+            style={{
+              background: "rgba(8,13,46,0.98)",
+              backdropFilter: "blur(24px)",
+            }}
           >
             <div className="flex flex-col gap-1 flex-1">
               {mainLinks.map((link, i) => (
@@ -130,7 +161,9 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     className={`flex items-center justify-between py-4 text-lg font-semibold border-b transition-colors ${
-                      pathname === link.href ? "grad-text border-[rgba(0,201,255,0.2)]" : "text-[#8892b0] border-[rgba(0,201,255,0.06)]"
+                      pathname === link.href
+                        ? "grad-text border-[rgba(0,201,255,0.2)]"
+                        : "text-[#8892b0] border-[rgba(0,201,255,0.06)]"
                     }`}
                     style={{ fontFamily: "var(--font-display)" }}
                   >

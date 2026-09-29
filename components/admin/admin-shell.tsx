@@ -16,6 +16,7 @@ import {
   UserRoundPlus,
   Send,
   Newspaper,
+  Sparkles,
 } from "lucide-react";
 import SignOutButton from "@/components/auth/sign-out-button";
 import {
@@ -104,6 +105,11 @@ const navGroups = [
         href: "/admin/blog",
         label: "Blog",
         icon: Newspaper, // or Newspaper if you import it
+      },
+      {
+        href: "/admin/showcase",
+        label: "Showcase",
+        icon: Sparkles, // or LayoutGrid / Sparkles
       },
       {
         href: "/admin/resources",

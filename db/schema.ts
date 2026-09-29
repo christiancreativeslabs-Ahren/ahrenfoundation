@@ -951,3 +951,106 @@ export const blogPosts = pgTable(
     index("blog_post_created_by_user_idx").on(table.createdByUserId),
   ],
 );
+
+export const showcaseCategories = pgTable(
+  "showcase_category",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    description: text("description"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+  },
+  (t) => [
+    uniqueIndex("showcase_category_slug_idx").on(t.slug),
+    index("showcase_category_active_idx").on(t.isActive),
+  ],
+);
+
+export const showcaseSubcategories = pgTable(
+  "showcase_subcategory",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    categoryId: text("category_id")
+      .notNull()
+      .references(() => showcaseCategories.id, { onDelete: "cascade" }),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    sortOrder: integer("sort_order").notNull().default(0),
+    isActive: boolean("is_active").notNull().default(true),
+  },
+  (t) => [
+    uniqueIndex("showcase_subcategory_category_slug_idx").on(
+      t.categoryId,
+      t.slug,
+    ),
+    index("showcase_subcategory_category_idx").on(t.categoryId),
+  ],
+);
+
+export const showcaseItems = pgTable(
+  "showcase_item",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    createdByUserId: text("created_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    title: text("title").notNull(),
+    slug: text("slug").notNull(),
+    summary: text("summary"),
+    bodyHtml: text("body_html").notNull().default(""),
+    categoryId: text("category_id")
+      .notNull()
+      .references(() => showcaseCategories.id, { onDelete: "restrict" }),
+    subcategoryId: text("subcategory_id").references(
+      () => showcaseSubcategories.id,
+      { onDelete: "set null" },
+    ),
+    status: text("status").notNull().default("draft"), // draft | review | published
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    coverImageUrl: text("cover_image_url"),
+    coverImageCaption: text("cover_image_caption"),
+    creatorName: text("creator_name"),
+    creatorMemberId: text("creator_member_id").references(
+      () => programMembers.id,
+      { onDelete: "set null" },
+    ),
+    isFeatured: boolean("is_featured").notNull().default(false),
+    sortOrder: integer("sort_order").notNull().default(0),
+  },
+  (t) => [
+    uniqueIndex("showcase_item_slug_idx").on(t.slug),
+    index("showcase_item_status_idx").on(t.status),
+    index("showcase_item_category_idx").on(t.categoryId),
+    index("showcase_item_subcategory_idx").on(t.subcategoryId),
+    index("showcase_item_published_at_idx").on(t.publishedAt),
+  ],
+);
+
+export const showcaseMedia = pgTable(
+  "showcase_media",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    itemId: text("item_id")
+      .notNull()
+      .references(() => showcaseItems.id, { onDelete: "cascade" }),
+    mediaKind: text("media_kind").notNull(), // image | audio | youtube | link
+    url: text("url").notNull(),
+    caption: text("caption"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    meta: jsonb("meta"),
+  },
+  (t) => [
+    index("showcase_media_item_idx").on(t.itemId),
+    index("showcase_media_kind_idx").on(t.mediaKind),
+  ],
+);
