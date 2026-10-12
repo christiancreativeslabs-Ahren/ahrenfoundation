@@ -129,7 +129,7 @@ export default function HubPage() {
           </FadeUp>
 
           {/* New cohort box */}
-          <FadeUp delay={0.08}>
+          {/* <FadeUp delay={0.08}>
             <motion.div
               animate={{
                 boxShadow: [
@@ -165,7 +165,7 @@ export default function HubPage() {
                 </p>
               </div>
             </motion.div>
-          </FadeUp>
+          </FadeUp> */}
 
           {/* Apply CTA */}
           <FadeUp delay={0.12}>
