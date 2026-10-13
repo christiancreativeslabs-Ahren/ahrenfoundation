@@ -51,7 +51,11 @@ export function JoinApplicationCard({
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2 text-xs">
             <span className="truncate text-[#8892b0]">{application.email}</span>
             <span className="rounded-full border border-cyan-400/15 bg-[#00c9ff]/10 px-2 py-0.5 font-medium text-[#00c9ff]">
-              {application.applicationType === "youth" ? "Prospective mentee" : "Mentor"}
+              {application.applicationType === "youth"
+                ? "Prospective mentee"
+                : application.applicationType === "community"
+                  ? "Community Member"
+                  : "Mentor"}
             </span>
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-medium text-[#e8eeff]">
               {application.consent ? "Consent yes" : "Consent no"}
@@ -62,11 +66,17 @@ export function JoinApplicationCard({
 
       <div className="grid grid-cols-2 border-y border-white/10 bg-[#07102c]">
         <div className="col-span-2 border-b border-white/10 px-4 py-3">
-          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]">Location</div>
-          <div className="mt-1 truncate text-sm font-semibold text-white">{application.location}</div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]">
+            Location
+          </div>
+          <div className="mt-1 truncate text-sm font-semibold text-white">
+            {application.location}
+          </div>
         </div>
         <div className="px-4 py-3">
-          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]">Member</div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]">
+            Member
+          </div>
           <div className="mt-2 text-sm font-semibold">
             {application.memberStatus ? (
               <span className="inline-flex rounded-full border border-[#00ff9d]/15 bg-[#00ff9d]/10 px-2.5 py-1 text-[#00ff9d]">
@@ -80,9 +90,13 @@ export function JoinApplicationCard({
           </div>
         </div>
         <div className="border-l border-white/10 px-4 py-3">
-          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]">Step</div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#00c9ff]">
+            Step
+          </div>
           <div className="mt-2 text-sm font-semibold text-white">
-            {application.memberCurrentStep ? formatStatus(application.memberCurrentStep) : "-"}
+            {application.memberCurrentStep
+              ? formatStatus(application.memberCurrentStep)
+              : "-"}
           </div>
         </div>
       </div>
@@ -92,9 +106,10 @@ export function JoinApplicationCard({
           <div className="truncate">{application.phoneNumber}</div>
           <div className="truncate">
             Submitted:{" "}
-            {new Intl.DateTimeFormat("en-NG", { dateStyle: "medium", timeStyle: "short" }).format(
-              new Date(application.createdAt),
-            )}
+            {new Intl.DateTimeFormat("en-NG", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            }).format(new Date(application.createdAt))}
           </div>
         </div>
         <JoinApplicationActions

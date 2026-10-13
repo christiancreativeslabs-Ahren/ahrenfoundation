@@ -161,9 +161,9 @@ export function JoinApplicationTable({
             value:
               currentInput.applicationType === "youth"
                 ? "Prospective mentee"
-                : // : currentInput.applicationType === "community"
-                  //   ? "Community ember"
-                  "Mentor applicant",
+                : currentInput.applicationType === "community"
+                  ? "Community member"
+                  : "Mentor applicant",
             onRemove: () => updateFilters({ applicationType: "all" }),
           }
         : null,

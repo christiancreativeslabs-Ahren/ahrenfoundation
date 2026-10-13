@@ -57,7 +57,9 @@ export function buildJoinApplicationColumns(input: {
           <div className="font-semibold tracking-tight text-white transition-colors group-hover:text-[#00ff9d]">
             {row.original.fullName}
           </div>
-          <div className="mt-1 text-xs text-[#8892b0]">{row.original.email}</div>
+          <div className="mt-1 text-xs text-[#8892b0]">
+            {row.original.email}
+          </div>
         </button>
       ),
     },
@@ -69,7 +71,11 @@ export function buildJoinApplicationColumns(input: {
           variant="outline"
           className="border-cyan-400/15 bg-[#00c9ff]/10 capitalize text-[#00c9ff]"
         >
-          {row.original.applicationType === "youth" ? "Prospective mentee" : "Mentor"}
+          {row.original.applicationType === "youth"
+            ? "Prospective mentee"
+            : row.original.applicationType === "community"
+              ? "Community Member"
+              : "Mentor"}
         </Badge>
       ),
     },
@@ -78,9 +84,14 @@ export function buildJoinApplicationColumns(input: {
       header: "Status",
       cell: ({ row }) => (
         <Badge
-          variant={statusVariant(row.original.status)}
+          variant={statusVariant(
+            row.original.applicationType === "community"
+              ? "approved"
+              : row.original.status,
+          )}
           className={
-            row.original.status === "approved"
+            row.original.status === "approved" ||
+            row.original.applicationType === "community"
               ? "bg-[#00ff9d]/15 text-[#00ff9d]"
               : row.original.status === "rejected"
                 ? "bg-rose-500/15 text-rose-200"
@@ -89,7 +100,11 @@ export function buildJoinApplicationColumns(input: {
                   : "border-white/10 bg-white/[0.04] text-[#e8eeff]"
           }
         >
-          {formatStatus(row.original.status)}
+          {formatStatus(
+            row.original.applicationType === "community"
+              ? "Approved"
+              : row.original.status,
+          )}
         </Badge>
       ),
     },
@@ -104,7 +119,9 @@ export function buildJoinApplicationColumns(input: {
               : "inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-sm font-medium text-[#8892b0]"
           }
         >
-          {row.original.memberStatus ? formatStatus(row.original.memberStatus) : "Not created"}
+          {row.original.memberStatus
+            ? formatStatus(row.original.memberStatus)
+            : "Not created"}
         </span>
       ),
     },
@@ -113,7 +130,9 @@ export function buildJoinApplicationColumns(input: {
       header: "Current Step",
       cell: ({ row }) => (
         <span className="text-sm font-medium text-[#e8eeff]">
-          {row.original.memberCurrentStep ? formatStatus(row.original.memberCurrentStep) : "-"}
+          {row.original.memberCurrentStep
+            ? formatStatus(row.original.memberCurrentStep)
+            : "-"}
         </span>
       ),
     },

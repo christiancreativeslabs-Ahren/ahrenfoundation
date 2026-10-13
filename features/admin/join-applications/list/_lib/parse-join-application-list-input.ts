@@ -7,7 +7,7 @@ export type RawJoinApplicationListParams = Record<
   string | string[] | undefined
 >;
 
-const APPLICATION_TYPES = ["all", "youth", "mentor"] as const;
+const APPLICATION_TYPES = ["all", "youth", "mentor", "community"] as const;
 const STATUS_VALUES = ["pending", "reviewing", "approved", "rejected"] as const;
 const DIRECTIONS = ["next", "last"] as const;
 

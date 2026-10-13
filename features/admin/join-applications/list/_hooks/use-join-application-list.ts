@@ -13,7 +13,7 @@ import {
 } from "../_lib/parse-join-application-list-input";
 import { serializeJoinApplicationListQueryKey } from "../_lib/join-application-list-query-options";
 
-const applicationTypeValues = ["all", "youth", "mentor"] as const;
+const applicationTypeValues = ["all", "youth", "mentor", "community"] as const;
 const statusValues = ["pending", "reviewing", "approved", "rejected"] as const;
 const directionValues = ["next", "last"] as const;
 

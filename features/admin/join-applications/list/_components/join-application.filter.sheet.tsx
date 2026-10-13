@@ -1,13 +1,22 @@
 "use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { TextInput } from "@/components/ui/input-fields";
 import { Separator } from "@/components/ui/separator";
-import { BaseFilterDialog, type BaseFilterDialogProps } from "@/components/shared/table";
+import {
+  BaseFilterDialog,
+  type BaseFilterDialogProps,
+} from "@/components/shared/table";
 
 export type JoinApplicationListFilterState = {
   search?: string;
-  applicationType?: "all" | "youth" | "mentor";
+  applicationType?: "all" | "youth" | "mentor" | "community";
   status?: "all" | "pending" | "reviewing" | "approved" | "rejected";
 };
 
@@ -16,16 +25,24 @@ type JoinApplicationFilterSheetProps = Omit<
   "children" | "title" | "subtitle"
 >;
 
-export function JoinApplicationFilterSheet(props: JoinApplicationFilterSheetProps) {
+export function JoinApplicationFilterSheet(
+  props: JoinApplicationFilterSheetProps,
+) {
   return (
-    <BaseFilterDialog {...props} title="Filter Applications" subtitle="Refine the applicant queue">
+    <BaseFilterDialog
+      {...props}
+      title="Filter Applications"
+      subtitle="Refine the applicant queue"
+    >
       {({ localFilters, handleChange }) => (
         <div className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Search</label>
             <TextInput
               value={localFilters.search || ""}
-              onChange={(event) => handleChange("search", event.target.value || undefined)}
+              onChange={(event) =>
+                handleChange("search", event.target.value || undefined)
+              }
               placeholder="Search name, email, phone, location..."
             />
           </div>
@@ -39,7 +56,9 @@ export function JoinApplicationFilterSheet(props: JoinApplicationFilterSheetProp
               onValueChange={(value) =>
                 handleChange(
                   "applicationType",
-                  value === "all" ? undefined : (value as JoinApplicationListFilterState["applicationType"]),
+                  value === "all"
+                    ? undefined
+                    : (value as JoinApplicationListFilterState["applicationType"]),
                 )
               }
             >
@@ -61,7 +80,9 @@ export function JoinApplicationFilterSheet(props: JoinApplicationFilterSheetProp
               onValueChange={(value) =>
                 handleChange(
                   "status",
-                  value === "all" ? undefined : (value as JoinApplicationListFilterState["status"]),
+                  value === "all"
+                    ? undefined
+                    : (value as JoinApplicationListFilterState["status"]),
                 )
               }
             >

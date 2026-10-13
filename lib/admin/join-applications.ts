@@ -15,7 +15,7 @@ export type JoinApplicationListInput = {
   cursor?: string;
   direction: JoinApplicationListDirection;
   search?: string;
-  applicationType?: "all" | "youth" | "mentor";
+  applicationType?: "all" | "youth" | "mentor" | "community";
   status?: "pending" | "reviewing" | "approved" | "rejected";
 };
 
