@@ -2,23 +2,27 @@ import type { Metadata } from "next";
 import LoginPage from "@/components/auth/login-page";
 
 export const metadata: Metadata = {
-  title: "Member Login - Ahren Foundation",
-  description: "Log in to the Ahren Foundation member workspace.",
+  title: "Member Login — Ahren Foundation",
+  description: "Log in to the Ahren Foundation Community Hub.",
 };
 
-export default function MemberLoginPage() {
+export default function HubLoginPage() {
   return (
     <LoginPage
-      sectionLabel="Member Access"
-      heading={<>Log in to the <span className="grad-text">Ahren Foundation</span> workspace</>}
-      description="Sign in with Google or your email and password to access private community features, member-only updates, and the next layer of the platform."
-      homeHref="/"
-      newUserHref="/training/apply"
+      sectionLabel="Community Hub"
+      heading={
+        <>
+          Log in to the <span className="grad-text">Community Hub</span>
+        </>
+      }
+      description="Sign in with the email and password from community signup, or continue with Google."
+      homeHref="/hub"
+      newUserHref="/hub/join"
       newUserLabel="Join the community"
       callbackURL="/dashboard"
-      newUserCallbackURL="/training/apply"
+      newUserCallbackURL="/hub/join"
       signedInRedirect="/dashboard"
-      note="Use your email and password, or continue with Google."
+      note="Community members can log in right after signup. Training applicants still need admin verification."
     />
   );
 }

@@ -1,0 +1,50 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import HubPage from "@/components/sections/HubPage";
+import PageTransition from "@/components/PageTransition";
+import type { Metadata } from "next";
+import CommunitySignupForm from "@/components/sections/CommunitySignupForm";
+
+export const metadata: Metadata = {
+  title:
+    "Ahren Hub — Your Gateway to our Global Community of Christian Creatives",
+  description:
+    "Ahren Hub is your gateway to our Youth Empowerment & Mentorship Programs. Join the 6-Week Tech & Creativity Mentorship or log in as a verified member.",
+};
+
+export default function Hub() {
+  return (
+    <PageTransition>
+      <>
+        <Navbar />
+        <HubPage />
+        <main className="min-h-screen bg-[#080d2e] px-6 pb-24 pt-36 text-white">
+          <div className="mx-auto max-w-3xl">
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
+              Community Hub
+            </p>
+            <h1
+              className="mb-8 text-4xl font-bold tracking-tight"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Welcome to Ahren Community Hub
+            </h1>
+            <div className="card p-8 md:p-10" style={{ borderRadius: 28 }}>
+              <CommunitySignupForm />
+            </div>
+            <p className="mt-6 text-center text-sm text-[#8892b0]">
+              Already a member?{" "}
+              <a
+                href="/login"
+                className="font-semibold text-[#00c9ff] hover:underline"
+              >
+                Log in
+              </a>
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </>
+    </PageTransition>
+  );
+}

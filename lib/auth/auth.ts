@@ -15,7 +15,12 @@ import {
   users,
   verifications,
 } from "@/db/schema";
-import { magicLoginEmail, passwordResetEmail, sendEmail } from "@/lib/email";
+import {
+  magicLoginEmail,
+  passwordResetEmail,
+  sendEmail,
+  emailVerificationEmail,
+} from "@/lib/email";
 import { getAdminEmails } from "@/lib/validations/join";
 
 const VERIFIED_ACCESS_STATUSES = new Set([
@@ -27,13 +32,67 @@ function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
 }
 
-function loginBlockedError() {
+function loginBlockedError(
+  kind: "community" | "program" | "mentor" | "youth" = "program",
+) {
+  // console.error({ kind });
+  if (kind === "community") {
+    return APIError.from("FORBIDDEN", {
+      code: "EMAIL_NOT_VERIFIED",
+      message:
+        "Please verify your email before logging in. Check your inbox for the verification link.",
+    });
+  }
   return APIError.from("FORBIDDEN", {
     code: "ACCOUNT_NOT_VERIFIED",
     message:
       "Your account is not yet verified for login. Please wait for admin approval.",
   });
 }
+
+// function loginBlockedError() {
+//   return APIError.from("FORBIDDEN", {
+//     code: "ACCOUNT_NOT_VERIFIED",
+//     message:
+//       "Your account is not yet verified for login. Please wait for admin approval.",
+//   });
+// }
+
+// async function isAllowedToSignIn(email: string) {
+//   const normalizedEmail = normalizeEmail(email);
+
+//   if (getAdminEmails().includes(normalizedEmail)) {
+//     return { allowed: true, isAdmin: true, hasProgramMembership: false };
+//   }
+
+//   const [user] = await db
+//     .select({
+//       emailVerified: users.emailVerified,
+//     })
+//     .from(users)
+//     .where(sql`lower(${users.email}) = ${normalizedEmail}`)
+//     .limit(1);
+
+//   const [member] = await db
+//     .select({
+//       status: programMembers.status,
+//     })
+//     .from(programMembers)
+//     .where(sql`lower(${programMembers.email}) = ${normalizedEmail}`)
+//     .limit(1);
+
+//   const hasProgramMembership = Boolean(member);
+//   const allowed =
+//     Boolean(user?.emailVerified) &&
+//     Boolean(member?.status) &&
+//     VERIFIED_ACCESS_STATUSES.has(member.status);
+
+//   return {
+//     allowed,
+//     isAdmin: false,
+//     hasProgramMembership,
+//   };
+// }
 
 async function isAllowedToSignIn(email: string) {
   const normalizedEmail = normalizeEmail(email);
@@ -53,12 +112,25 @@ async function isAllowedToSignIn(email: string) {
   const [member] = await db
     .select({
       status: programMembers.status,
+      role: programMembers.role,
     })
     .from(programMembers)
     .where(sql`lower(${programMembers.email}) = ${normalizedEmail}`)
     .limit(1);
 
   const hasProgramMembership = Boolean(member);
+
+  // Community Hub: registered community members can log in immediately
+  if (member?.role === "community") {
+    return {
+      allowed: Boolean(user?.emailVerified),
+      isAdmin: false,
+      hasProgramMembership: true,
+      role: member.role,
+    };
+  }
+
+  // Existing rule: youth/mentor (and others) need verified access
   const allowed =
     Boolean(user?.emailVerified) &&
     Boolean(member?.status) &&
@@ -68,6 +140,7 @@ async function isAllowedToSignIn(email: string) {
     allowed,
     isAdmin: false,
     hasProgramMembership,
+    role: member.role,
   };
 }
 
@@ -145,8 +218,12 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             if (!email) return;
 
             const access = await isAllowedToSignIn(email);
+            console.log({ access });
             if (!access.allowed) {
-              throw loginBlockedError();
+              throw loginBlockedError(
+                (access.role as "community" | "program" | "mentor" | "youth") ??
+                  "program",
+              );
             }
           }),
         },
@@ -265,6 +342,15 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       await sendEmail(passwordResetEmail(user.email, url));
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: false,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendEmail(
+        emailVerificationEmail(user.name || "Friend", user.email, url),
+      );
     },
   },
   plugins: [

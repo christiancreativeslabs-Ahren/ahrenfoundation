@@ -80,7 +80,7 @@ function escapeHtml(value: string) {
 }
 
 function normalizeProvider(
-  value: string | undefined
+  value: string | undefined,
 ): EmailProviderName | undefined {
   const normalized = value?.trim().toLowerCase();
   if (
@@ -182,7 +182,7 @@ function isProviderConfigured(provider: EmailProviderName) {
     config.auth &&
     ((provider === "nodemailer" &&
       (config.service || (config.host && config.port))) ||
-      (provider === "zeptomail" && config.host && config.port))
+      (provider === "zeptomail" && config.host && config.port)),
   );
 }
 
@@ -262,7 +262,7 @@ async function sendWithResend(payload: EmailPayload): Promise<EmailSendResult> {
 
 async function sendWithSmtp(
   payload: EmailPayload,
-  provider: "nodemailer" | "zeptomail"
+  provider: "nodemailer" | "zeptomail",
 ): Promise<EmailSendResult> {
   const config = getSmtpConfig(provider);
   if (!config.auth || !config.defaultFrom) {
@@ -294,7 +294,7 @@ async function sendWithSmtp(
 
 async function sendWithProvider(
   payload: EmailPayload,
-  provider: EmailProviderName
+  provider: EmailProviderName,
 ): Promise<EmailSendResult> {
   switch (provider) {
     case "resend":
@@ -310,7 +310,7 @@ async function sendWithProvider(
 
 export async function sendEmail(
   payload: EmailPayload,
-  options: EmailSendOptions = {}
+  options: EmailSendOptions = {},
 ): Promise<EmailSendResult> {
   const runtimeConfig = getProviderConfig();
   const provider = options.provider ?? runtimeConfig.defaultProvider;
@@ -363,7 +363,7 @@ export async function sendEmail(
         try {
           const fallbackResult = await sendWithProvider(
             payload,
-            fallbackProvider
+            fallbackProvider,
           );
           return { ...fallbackResult, attempt: attempt + 1 };
         } catch (fallbackError) {
@@ -373,7 +373,7 @@ export async function sendEmail(
 
       if (attempt < maxAttempts) {
         await new Promise((resolve) =>
-          setTimeout(resolve, runtimeConfig.retryDelayMs)
+          setTimeout(resolve, runtimeConfig.retryDelayMs),
         );
         continue;
       }
@@ -391,7 +391,7 @@ export async function sendEmail(
 
 export async function sendResendEmail(
   payload: EmailPayload,
-  options: EmailSendOptions = {}
+  options: EmailSendOptions = {},
 ): Promise<EmailSendResult> {
   return sendEmail(payload, options);
 }
@@ -436,9 +436,57 @@ export function mentorWelcomeEmail(data: JoinParsedData): EmailPayload {
   };
 }
 
+export function communityWelcomeEmail(data: JoinParsedData): EmailPayload {
+  const baseUrl = getAppBaseUrl();
+  const loginUrl = `${baseUrl}/login`; // change if Hub login is e.g. /hub/login
+  const firstName = data.fullName.split(/\s+/)[0] || data.fullName;
+
+  return {
+    to: data.email,
+    subject: "Welcome to Ahren Foundation Community",
+    templateKey: "community_welcome",
+    html: frameEmail(
+      "Welcome to Ahren Foundation Community",
+      `
+        <p>Hi ${escapeHtml(firstName)},</p>
+        <p>Thank you for registering. We're so excited to have you onboard.</p>
+        <p>
+          A member of our team will reach out to you shortly with next steps,
+          including how to access our community app and upcoming events.
+        </p>
+        <p>
+          <strong>Want to join our WhatsApp group right away?</strong><br />
+          Reach out via WhatsApp on
+          <a href="https://wa.me/2347047555064">+234 704 755 5064</a>.
+          We'll add you to our community group so you can start connecting
+          with other Christian creatives immediately.
+        </p>
+        <p>
+          You can log in here:
+          <a href="${escapeHtml(loginUrl)}">${escapeHtml(loginUrl)}</a>
+        </p>
+        <p>
+          In the meantime, please feel free to contact us, follow us on social
+          media, and check out our website for more information.
+        </p>
+        <p>
+          We're praying for you and looking forward to walking with you on
+          this journey.
+        </p>
+        <p style="font-style:italic;color:#475569">
+          "For we are his workmanship, created in Christ Jesus unto good works."
+          — Ephesians 2:10.
+        </p>
+        <p>- Ahren Foundation Team<br />
+        <a href="https://www.ahrenfoundation.org">www.ahrenfoundation.org</a></p>
+      `,
+    ),
+  };
+}
+
 export function applicationRejectedEmail(
   name: string,
-  email: string
+  email: string,
 ): EmailPayload {
   return {
     to: email,
@@ -451,7 +499,7 @@ export function applicationRejectedEmail(
         <p>Thank you for your application and for your heart to serve. After review, we are unable to move this application forward at this time.</p>
         <p>We are grateful for your interest and pray God continues to guide your journey.</p>
         <p>- Ahren Foundation Team</p>
-      `
+      `,
     ),
   };
 }
@@ -461,7 +509,7 @@ export function certificateIssuedEmail(
   email: string,
   certificateNumber: string,
   certificateUrl?: string,
-  pdfBase64?: string
+  pdfBase64?: string,
 ): EmailPayload {
   return {
     to: email,
@@ -480,7 +528,7 @@ export function certificateIssuedEmail(
         }
         <p>Your verified member review can now be completed by the Ahren Foundation team.</p>
         <p>- Ahren Foundation Team</p>
-      `
+      `,
     ),
     attachments: pdfBase64
       ? [
@@ -510,7 +558,7 @@ export function verifiedAccessEmail(name: string, email: string): EmailPayload {
         <p>Use Google sign-in or your email/password to access the dashboard. If you need a password, use the password reset flow from the login page.</p>
         <p>Inside your dashboard, you can connect with verified members, access resources, view incubation opportunities, register for events, showcase projects, and browse partnership opportunities.</p>
         <p>- Ahren Foundation Team</p>
-      `
+      `,
     ),
   };
 }
@@ -521,7 +569,8 @@ export function magicLoginEmail(
   url: string,
   role: "mentor" | "youth" | string | null,
 ): EmailPayload {
-  const destination = role === "mentor" ? "mentor dashboard" : "Workbook dashboard";
+  const destination =
+    role === "mentor" ? "mentor dashboard" : "Workbook dashboard";
 
   return {
     to: email,
@@ -552,13 +601,13 @@ export function passwordResetEmail(email: string, url: string): EmailPayload {
         <p>We received a request to reset your Ahren Foundation password.</p>
         <p><a href="${escapeHtml(url)}">Reset your password</a></p>
         <p>If you did not request this, you can ignore this email.</p>
-      `
+      `,
     ),
   };
 }
 
 export function adminJoinNotificationEmail(
-  data: JoinParsedData
+  data: JoinParsedData,
 ): EmailPayload | null {
   const recipients = splitEmails(process.env.RESEND_ADMIN_TO_EMAILS);
   if (!recipients.length) return null;
@@ -578,7 +627,42 @@ export function adminJoinNotificationEmail(
 Email: ${escapeHtml(data.email)}
 Phone: ${escapeHtml(data.phoneNumber)}
 Location: ${escapeHtml(data.location)}</pre>
+      `,
+    ),
+  };
+}
+
+export function emailVerificationEmail(
+  name: string,
+  email: string,
+  url: string,
+): EmailPayload {
+  const firstName = name.split(/\s+/)[0] || name;
+
+  return {
+    to: email,
+    subject: "Verify your Ahren Foundation email",
+    templateKey: "email_verification",
+    html: frameEmail(
+      "Verify your email",
       `
+        <p>Hi ${escapeHtml(firstName)},</p>
+        <p>
+          Thanks for joining the Ahren Foundation community. Please verify your
+          email address so you can log in to the Community Hub.
+        </p>
+        <p>
+          <a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 20px;background:#00c9ff;color:#080d2e;text-decoration:none;border-radius:999px;font-weight:700">
+            Verify email address
+          </a>
+        </p>
+        <p style="color:#64748b;font-size:13px">
+          If the button does not work, copy and paste this link into your browser:<br />
+          ${escapeHtml(url)}
+        </p>
+        <p>If you did not create this account, you can ignore this email.</p>
+        <p>- Ahren Foundation Team</p>
+      `,
     ),
   };
 }

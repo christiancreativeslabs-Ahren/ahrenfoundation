@@ -3,13 +3,35 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { Download, LayoutGrid, Rows3, Users } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { DataTableToolbar, FilterTags, DataTablePagination, TableLoadingSkeleton } from "@/components/shared/table";
+import {
+  DataTableToolbar,
+  FilterTags,
+  DataTablePagination,
+  TableLoadingSkeleton,
+} from "@/components/shared/table";
 import { TrainingApplicationSettingsDialog } from "@/components/admin/training-application-settings-dialog";
 import type {
   JoinApplicationListInput,
@@ -21,7 +43,10 @@ import type { TrainingApplicationSettingsRecord } from "@/lib/application-settin
 import { useJoinApplicationList } from "../_hooks/use-join-application-list";
 import { buildJoinApplicationColumns } from "./join-application.columns";
 import { JoinApplicationCard } from "./join-application.card";
-import { JoinApplicationFilterSheet, type JoinApplicationListFilterState } from "./join-application.filter.sheet";
+import {
+  JoinApplicationFilterSheet,
+  type JoinApplicationListFilterState,
+} from "./join-application.filter.sheet";
 
 interface JoinApplicationTableProps {
   initialData: JoinApplicationListResponse;
@@ -34,7 +59,12 @@ function formatCount(value: number) {
   return new Intl.NumberFormat("en-NG").format(value);
 }
 
-export function JoinApplicationTable({ initialData, initialFilters, applicationSettings, mentors }: JoinApplicationTableProps) {
+export function JoinApplicationTable({
+  initialData,
+  initialFilters,
+  applicationSettings,
+  mentors,
+}: JoinApplicationTableProps) {
   const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [view, setView] = useState<"table" | "grid">("table");
@@ -68,7 +98,10 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
       params.set("search", currentInput.search);
     }
 
-    if (currentInput.applicationType && currentInput.applicationType !== "all") {
+    if (
+      currentInput.applicationType &&
+      currentInput.applicationType !== "all"
+    ) {
       params.set("applicationType", currentInput.applicationType);
     }
 
@@ -125,7 +158,12 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
         ? {
             key: "applicationType",
             label: "Type",
-            value: currentInput.applicationType === "youth" ? "Prospective mentee" : "Mentor applicant",
+            value:
+              currentInput.applicationType === "youth"
+                ? "Prospective mentee"
+                : // : currentInput.applicationType === "community"
+                  //   ? "Community ember"
+                  "Mentor applicant",
             onRemove: () => updateFilters({ applicationType: "all" }),
           }
         : null,
@@ -161,7 +199,8 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
                 Join applications
               </CardTitle>
               <CardDescription className="max-w-2xl text-sm leading-relaxed text-slate-300">
-                Fast cursor listing for applicants, built with a shared table system and a projection-backed dataset.
+                Fast cursor listing for applicants, built with a shared table
+                system and a projection-backed dataset.
               </CardDescription>
             </div>
 
@@ -208,7 +247,11 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-3 xl:grid-cols-5">
           {[
-            { label: "Total applicants", value: summary?.total ?? data?.totalCount ?? initialData.totalCount },
+            {
+              label: "Total applicants",
+              value:
+                summary?.total ?? data?.totalCount ?? initialData.totalCount,
+            },
             { label: "Approved", value: summary?.approved ?? 0 },
             { label: "Rejected", value: summary?.rejected ?? 0 },
             { label: "Reviewing", value: summary?.reviewing ?? 0 },
@@ -221,7 +264,9 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
               <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
                 {item.label}
               </div>
-              <div className="mt-3 text-2xl font-bold text-white">{formatCount(item.value)}</div>
+              <div className="mt-3 text-2xl font-bold text-white">
+                {formatCount(item.value)}
+              </div>
             </div>
           ))}
         </CardContent>
@@ -230,9 +275,12 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
       <Card className="overflow-hidden border-white/10 bg-white/[0.03] text-white shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
         <div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg font-semibold text-white">Applicant queue</CardTitle>
+          <CardTitle className="text-lg font-semibold text-white">
+            Applicant queue
+          </CardTitle>
           <CardDescription className="text-slate-300">
-            Showing the current applicant queue with cursor pagination and URL-backed filters.
+            Showing the current applicant queue with cursor pagination and
+            URL-backed filters.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -244,7 +292,8 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
                   <Users size={20} />
                 </div>
                 <h2 className="text-2xl font-bold tracking-tight text-white">
-                  Applicants [{formatCount(data?.totalCount ?? initialData.totalCount)}]
+                  Applicants [
+                  {formatCount(data?.totalCount ?? initialData.totalCount)}]
                 </h2>
               </div>
             }
@@ -328,7 +377,10 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
                         >
                           {header.isPlaceholder
                             ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
                         </TableHead>
                       ))}
                     </TableRow>
@@ -340,16 +392,25 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
                       <TableRow
                         key={row.id}
                         className="cursor-pointer border-white/10 transition-colors hover:bg-white/[0.05]"
-                        onClick={() => handleViewDetails(row.original.joinApplicationId)}
-                        onMouseEnter={() => prefetchDetail(row.original.joinApplicationId)}
-                        onFocus={() => prefetchDetail(row.original.joinApplicationId)}
+                        onClick={() =>
+                          handleViewDetails(row.original.joinApplicationId)
+                        }
+                        onMouseEnter={() =>
+                          prefetchDetail(row.original.joinApplicationId)
+                        }
+                        onFocus={() =>
+                          prefetchDetail(row.original.joinApplicationId)
+                        }
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell
                             key={cell.id}
                             className="border-white/10 px-4 py-4 align-top text-sm text-white"
                           >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
                           </TableCell>
                         ))}
                       </TableRow>
@@ -369,7 +430,10 @@ export function JoinApplicationTable({ initialData, initialFilters, applicationS
               {isFetching ? (
                 <Table className="hidden">
                   <TableBody>
-                    <TableLoadingSkeleton columnCount={columns.length} rowCount={8} />
+                    <TableLoadingSkeleton
+                      columnCount={columns.length}
+                      rowCount={8}
+                    />
                   </TableBody>
                 </Table>
               ) : null}

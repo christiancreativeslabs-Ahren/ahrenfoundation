@@ -145,6 +145,10 @@ export const joinApplications = pgTable(
     status: text("status").notNull().default("pending"),
     consent: boolean("consent").notNull().default(false),
     payload: jsonb("payload").$type<Record<string, unknown>>(),
+
+    // New Key addition
+    participationInterests: jsonb("participation_interests").$type<string[]>(),
+    participationOther: text("participation_other"),
   },
   (table) => [
     index("join_application_type_idx").on(table.applicationType),

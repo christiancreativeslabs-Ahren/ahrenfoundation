@@ -18,9 +18,7 @@ import {
   AHREN_WORKBOOK_PROGRAM,
   type WorkbookModuleDefinition,
 } from "@/lib/workbook/content";
-import {
-  renderWorkbookModuleEmail,
-} from "@/lib/workbook/email-renderer";
+import { renderWorkbookModuleEmail } from "@/lib/workbook/email-renderer";
 import { moduleDefinitionFromPayload } from "@/lib/workbook/email-shared";
 import {
   buildEmailOpenUrl,
@@ -188,7 +186,7 @@ export async function ensureAhrenWorkbookProgram() {
 
 export async function enrollMemberInWorkbookProgram(
   programMemberId: string,
-  signedUpAt = new Date()
+  signedUpAt = new Date(),
 ) {
   const { program, modules } = await ensureAhrenWorkbookProgram();
   const startsAt = getAhrenCohortStartDate();
@@ -203,9 +201,9 @@ export async function enrollMemberInWorkbookProgram(
     throw new Error("Program member was not found.");
   }
 
-  if (member.role !== "youth") {
+  if (member.role !== "youth" && member.role !== "community") {
     throw new Error(
-      "Only youth members can be synced into Workbook module deliveries."
+      "Only youth or community members can be synced into Workbook module deliveries.",
     );
   }
 
@@ -272,11 +270,11 @@ async function getDeliveryRecord(deliveryId: string) {
     .from(moduleDeliveries)
     .innerJoin(
       programEnrollments,
-      eq(programEnrollments.id, moduleDeliveries.enrollmentId)
+      eq(programEnrollments.id, moduleDeliveries.enrollmentId),
     )
     .innerJoin(
       programMembers,
-      eq(programMembers.id, moduleDeliveries.programMemberId)
+      eq(programMembers.id, moduleDeliveries.programMemberId),
     )
     .innerJoin(programModules, eq(programModules.id, moduleDeliveries.moduleId))
     .innerJoin(programs, eq(programs.id, programModules.programId))
@@ -365,7 +363,7 @@ export async function syncMemberWorkbookDeliveries(programMemberId: string) {
 
 export async function rescheduleModuleDelivery(
   deliveryId: string,
-  scheduledFor: Date
+  scheduledFor: Date,
 ) {
   const row = await getDeliveryRecord(deliveryId);
   if (!row) {
@@ -430,7 +428,7 @@ type SendModuleDeliveryOptions = {
 
 export async function sendModuleDeliveryNow(
   deliveryId: string,
-  options: SendModuleDeliveryOptions = {}
+  options: SendModuleDeliveryOptions = {},
 ) {
   const row = await getDeliveryRecord(deliveryId);
   if (!row) {
@@ -440,11 +438,11 @@ export async function sendModuleDeliveryNow(
   const moduleDefinition = moduleDefinitionFromPayload(row.module);
   const workbookModuleUrl = buildTrackedWorkbookClickUrl(
     row.delivery.id,
-    row.delivery.accessToken
+    row.delivery.accessToken,
   );
   const openPixelUrl = buildEmailOpenUrl(
     row.delivery.id,
-    row.delivery.accessToken
+    row.delivery.accessToken,
   );
   const payload = {
     ...renderWorkbookModuleEmail({
@@ -601,19 +599,19 @@ export async function getDeliveryByToken(deliveryId: string, token: string) {
     .from(moduleDeliveries)
     .innerJoin(
       programEnrollments,
-      eq(programEnrollments.id, moduleDeliveries.enrollmentId)
+      eq(programEnrollments.id, moduleDeliveries.enrollmentId),
     )
     .innerJoin(
       programMembers,
-      eq(programMembers.id, moduleDeliveries.programMemberId)
+      eq(programMembers.id, moduleDeliveries.programMemberId),
     )
     .innerJoin(programModules, eq(programModules.id, moduleDeliveries.moduleId))
     .innerJoin(programs, eq(programs.id, programModules.programId))
     .where(
       and(
         eq(moduleDeliveries.id, deliveryId),
-        eq(moduleDeliveries.accessToken, token)
-      )
+        eq(moduleDeliveries.accessToken, token),
+      ),
     )
     .limit(1);
 
@@ -669,7 +667,7 @@ export async function submitWorkbookDeliveryAnswers(input: {
         submissionId: submission.id,
         questionId: answer.questionId,
         answer: answer.answer,
-      }))
+      })),
     );
   }
 
@@ -696,6 +694,3 @@ export async function submitWorkbookDeliveryAnswers(input: {
 
   return submission;
 }
-
-
-

@@ -55,7 +55,10 @@ export default async function MemberDashboardPage() {
     redirect("/mentor/dashboard");
   }
 
-  const isVerified = member.status === "verified_member";
+  console.log({ session, member });
+
+  const isVerified =
+    member.role == "community" ? true : member.status === "verified_member";
 
   if (!isVerified) {
     return (
@@ -136,7 +139,14 @@ export default async function MemberDashboardPage() {
           {[
             { label: "Role", value: member.role },
             { label: "Status", value: statusLabel(member.status) },
-            { label: "Current step", value: statusLabel(member.currentStep) },
+            {
+              label: "Current step",
+              value: statusLabel(
+                member.role == "community"
+                  ? "onboarding_modules"
+                  : member.currentStep,
+              ),
+            },
           ].map((item) => (
             <div
               key={item.label}
@@ -153,61 +163,65 @@ export default async function MemberDashboardPage() {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] items-start">
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
-            <div className="flex items-center gap-3">
-              <Users size={18} className="text-[#00ff9d]" />
-              <h2 className="text-xl font-bold">Your assigned mentor</h2>
+          {member.role !== "community" ? (
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
+              <div className="flex items-center gap-3">
+                <Users size={18} className="text-[#00ff9d]" />
+                <h2 className="text-xl font-bold">Your assigned mentor</h2>
+              </div>
+              {workspace.assignment ? (
+                <div className="mt-5 space-y-4">
+                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
+                      Mentor
+                    </p>
+                    <p className="mt-2 text-lg font-semibold">
+                      {workspace.assignment.mentor.fullName}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-300">
+                      {workspace.assignment.mentor.email}
+                    </p>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
+                      Assigned:{" "}
+                      <span className="text-white">
+                        {dateLabel(workspace.assignment.assignment.assignedAt)}
+                      </span>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
+                      Sessions:{" "}
+                      <span className="text-white">
+                        {workspace.assignment.sessions.length}
+                      </span>
+                    </div>
+                    <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
+                      Notes:{" "}
+                      <span className="text-white">
+                        {workspace.assignment.assignment.notes
+                          ? "Available"
+                          : "None"}
+                      </span>
+                    </div>
+                  </div>
+                  <Link
+                    href="/dashboard/mentor"
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#080d2e] transition-transform hover:scale-[1.02]"
+                  >
+                    View assignment details
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
+              ) : (
+                <div className="mt-5 rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm leading-6 text-slate-300">
+                  Your mentor assignment has not been created yet. Once admin
+                  links you to a mentor, the details will show here.
+                </div>
+              )}
             </div>
-            {workspace.assignment ? (
-              <div className="mt-5 space-y-4">
-                <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#00c9ff]">
-                    Mentor
-                  </p>
-                  <p className="mt-2 text-lg font-semibold">
-                    {workspace.assignment.mentor.fullName}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-300">
-                    {workspace.assignment.mentor.email}
-                  </p>
-                </div>
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    Assigned:{" "}
-                    <span className="text-white">
-                      {dateLabel(workspace.assignment.assignment.assignedAt)}
-                    </span>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    Sessions:{" "}
-                    <span className="text-white">
-                      {workspace.assignment.sessions.length}
-                    </span>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm text-slate-300">
-                    Notes:{" "}
-                    <span className="text-white">
-                      {workspace.assignment.assignment.notes
-                        ? "Available"
-                        : "None"}
-                    </span>
-                  </div>
-                </div>
-                <Link
-                  href="/dashboard/mentor"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[#080d2e] transition-transform hover:scale-[1.02]"
-                >
-                  View assignment details
-                  <ArrowRight size={14} />
-                </Link>
-              </div>
-            ) : (
-              <div className="mt-5 rounded-2xl border border-white/10 bg-[#0d1538] p-4 text-sm leading-6 text-slate-300">
-                Your mentor assignment has not been created yet. Once admin
-                links you to a mentor, the details will show here.
-              </div>
-            )}
-          </div>
+          ) : (
+            <></>
+          )}
           <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
             <div className="flex items-center gap-3">
               <Library size={18} className="text-[#00ff9d]" />

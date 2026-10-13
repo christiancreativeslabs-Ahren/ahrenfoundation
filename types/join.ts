@@ -1,3 +1,36 @@
-export type JoinTab = "youth" | "mentor";
+export type JoinTab = "youth" | "mentor" | "community";
 
-export type JoinFieldErrors = Partial<Record<string, string>>;
+export type JoinFieldErrors = {
+  application_type?: string;
+  full_name?: string;
+  email?: string;
+  phone_number?: string;
+  country_state?: string;
+  country_continent?: string;
+  age_range?: string;
+  sex?: string;
+  skills?: string;
+  skills_other?: string;
+  skills_to_learn?: string;
+  participation?: string;
+  participation_other?: string;
+  why_join?: string;
+  password?: string;
+  password_confirm?: string;
+  availability?: string;
+  faith_born_again?: string;
+  faith_holy_spirit?: string;
+  testimony?: string;
+  consent?: string;
+  profession?: string;
+  years_experience?: string;
+  expertise?: string;
+  expertise_other?: string;
+  why_mentor?: string;
+  commitment?: string;
+  preferred_format?: string;
+  mentor_faith_born_again?: string;
+  mentor_faith_holy_spirit?: string;
+  mentor_faith_dependency?: string;
+  [key: string]: string | undefined;
+};
