@@ -182,21 +182,22 @@ function SuccessScreen({ onBack }: { onBack: () => void }) {
         className="mb-4 text-3xl font-bold text-white"
         style={{ fontFamily: "var(--font-display)" }}
       >
-        Welcome to the community!
+        Check your email to continue
       </h2>
       <p className="mx-auto mb-4 max-w-lg text-base leading-relaxed text-[#8892b0]">
-        Your registration was received. Check your email for a welcome message
-        with next steps and WhatsApp details.
+        Your registration was received. We sent you a{" "}
+        <strong className="text-[#e8eeff]">verification link</strong> and a
+        welcome message with next steps and WhatsApp details.
       </p>
       <p className="mb-8 text-sm font-bold grad-text">
-        You can log in with the email and password you just created.
+        Verify your email first, then log in with the password you created.
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <a
-          href="/login"
+          href="/hub/login"
           className="grad-bg rounded-full px-6 py-3 text-sm font-bold text-[#080d2e]"
         >
-          Log in
+          Go to login
         </a>
         <button
           type="button"
@@ -234,6 +235,15 @@ export default function CommunitySignupForm() {
       setSubmitted(true);
     }
   }, [state.ok, state.submittedType]);
+
+  useEffect(() => {
+    if (!submitted) return;
+
+    // Prefer scrolling the window; also help nested scroll containers
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+    document.body.scrollTo({ top: 0, behavior: "smooth" });
+  }, [submitted]);
 
   if (submitted) {
     return <SuccessScreen onBack={() => setSubmitted(false)} />;
