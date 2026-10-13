@@ -1,4 +1,4 @@
-CREATE TABLE "account" (
+CREATE TABLE IF NOT EXISTS "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE "account" (
 	"password" text
 );
 --> statement-breakpoint
-CREATE TABLE "certificate" (
+CREATE TABLE IF NOT EXISTS "certificate" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE "certificate" (
 	"status" text DEFAULT 'issued' NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "community_event" (
+CREATE TABLE IF NOT EXISTS "community_event" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE "community_event" (
 	"status" text DEFAULT 'published' NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "community_post" (
+CREATE TABLE IF NOT EXISTS "community_post" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE "community_post" (
 	"status" text DEFAULT 'published' NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "dashboard_resource" (
+CREATE TABLE IF NOT EXISTS "dashboard_resource" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE "dashboard_resource" (
 	"is_published" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "email_event" (
+CREATE TABLE IF NOT EXISTS "email_event" (
 	"id" text PRIMARY KEY NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
