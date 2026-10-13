@@ -436,53 +436,53 @@ export function mentorWelcomeEmail(data: JoinParsedData): EmailPayload {
   };
 }
 
-export function communityWelcomeEmail(data: JoinParsedData): EmailPayload {
-  const baseUrl = getAppBaseUrl();
-  const loginUrl = `${baseUrl}/login`; // change if Hub login is e.g. /hub/login
-  const firstName = data.fullName.split(/\s+/)[0] || data.fullName;
+// export function communityWelcomeEmail(data: JoinParsedData): EmailPayload {
+//   const baseUrl = getAppBaseUrl();
+//   const loginUrl = `${baseUrl}/login`; // change if Hub login is e.g. /hub/login
+//   const firstName = data.fullName.split(/\s+/)[0] || data.fullName;
 
-  return {
-    to: data.email,
-    subject: "Welcome to Ahren Foundation Community",
-    templateKey: "community_welcome",
-    html: frameEmail(
-      "Welcome to Ahren Foundation Community",
-      `
-        <p>Hi ${escapeHtml(firstName)},</p>
-        <p>Thank you for registering. We're so excited to have you onboard.</p>
-        <p>
-          A member of our team will reach out to you shortly with next steps,
-          including how to access our community app and upcoming events.
-        </p>
-        <p>
-          <strong>Want to join our WhatsApp group right away?</strong><br />
-          Reach out via WhatsApp on
-          <a href="https://wa.me/2347047555064">+234 704 755 5064</a>.
-          We'll add you to our community group so you can start connecting
-          with other Christian creatives immediately.
-        </p>
-        <p>
-          You can log in here:
-          <a href="${escapeHtml(loginUrl)}">${escapeHtml(loginUrl)}</a>
-        </p>
-        <p>
-          In the meantime, please feel free to contact us, follow us on social
-          media, and check out our website for more information.
-        </p>
-        <p>
-          We're praying for you and looking forward to walking with you on
-          this journey.
-        </p>
-        <p style="font-style:italic;color:#475569">
-          "For we are his workmanship, created in Christ Jesus unto good works."
-          — Ephesians 2:10.
-        </p>
-        <p>- Ahren Foundation Team<br />
-        <a href="https://www.ahrenfoundation.org">www.ahrenfoundation.org</a></p>
-      `,
-    ),
-  };
-}
+//   return {
+//     to: data.email,
+//     subject: "Welcome to Ahren Foundation Community",
+//     templateKey: "community_welcome",
+//     html: frameEmail(
+//       "Welcome to Ahren Foundation Community",
+//       `
+//         <p>Hi ${escapeHtml(firstName)},</p>
+//         <p>Thank you for registering. We're so excited to have you onboard.</p>
+//         <p>
+//           A member of our team will reach out to you shortly with next steps,
+//           including how to access our community app and upcoming events.
+//         </p>
+//         <p>
+//           <strong>Want to join our WhatsApp group right away?</strong><br />
+//           Reach out via WhatsApp on
+//           <a href="https://wa.me/2347047555064">+234 704 755 5064</a>.
+//           We'll add you to our community group so you can start connecting
+//           with other Christian creatives immediately.
+//         </p>
+//         <p>
+//           You can log in here:
+//           <a href="${escapeHtml(loginUrl)}">${escapeHtml(loginUrl)}</a>
+//         </p>
+//         <p>
+//           In the meantime, please feel free to contact us, follow us on social
+//           media, and check out our website for more information.
+//         </p>
+//         <p>
+//           We're praying for you and looking forward to walking with you on
+//           this journey.
+//         </p>
+//         <p style="font-style:italic;color:#475569">
+//           "For we are his workmanship, created in Christ Jesus unto good works."
+//           — Ephesians 2:10.
+//         </p>
+//         <p>- Ahren Foundation Team<br />
+//         <a href="https://www.ahrenfoundation.org">www.ahrenfoundation.org</a></p>
+//       `,
+//     ),
+//   };
+// }
 
 export function applicationRejectedEmail(
   name: string,
@@ -632,37 +632,188 @@ Location: ${escapeHtml(data.location)}</pre>
   };
 }
 
+// export function emailVerificationEmail(
+//   name: string,
+//   email: string,
+//   url: string,
+// ): EmailPayload {
+//   const firstName = name.split(/\s+/)[0] || name;
+
+//   return {
+//     to: email,
+//     subject: "Verify your Ahren Foundation email",
+//     templateKey: "email_verification",
+//     html: frameEmail(
+//       "Verify your email",
+//       `
+//         <p>Hi ${escapeHtml(firstName)},</p>
+//         <p>
+//           Thanks for joining the Ahren Foundation community. Please verify your
+//           email address so you can log in to the Community Hub.
+//         </p>
+//         <p>
+//           <a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 20px;background:#00c9ff;color:#080d2e;text-decoration:none;border-radius:999px;font-weight:700">
+//             Verify email address
+//           </a>
+//         </p>
+//         <p style="color:#64748b;font-size:13px">
+//           If the button does not work, copy and paste this link into your browser:<br />
+//           ${escapeHtml(url)}
+//         </p>
+//         <p>If you did not create this account, you can ignore this email.</p>
+//         <p>- Ahren Foundation Team</p>
+//       `,
+//     ),
+//   };
+// }
+
+export function communityWelcomeEmail(data: JoinParsedData): EmailPayload {
+  const rendered = renderCommunityWelcomeEmail({
+    name: data.fullName,
+    baseUrl: getAppBaseUrl(),
+  });
+
+  return {
+    to: data.email,
+    subject: rendered.subject,
+    templateKey: rendered.templateKey,
+    html: rendered.html,
+  };
+}
+
 export function emailVerificationEmail(
   name: string,
   email: string,
   url: string,
 ): EmailPayload {
-  const firstName = name.split(/\s+/)[0] || name;
+  const rendered = renderEmailVerificationEmail({
+    name,
+    url,
+    baseUrl: getAppBaseUrl(),
+  });
 
   return {
     to: email,
-    subject: "Verify your Ahren Foundation email",
-    templateKey: "email_verification",
-    html: frameEmail(
-      "Verify your email",
+    subject: rendered.subject,
+    templateKey: rendered.templateKey,
+    html: rendered.html,
+  };
+}
+
+import { emailShell } from "@/lib/workbook/email-shell";
+import {
+  emailButton,
+  greeting,
+  infoBox,
+  paragraph,
+  whatsappLink,
+} from "@/lib/workbook/email-markup";
+
+export function renderCommunityWelcomeEmail(props: {
+  name: string;
+  baseUrl?: string;
+}): { subject: string; html: string; templateKey: string } {
+  const baseUrl = props.baseUrl ?? getAppBaseUrl();
+  const loginUrl = `${baseUrl}/hub/login`;
+  const subject = "Welcome to Ahren Foundation Community";
+
+  const bodyHtml = `
+    ${greeting(props.name)}
+    ${paragraph(
+      "Thank you for registering. We're so excited to have you onboard.",
+    )}
+    ${paragraph(
+      "A member of our team will reach out to you shortly with next steps, including how to access our community app and upcoming events.",
+    )}
+    ${infoBox(
+      "Before you log in",
+      paragraph(
+        "Please verify your email using the separate verification message we sent. After that, you can sign in to the Community Hub.",
+      ).replace("margin:0 0 20px;", "margin:0;"),
+    )}
+    ${infoBox(
+      "Join WhatsApp",
       `
-        <p>Hi ${escapeHtml(firstName)},</p>
-        <p>
-          Thanks for joining the Ahren Foundation community. Please verify your
-          email address so you can log in to the Community Hub.
+        <p style="margin:0;color:#404040;font-size:15px;line-height:27px;">
+          Reach out on WhatsApp ${whatsappLink("+234 704 755 5064")} and we will
+          add you to the community group so you can connect with other Christian
+          creatives.
         </p>
-        <p>
-          <a href="${escapeHtml(url)}" style="display:inline-block;padding:12px 20px;background:#00c9ff;color:#080d2e;text-decoration:none;border-radius:999px;font-weight:700">
-            Verify email address
-          </a>
-        </p>
-        <p style="color:#64748b;font-size:13px">
-          If the button does not work, copy and paste this link into your browser:<br />
-          ${escapeHtml(url)}
-        </p>
-        <p>If you did not create this account, you can ignore this email.</p>
-        <p>- Ahren Foundation Team</p>
       `,
-    ),
+    )}
+    ${emailButton(loginUrl, "Go to Community login")}
+    ${paragraph(
+      "We're praying for you and looking forward to walking with you on this journey.",
+    )}
+    ${paragraph(
+      '"For we are his workmanship, created in Christ Jesus unto good works." — Ephesians 2:10.',
+      { small: true },
+    )}
+    <p style="margin:0 0 8px;color:#000000;font-size:15px;font-weight:600;line-height:26px;">
+      The Ahren Foundation Team
+    </p>
+    ${emailButton(baseUrl, "Visit Ahren Foundation")}
+  `;
+
+  return {
+    subject,
+    templateKey: "community_welcome",
+    html: emailShell({
+      title: subject,
+      previewText:
+        "Welcome to the community — verify your email, then log in to the Hub.",
+      baseUrl,
+      heroEyebrow: "Community Hub",
+      heroTitle: "Welcome to the community",
+      heroSubtitle: "Purpose, community, and opportunity",
+      showWorkbookMap: false,
+      bodyHtml,
+    }),
+  };
+}
+
+export function renderEmailVerificationEmail(props: {
+  name: string;
+  url: string;
+  baseUrl?: string;
+}): { subject: string; html: string; templateKey: string } {
+  const baseUrl = props.baseUrl ?? getAppBaseUrl();
+  const subject = "Verify your Ahren Foundation email";
+
+  const bodyHtml = `
+    ${greeting(props.name)}
+    ${paragraph(
+      "Thanks for joining the Ahren Foundation community. Please verify your email address so you can log in to the Community Hub.",
+    )}
+    ${emailButton(props.url, "Verify email address")}
+    ${paragraph(
+      "If the button does not work, copy and paste this link into your browser:",
+      { small: true },
+    )}
+    <p style="margin:0 0 20px;color:#404040;font-size:13px;line-height:22px;word-break:break-all;">
+      ${escapeHtml(props.url)}
+    </p>
+    ${paragraph(
+      "If you did not create this account, you can ignore this email.",
+      { small: true },
+    )}
+    <p style="margin:0;color:#000000;font-size:15px;font-weight:600;line-height:26px;">
+      The Ahren Foundation Team
+    </p>
+  `;
+
+  return {
+    subject,
+    templateKey: "email_verification",
+    html: emailShell({
+      title: subject,
+      previewText: "Confirm your email to access the Community Hub.",
+      baseUrl,
+      heroEyebrow: "Account security",
+      heroTitle: "Verify your email",
+      heroSubtitle: "One click to activate your Community Hub access",
+      showWorkbookMap: false,
+      bodyHtml,
+    }),
   };
 }
