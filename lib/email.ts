@@ -700,6 +700,25 @@ export function emailVerificationEmail(
   };
 }
 
+export function setPasswordEmail(
+  name: string,
+  email: string,
+  url: string,
+): EmailPayload {
+  const rendered = renderSetPasswordEmail({
+    name,
+    url,
+    baseUrl: getAppBaseUrl(),
+  });
+
+  return {
+    to: email,
+    subject: rendered.subject,
+    templateKey: rendered.templateKey,
+    html: rendered.html,
+  };
+}
+
 import { emailShell } from "@/lib/workbook/email-shell";
 import {
   emailButton,
@@ -812,6 +831,57 @@ export function renderEmailVerificationEmail(props: {
       heroEyebrow: "Account security",
       heroTitle: "Verify your email",
       heroSubtitle: "One click to activate your Community Hub access",
+      showWorkbookMap: false,
+      bodyHtml,
+    }),
+  };
+}
+
+export function renderSetPasswordEmail(props: {
+  name: string;
+  url: string;
+  baseUrl?: string;
+}): { subject: string; html: string; templateKey: string } {
+  const baseUrl = props.baseUrl ?? getAppBaseUrl();
+  const subject = "Set your Ahren Foundation password";
+
+  const bodyHtml = `
+    ${greeting(props.name)}
+    ${paragraph(
+      "You’re registered with Ahren Foundation as a youth member. Use the button below to choose a password and access the Community Hub.",
+    )}
+    ${emailButton(props.url, "Set password")}
+    ${paragraph(
+      "This link expires in 24 hours. If it expires, request a new one from the activate account page.",
+      { small: true },
+    )}
+    ${paragraph(
+      "If the button does not work, copy and paste this link into your browser:",
+      { small: true },
+    )}
+    <p style="margin:0 0 20px;color:#404040;font-size:13px;line-height:22px;word-break:break-all;">
+      ${escapeHtml(props.url)}
+    </p>
+    ${paragraph("If you did not request this, you can ignore this email.", {
+      small: true,
+    })}
+    <p style="margin:0 0 8px;color:#000000;font-size:15px;font-weight:600;line-height:26px;">
+      The Ahren Foundation Team
+    </p>
+    ${emailButton(baseUrl, "Visit Ahren Foundation")}
+  `;
+
+  return {
+    subject,
+    templateKey: "set_password",
+    html: emailShell({
+      title: subject,
+      previewText:
+        "Choose a password to access the Ahren Foundation Community Hub. Link valid 24 hours.",
+      baseUrl,
+      heroEyebrow: "Account access",
+      heroTitle: "Set your password",
+      heroSubtitle: "Activate your youth membership login",
       showWorkbookMap: false,
       bodyHtml,
     }),

@@ -163,7 +163,9 @@ export async function submitJoinApplication(
           fullName: data.fullName,
           email: normalizedEmail,
           status: "active", // hub-ready; not verified_member
-          currentStep: "welcome_email",
+          currentStep: "pending_email_verification",
+          // currentStep: "welcome_email",
+
           payload: data.payload,
         })
         .returning({ id: programMembers.id });

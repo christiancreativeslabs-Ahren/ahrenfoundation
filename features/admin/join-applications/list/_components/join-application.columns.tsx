@@ -84,14 +84,9 @@ export function buildJoinApplicationColumns(input: {
       header: "Status",
       cell: ({ row }) => (
         <Badge
-          variant={statusVariant(
-            row.original.applicationType === "community"
-              ? "approved"
-              : row.original.status,
-          )}
+          variant={statusVariant(row.original.status)}
           className={
-            row.original.status === "approved" ||
-            row.original.applicationType === "community"
+            row.original.status === "approved"
               ? "bg-[#00ff9d]/15 text-[#00ff9d]"
               : row.original.status === "rejected"
                 ? "bg-rose-500/15 text-rose-200"
@@ -100,11 +95,7 @@ export function buildJoinApplicationColumns(input: {
                   : "border-white/10 bg-white/[0.04] text-[#e8eeff]"
           }
         >
-          {formatStatus(
-            row.original.applicationType === "community"
-              ? "Approved"
-              : row.original.status,
-          )}
+          {formatStatus(row.original.status)}
         </Badge>
       ),
     },

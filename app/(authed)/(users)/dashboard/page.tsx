@@ -55,10 +55,8 @@ export default async function MemberDashboardPage() {
     redirect("/mentor/dashboard");
   }
 
-  console.log({ session, member });
-
-  const isVerified =
-    member.role == "community" ? true : member.status === "verified_member";
+  const isVerified = member.status === "verified_member";
+  // member.role == "community" ? true : member.status === "verified_member";
 
   if (!isVerified) {
     return (
@@ -85,16 +83,23 @@ export default async function MemberDashboardPage() {
                   Verified dashboard pending
                 </h2>
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-200">
-                  Your profile is still under review. Once approved, you will
+                  {/* Your profile is still under review. Once approved, you will
                   see your Workbook, your assigned mentor, and only the
-                  information tied to your journey.
+                  information tied to your journey. */}
+                  Your profile is still under review. Once approved, you will
+                  see your Workbook and the information tied to your journey.
                 </p>
-                <Link
+
+                <div className="px-4 py-2  mt-4">
+                  <SignOutButton />
+                </div>
+
+                {/* <Link
                   href="/training/apply"
                   className="mt-4 inline-flex rounded-md border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
                 >
                   Return to join form
-                </Link>
+                </Link> */}
               </div>
             </div>
           </section>

@@ -22,7 +22,8 @@ export default function HubLoginPage() {
       callbackURL="/dashboard"
       newUserCallbackURL="/hub/join"
       signedInRedirect="/dashboard"
-      note="Community members can log in right after signup. Training applicants still need admin verification."
+      // note="Applied before as youth? Activate your account to set a password, then sign in."
+      // note="Community members can log in right after signup. Training applicants still need admin verification."
     />
   );
 }

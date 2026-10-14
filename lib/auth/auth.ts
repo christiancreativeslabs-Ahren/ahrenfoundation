@@ -20,6 +20,7 @@ import {
   passwordResetEmail,
   sendEmail,
   emailVerificationEmail,
+  setPasswordEmail,
 } from "@/lib/email";
 import { getAdminEmails } from "@/lib/validations/join";
 
@@ -121,7 +122,7 @@ async function isAllowedToSignIn(email: string) {
   const hasProgramMembership = Boolean(member);
 
   // Community Hub: registered community members can log in immediately
-  if (member?.role === "community") {
+  if (member?.role === "community" || member?.role === "youth") {
     return {
       allowed: Boolean(user?.emailVerified),
       isAdmin: false,
@@ -218,7 +219,7 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             if (!email) return;
 
             const access = await isAllowedToSignIn(email);
-            console.log({ access });
+            // console.log({ access });
             if (!access.allowed) {
               throw loginBlockedError(
                 (access.role as "community" | "program" | "mentor" | "youth") ??
@@ -254,6 +255,58 @@ function createVerifiedAccessPlugin(): BetterAuthPlugin {
             if (!access.allowed) {
               throw loginBlockedError();
             }
+          }),
+        },
+
+        // inside createVerifiedAccessPlugin → hooks.after array, ADD:
+        {
+          matcher(context: { path?: string }) {
+            // Adjust if your logs show a different path
+            return (
+              context.path === "/reset-password" ||
+              context.path === "/email-password/reset-password" ||
+              context.path === "/forget-password/reset"
+            );
+          },
+          handler: createAuthMiddleware(async (ctx) => {
+            // Only mark verified when reset succeeded (no error thrown upstream)
+            const email =
+              typeof ctx.body?.email === "string"
+                ? ctx.body.email
+                : typeof ctx.context?.session?.user?.email === "string"
+                  ? ctx.context.session.user.email
+                  : null;
+
+            // Some versions only send `newPassword` + `token` — resolve user from token if needed
+            let resolvedEmail = email;
+
+            if (!resolvedEmail && typeof ctx.body?.token === "string") {
+              // Optional: look up verification row if you store email on the token
+              // Skip if not available; use option B on the page instead
+            }
+
+            if (!resolvedEmail) return;
+
+            const normalized = normalizeEmail(resolvedEmail);
+
+            await db
+              .update(users)
+              .set({
+                emailVerified: true,
+                updatedAt: new Date(),
+              })
+              .where(sql`lower(${users.email}) = ${normalized}`);
+
+            // Optional: youth step after they finish setting password
+            await db
+              .update(programMembers)
+              .set({
+                currentStep: "awaiting_approval",
+                updatedAt: new Date(),
+              })
+              .where(
+                sql`lower(${programMembers.email}) = ${normalized} AND ${programMembers.role} = 'youth'`,
+              );
           }),
         },
       ],
@@ -340,8 +393,13 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    resetPasswordTokenExpiresIn: 60 * 60 * 24,
     sendResetPassword: async ({ user, url }) => {
-      await sendEmail(passwordResetEmail(user.email, url));
+      await sendEmail(
+        setPasswordEmail(user.name || "Friend", user.email, url),
+        // passwordResetEmail(user.email, url)
+      );
     },
   },
   emailVerification: {
@@ -351,6 +409,21 @@ export const auth = betterAuth({
       await sendEmail(
         emailVerificationEmail(user.name || "Friend", user.email, url),
       );
+    },
+    // Fired when the user successfully verifies their email
+    afterEmailVerification: async (user) => {
+      const email = user.email?.trim().toLowerCase();
+      if (!email) return;
+
+      await db
+        .update(programMembers)
+        .set({
+          currentStep: "awaiting_approval", // or "Awaiting Approval"
+          updatedAt: new Date(),
+        })
+        .where(
+          sql`lower(${programMembers.email}) = ${email} AND ${programMembers.role} IN ('community', 'youth')`,
+        );
     },
   },
   plugins: [
