@@ -40,6 +40,7 @@ import {
   applicationRejectedEmail,
   certificateIssuedEmail,
   sendEmail,
+  verifiedAccessEmail,
 } from "@/lib/email";
 import {
   cancelModuleDelivery,
@@ -107,8 +108,18 @@ async function ensureProgramMemberLoginAccess(memberId: string) {
     throw new Error("Program member was not found.");
   }
 
-  if (member.role !== "mentor" && member.role !== "youth") {
-    throw new Error("Only mentors and mentees can receive login links.");
+  // if (member.role !== "mentor" && member.role !== "youth") {
+  //   throw new Error("Only mentors and mentees can receive login links.");
+  // }
+
+  if (
+    member.role !== "mentor" &&
+    member.role !== "youth" &&
+    member.role !== "community"
+  ) {
+    throw new Error(
+      "Only mentors, mentees, and community members can receive access.",
+    );
   }
 
   const { firstName, lastName } = splitName(member.fullName);
@@ -146,7 +157,7 @@ async function ensureProgramMemberLoginAccess(memberId: string) {
     })
     .where(eq(programMembers.id, member.id));
 
-  if (member.role === "youth") {
+  if (member.role === "youth" || member.role === "community") {
     await enrollMemberInWorkbookProgram(member.id, now);
     await syncMemberWorkbookDeliveries(member.id);
   }
@@ -179,8 +190,18 @@ async function ensureProgramMemberQuickLoginAccess(memberId: string) {
     throw new Error("Program member was not found.");
   }
 
-  if (member.role !== "mentor" && member.role !== "youth") {
-    throw new Error("Only mentors and mentees can receive login links.");
+  // if (member.role !== "mentor" && member.role !== "youth") {
+  //   throw new Error("Only mentors and mentees can receive login links.");
+  // }
+
+  if (
+    member.role !== "mentor" &&
+    member.role !== "youth" &&
+    member.role !== "community"
+  ) {
+    throw new Error(
+      "Only mentors, mentees, and community members can receive access.",
+    );
   }
 
   const { firstName, lastName } = splitName(member.fullName);
@@ -1031,26 +1052,38 @@ export async function updateJoinApplicationStatus(
           ? "exit"
           : "application_review";
 
+    const memberStatus =
+      application.applicationType === "mentor"
+        ? "verified_mentor"
+        : "verified_member";
+
     await db
       .update(programMembers)
       .set({
-        status,
+        status: status === "approved" ? memberStatus : status,
         currentStep: nextStep,
         updatedAt: new Date(),
       })
       .where(eq(programMembers.joinApplicationId, applicationId));
-
-    if (status === "rejected") {
-      await sendAndLogEmail(
-        applicationRejectedEmail(application.fullName, application.email),
-      );
-    }
 
     await syncJoinApplicationProjection(applicationId);
 
     revalidatePath("/admin/join-applications");
     revalidatePath(`/admin/join-applications/${applicationId}`);
     revalidatePath("/dashboard");
+
+    if (status === "rejected") {
+      await sendAndLogEmail(
+        applicationRejectedEmail(application.fullName, application.email),
+      );
+    }
+    if (status === "approved") {
+      await sendAndLogEmail(
+        verifiedAccessEmail(application.fullName, application.email),
+        { programMemberId: application.id },
+      );
+    }
+
     return { ok: true, message: "Application status updated." };
   } catch (error) {
     return {

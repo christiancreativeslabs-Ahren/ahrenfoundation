@@ -58,6 +58,8 @@ export default async function MemberDashboardPage() {
   const isVerified = member.status === "verified_member";
   // member.role == "community" ? true : member.status === "verified_member";
 
+  console.log({ member });
+
   if (!isVerified) {
     return (
       <main className="min-h-screen bg-[#080d2e] px-6 py-10 text-white">

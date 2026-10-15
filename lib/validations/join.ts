@@ -353,9 +353,10 @@ export async function sendJoinNotificationEmails(
   const applicantEmail =
     data.applicationType === "mentor"
       ? mentorWelcomeEmail(data)
-      : data.applicationType === "community"
-        ? communityWelcomeEmail(data)
-        : youthWelcomeEmail(data);
+      : youthWelcomeEmail(data);
+
+  // : data.applicationType === "community"
+  // ? communityWelcomeEmail(data)
 
   const adminEmail = adminJoinNotificationEmail(data);
 

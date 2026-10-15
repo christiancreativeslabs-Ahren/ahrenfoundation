@@ -14,6 +14,10 @@ export type ActivateYouthState = {
 const genericSuccess =
   "If this email is registered as a youth member, you’ll receive a link shortly. Check your inbox and spam folder.";
 
+function baseUrl() {
+  return process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
+}
+
 export async function activateYouthAccountAction(
   _prev: ActivateYouthState,
   formData: FormData,
@@ -40,25 +44,44 @@ export async function activateYouthAccountAction(
       )
       .limit(1);
 
-    // Do not reveal whether the email exists
     if (!member) {
       return { ok: true, message: genericSuccess };
     }
 
-    let userId = member.userId;
+    const { firstName, lastName } = splitFullName(member.fullName);
 
-    if (!userId) {
-      const { firstName, lastName } = splitFullName(member.fullName);
+    // Always resolve user by email (don't trust userId alone)
+    let [user] = await db
+      .select({ id: users.id, email: users.email })
+      .from(users)
+      .where(sql`lower(${users.email}) = ${email}`)
+      .limit(1);
 
-      const [existingUser] = await db
-        .select({ id: users.id })
+    if (!user) {
+      // Create through Better Auth so password-reset can find the user
+      const tempPassword = `${crypto.randomUUID()}Aa1!`;
+
+      try {
+        await auth.api.signUpEmail({
+          body: {
+            email,
+            password: tempPassword,
+            name: member.fullName,
+          },
+        });
+      } catch (signUpErr) {
+        console.error("activateYouth signUpEmail failed", signUpErr);
+        // May already exist in auth — fall through and re-query
+      }
+
+      [user] = await db
+        .select({ id: users.id, email: users.email })
         .from(users)
         .where(sql`lower(${users.email}) = ${email}`)
         .limit(1);
 
-      if (existingUser) {
-        userId = existingUser.id;
-      } else {
+      if (!user) {
+        // Last resort: direct insert (reset may still fail on some BA versions)
         const [created] = await db
           .insert(users)
           .values({
@@ -68,38 +91,53 @@ export async function activateYouthAccountAction(
             lastName,
             emailVerified: false,
           })
-          .returning({ id: users.id });
-        userId = created.id;
+          .returning({ id: users.id, email: users.email });
+        user = created;
       }
+    }
 
+    // Link member → user (no duplicate members)
+    if (member.userId !== user.id) {
       await db
         .update(programMembers)
-        .set({ userId, updatedAt: new Date() })
+        .set({ userId: user.id, updatedAt: new Date() })
         .where(eq(programMembers.id, member.id));
     }
 
-    // Ensure name stays in sync
     await db
       .update(users)
       .set({
         name: member.fullName,
+        firstName,
+        lastName,
         updatedAt: new Date(),
       })
-      .where(eq(users.id, userId));
+      .where(eq(users.id, user.id));
 
-    // Triggers sendResetPassword → setPasswordEmail (24h token)
+    // Request reset (sends set-password email)
     try {
       await auth.api.requestPasswordReset({
         body: {
           email,
-          redirectTo: `${process.env.BETTER_AUTH_URL ?? "http://localhost:3000"}/reset-password`,
+          redirectTo: `${baseUrl()}/reset-password`,
         },
       });
     } catch (err) {
-      // Fallback name used by some BA versions:
-      // await auth.api.forgetPassword({ body: { email, redirectTo: "..." } });
-      console.error("activateYouthAccount requestPasswordReset failed", err);
-      // Still return generic success to avoid enumeration
+      console.error(
+        "activateYouth requestPasswordReset failed, trying forgetPassword",
+        err,
+      );
+      // try {
+      //   // Some better-auth versions use this name instead
+      //   await auth.api.forgetPassword({
+      //     body: {
+      //       email,
+      //       redirectTo: `${baseUrl()}/reset-password`,
+      //     },
+      //   });
+      // } catch (err2) {
+      //   console.error("activateYouth forgetPassword failed", err2);
+      // }
     }
 
     return { ok: true, message: genericSuccess };

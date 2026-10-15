@@ -201,7 +201,10 @@ export default async function JoinApplicationDetailPage({
 
   const payload = (detail.application.payload ?? {}) as Record<string, unknown>;
   const faith = getFaithPayload(payload);
-  const isYouth = detail.application.applicationType === "youth";
+  const appType = detail.application.applicationType;
+  const isYouth = appType === "youth";
+  const isMentor = appType === "mentor";
+  const isCommunity = appType === "community";
   const member = detail.member;
   const memberJourney = detail.member
     ? await getProgramMemberJourneyData(detail.member.id)
@@ -237,11 +240,19 @@ export default async function JoinApplicationDetailPage({
               <CardTitle className="mt-3 text-3xl font-bold tracking-tight">
                 {detail.application.fullName}
               </CardTitle>
-              <CardDescription className="mt-2 text-slate-300">
+              {/* <CardDescription className="mt-2 text-slate-300">
                 {detail.application.applicationType === "youth"
                   ? "Prospective mentee"
                   : "Mentor applicant"}{" "}
                 review and member handoff.
+              </CardDescription> */}
+
+              <CardDescription className="mt-2 text-slate-300">
+                {isCommunity
+                  ? "Community registration — review, approve, and grant Hub access."
+                  : isYouth
+                    ? "Prospective mentee review and member handoff."
+                    : "Mentor applicant review and member handoff."}
               </CardDescription>
             </div>
 
@@ -348,14 +359,81 @@ export default async function JoinApplicationDetailPage({
 
       <Card className="border-white/10 bg-white/[0.03] text-white">
         <CardHeader>
-          <CardTitle className="text-lg">
+          {/* <CardTitle className="text-lg">
             {isYouth
               ? "Prospective mentee profile"
               : "Mentor application profile"}
+          </CardTitle> */}
+          <CardTitle className="text-lg">
+            {isCommunity
+              ? "Community registration profile"
+              : isYouth
+                ? "Prospective mentee profile"
+                : "Mentor application profile"}
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
-          {isYouth ? (
+          {isCommunity ? (
+            <>
+              <DetailItem
+                label="Age range"
+                value={
+                  getString(payload.ageRange) || detail.application.ageRange
+                }
+              />
+              <DetailItem
+                label="Gender"
+                value={getString(payload.sex) || detail.application.sex}
+              />
+              <DetailList
+                label="Skills"
+                values={
+                  getStringArray(payload.skills).length
+                    ? getStringArray(payload.skills)
+                    : ((detail.application.skills as string[] | null) ?? [])
+                }
+              />
+              <DetailItem
+                label="Other skill"
+                value={
+                  getString(payload.skillsOther) ||
+                  detail.application.skillsOther
+                }
+              />
+              <DetailItem
+                label="Skills to learn"
+                value={
+                  getString(payload.skillsToLearn) ||
+                  detail.application.skillsToLearn
+                }
+              />
+              <DetailList
+                label="Participation interests"
+                values={
+                  getStringArray(payload.participationInterests).length
+                    ? getStringArray(payload.participationInterests)
+                    : ((detail.application.participationInterests as
+                        | string[]
+                        | null) ?? [])
+                }
+              />
+              <DetailItem
+                label="Other participation"
+                value={
+                  getString(payload.participationOther) ||
+                  detail.application.participationOther
+                }
+              />
+              <DetailItem
+                label="Hoping to gain"
+                value={getString(payload.whyJoin) || detail.application.whyJoin}
+              />
+              <DetailItem
+                label="Source"
+                value={getString(payload.source) || "community_hub"}
+              />
+            </>
+          ) : isYouth ? (
             <>
               <DetailItem
                 label="Age range"
@@ -455,8 +533,13 @@ export default async function JoinApplicationDetailPage({
       <Card className="border-white/10 bg-white/[0.03] text-white">
         <CardHeader>
           <CardTitle className="text-lg">Operational workflow</CardTitle>
-          <CardDescription className="text-slate-300">
+          {/* <CardDescription className="text-slate-300">
             Bridge application review into Workbook and member operations.
+          </CardDescription> */}
+          <CardDescription className="text-slate-300">
+            {isCommunity
+              ? "Approve the registration, then grant verified access so they can use the Hub."
+              : "Bridge application review into Workbook and member operations."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -525,19 +608,26 @@ export default async function JoinApplicationDetailPage({
                   resendAction={resendDeliveryAction}
                   disabled={!moduleDeliveries.length}
                 />
-                <form action={verifyMemberAction}>
-                  <HiddenInput
-                    name="program_member_id"
-                    value={detail.member.id}
-                  />
-                  <Button
-                    type="submit"
-                    variant="outline"
-                    className="border-white/15 bg-transparent text-white hover:bg-white/10"
-                  >
-                    Send login link
-                  </Button>
-                </form>
+                {!isCommunity ? (
+                  <>
+                    <form action={verifyMemberAction}>
+                      <HiddenInput
+                        name="program_member_id"
+                        value={detail.member.id}
+                      />
+                      <Button
+                        type="submit"
+                        variant="outline"
+                        className="border-white/15 bg-transparent text-white hover:bg-white/10"
+                      >
+                        Send login link
+                      </Button>
+                    </form>
+                  </>
+                ) : (
+                  <></>
+                )}
+
                 {detail.member.role === "youth" ? (
                   <MentorAssignmentDialog
                     memberId={detail.member.id}
@@ -550,15 +640,20 @@ export default async function JoinApplicationDetailPage({
               </div>
             </>
           ) : (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
-              This applicant has not yet been converted into an active program
-              member, so the next action is application review and approval.
+            // <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+            //   This applicant has not yet been converted into an active program
+            //   member, so the next action is application review and approval.
+            // </div>
+            <div className="rounded-lg border ...">
+              {isCommunity
+                ? "No program member row yet. Approve the application first if needed, then grant Hub access."
+                : "This applicant has not yet been converted into an active program member..."}
             </div>
           )}
         </CardContent>
       </Card>
 
-      {memberJourney && member ? (
+      {memberJourney && member && !isCommunity ? (
         <Card
           id="member-journey"
           className="border-white/10 bg-white/[0.03] text-white"
@@ -866,6 +961,35 @@ export default async function JoinApplicationDetailPage({
                 ) : null}
               </TableBody>
             </Table>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {isCommunity && member ? (
+        <Card className="border-white/10 bg-white/[0.03] text-white">
+          <CardHeader>
+            <CardTitle className="text-lg">Community access</CardTitle>
+            <CardDescription className="text-slate-300">
+              Hub login depends on email verification and verified membership
+              status.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-3">
+            <DetailItem label="Role" value={member.role} />
+            <DetailItem
+              label="Status"
+              value={member.status?.replaceAll("_", " ")}
+            />
+            <DetailItem
+              label="Verified"
+              value={
+                member.verifiedAt ? formatDate(member.verifiedAt) : "Not yet"
+              }
+            />
+            <DetailItem
+              label="Current step"
+              value={member.currentStep?.replaceAll("_", " ") ?? "-"}
+            />
           </CardContent>
         </Card>
       ) : null}
