@@ -4,10 +4,17 @@ import {
   formatAdminDate,
   getWorkbookSubmissionReviewData,
 } from "@/lib/admin/member-workflow";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HiddenInput } from "@/components/ui/input-fields";
+import { ExportSubmissionButton } from "@/components/admin/export-submission-button";
 
 export const dynamic = "force-dynamic";
 
@@ -32,14 +39,29 @@ export default async function AdminWorkbookSubmissionsPage() {
             Workbook submissions
           </CardTitle>
           <CardDescription className="max-w-3xl text-slate-300">
-            Review every submitted Workbook answer set, whether it came from an email delivery link or the Hub Workbook page.
+            Review every submitted Workbook answer set, whether it came from an
+            email delivery link or the Hub Workbook page.
           </CardDescription>
+
+          {rows?.some(({ answers }) => answers?.length > 0) && (
+            <a href="/api/admin/workbook/submissions/export">
+              <Button
+                type="button"
+                className="bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e]"
+              >
+                Export all responses
+              </Button>
+            </a>
+          )}
         </CardHeader>
       </Card>
 
       <div className="space-y-4">
         {rows.map(({ submission, member, module, delivery, answers }) => (
-          <Card key={submission.id} className="border-white/10 bg-white/[0.03] text-white">
+          <Card
+            key={submission.id}
+            className="border-white/10 bg-white/[0.03] text-white"
+          >
             <CardHeader className="space-y-3">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div>
@@ -50,22 +72,28 @@ export default async function AdminWorkbookSubmissionsPage() {
                     {member.fullName}
                   </Link>
                   <CardDescription className="mt-2 text-slate-300">
-                    {member.email} - Module {module.moduleNumber}: {module.title}
+                    {member.email} - Module {module.moduleNumber}:{" "}
+                    {module.title}
                   </CardDescription>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="outline" className="border-white/15 text-cyan-200">
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 text-cyan-200"
+                  >
                     {submission.status}
                   </Badge>
-                  <Badge variant="outline" className="border-white/15 text-white">
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 text-white"
+                  >
                     {answers.length} answers
                   </Badge>
                 </div>
               </div>
               <div className="flex flex-wrap gap-6 text-sm text-slate-300">
                 <span>
-                  Submitted:{" "}
-                  {formatAdminDate(submission.submittedAt)}
+                  Submitted: {formatAdminDate(submission.submittedAt)}
                 </span>
                 <span>Delivery status: {delivery.status}</span>
                 <span>Submission id: {submission.id}</span>
@@ -74,7 +102,10 @@ export default async function AdminWorkbookSubmissionsPage() {
             <CardContent className="space-y-4">
               <div className="grid gap-3">
                 {answers.map(({ answer, question }) => (
-                  <div key={answer.id} className="rounded-lg border border-white/10 bg-white/5 p-4">
+                  <div
+                    key={answer.id}
+                    className="rounded-lg border border-white/10 bg-white/5 p-4"
+                  >
                     <p className="text-sm font-semibold text-slate-200">
                       {question.questionNumber}. {question.prompt}
                     </p>
@@ -85,9 +116,24 @@ export default async function AdminWorkbookSubmissionsPage() {
                 ))}
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link href={`/admin/workbook/submissions/${submission.id}`} className="text-sm font-semibold text-[#00c9ff] hover:text-[#00ff9d]">
+                <Link
+                  href={`/admin/workbook/submissions/${submission.id}`}
+                  className="text-sm font-semibold text-[#00c9ff] hover:text-[#00ff9d]"
+                >
                   Open full submission
                 </Link>
+                <ExportSubmissionButton
+                  memberName={member.fullName}
+                  memberEmail={member.email}
+                  moduleTitle={module.title}
+                  moduleNumber={module.moduleNumber}
+                  submittedAt={formatAdminDate(submission.submittedAt) ?? ""}
+                  answers={answers.map(({ answer, question }) => ({
+                    questionNumber: question.questionNumber,
+                    prompt: question.prompt,
+                    answer: answer.answer,
+                  }))}
+                />
                 <form action={reviewSubmissionAction}>
                   <HiddenInput name="submission_id" value={submission.id} />
                   <HiddenInput name="status" value="reviewed" />

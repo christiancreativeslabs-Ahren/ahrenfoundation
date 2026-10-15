@@ -2,8 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getWorkbookSubmissionById } from "@/lib/workbook";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -71,12 +78,18 @@ export default async function AdminWorkbookSubmissionPage({
           </CardHeader>
           <CardContent className="space-y-4">
             {data.answers.map(({ answer, question }) => (
-              <div key={answer.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div
+                key={answer.id}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+              >
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-semibold text-white">
                     {question.questionNumber}. {question.prompt}
                   </p>
-                  <Badge variant="outline" className="border-white/15 text-cyan-200">
+                  <Badge
+                    variant="outline"
+                    className="border-white/15 text-cyan-200"
+                  >
                     {question.responseType}
                   </Badge>
                 </div>
@@ -85,6 +98,15 @@ export default async function AdminWorkbookSubmissionPage({
                 </p>
               </div>
             ))}
+
+            <a href={`/api/admin/workbook/submissions/${submissionId}/export`}>
+              <Button
+                type="button"
+                className="bg-gradient-to-r from-[#00c9ff] to-[#00ff9d] text-[#080d2e]"
+              >
+                Export responses
+              </Button>
+            </a>
           </CardContent>
         </Card>
       </div>
