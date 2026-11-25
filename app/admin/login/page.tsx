@@ -6,11 +6,11 @@ import { getAdminEmails } from "@/lib/validations/join";
 
 export const dynamic = "force-dynamic";
 
-// const ADMIN_EMAIL = "christiancreativeslabs@gmail.com";
-// const DEV_FALLBACK_PASSWORD = "AhrenAdmin123!";
+const ADMIN_EMAIL = "christiancreativeslabs@gmail.com";
+const DEV_FALLBACK_PASSWORD = "AhrenAdmin123!";
 
-const ADMIN_EMAIL = "";
-const DEV_FALLBACK_PASSWORD = "";
+// const ADMIN_EMAIL = "";
+// const DEV_FALLBACK_PASSWORD = "";
 
 export default async function AdminLoginPage() {
   const session = await auth.api.getSession({

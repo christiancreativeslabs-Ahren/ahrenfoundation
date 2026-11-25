@@ -610,7 +610,7 @@ export default function HomePage() {
               your gifts with God&apos;s purpose? There&apos;s a place for you
               in this movement.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
+            {/* <div className="flex flex-wrap gap-4 justify-center">
               <a
                 href="/training/apply"
                 target="_blank"
@@ -623,12 +623,10 @@ export default function HomePage() {
               <Link href="/citireach">
                 <GlowButton outline>Join CitiReach</GlowButton>
               </Link>
-            </div>
+            </div> */}
           </FadeUp>
         </div>
       </section>
     </main>
   );
 }
-
-

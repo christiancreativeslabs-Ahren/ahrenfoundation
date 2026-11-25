@@ -183,10 +183,10 @@ export const WHAT_WE_DO = [
   },
   {
     icon: "📢",
-    title: "CitiReach — Street Gospel Initiative",
+    title: "CitiReach — Schools and Streets",
     shortTitle: "CitiReach",
     color: "#00ff9d",
-    desc: "Our Quarterly Edition street evangelism movement. United believers from different churches with one mission — boldly preaching Jesus Christ and revealing His love to people in every corner of the city, saving the lost and getting the unchurched churched.",
+    desc: "CitiReach is our outreach movement that takes the Gospel to the Streets and brings Trainings on Faith, Tech, Creativity & Purpose to Students",
   },
 ];
 
